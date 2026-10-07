@@ -47,3 +47,8 @@
 | 38 | RSVP after the deadline | Buttons **shown disabled** with "RSVPs closed Wed 5pm". |
 | 39 | Tests | **Vitest** for rules and logic from M0; **Playwright** end-to-end from M3. |
 | 40 | Workflow | **One branch + PR per milestone**, reviewed and merged by Chelsea. |
+
+### Decided 2026-10-07 (later)
+| # | Question | Decision |
+|---|---|---|
+| 41 | Sign-in while the Slack app can't be created | **Google SSO for now.** Only verified Google accounts on `ALLOWED_EMAIL_DOMAINS` (default `jahnelgroup.com`) can sign in; members are matched by email. **cmerrill@jahnelgroup.com** is the organizer (`ORGANIZER_EMAILS`); everyone else is a member. The #108state gate (#28) and Slack sign-in stay in the code, off until `AUTH_SLACK_ID`/`AUTH_SLACK_SECRET` are set. Supersedes #28/#29 until then. |

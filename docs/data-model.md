@@ -25,7 +25,7 @@ enum OrderStatus { PLACED COOKING READY PICKED_UP CANCELLED }
 
 model Member {
   id            String   @id @default(cuid())
-  slackUserId   String   @unique
+  slackUserId   String?  @unique   // null for Google sign-ins (interim, open-questions #41)
   name          String
   email         String?  @unique
   avatarUrl     String?

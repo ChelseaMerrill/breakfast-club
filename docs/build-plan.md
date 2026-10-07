@@ -9,12 +9,12 @@ Paste one milestone at a time into Claude Code: *"Implement Milestone N from doc
 - **Done when:** `npm run dev` shows a placeholder home page and `db:seed` fills the dev database.
 
 ## M1 — Auth & roles
-- Sign in with Slack via Auth.js; create/update the Member on login
-- Only members of #108state may sign in (`conversations.members`), re-checked every few hours
-- `ORGANIZER_SLACK_IDS` grants ORGANIZER (Chelsea); no role toggle
-- Local-dev-only "Sign in as…" picker of seed members (can be built first, while the Slack app awaits approval)
+- Sign in with **Google** via Auth.js (interim, open-questions #41): verified `jahnelgroup.com` accounts only; create/update the Member by email on login
+- `ORGANIZER_EMAILS` grants ORGANIZER (cmerrill@jahnelgroup.com); no role toggle
+- Slack sign-in + #108state gate (`conversations.members`, re-checked every few hours) built but **off** until the Slack app exists (`AUTH_SLACK_ID`/`AUTH_SLACK_SECRET`; then `ORGANIZER_SLACK_IDS`)
+- Local-dev-only "Sign in as…" picker of seed members
 - Server-side role guard for `/admin/*`
-- **Done when:** a #108state member can sign in, someone outside the channel can't, and non-organizers get 403 on admin routes.
+- **Done when:** a jahnelgroup.com Google account can sign in, any other Google account can't, cmerrill@jahnelgroup.com gets the organizer pages, and non-organizers get 403 on admin routes. (Slack: same checks for #108state once enabled.)
 
 ## M2 — Schedule & skip weeks
 - `/schedule` list of Thursdays
