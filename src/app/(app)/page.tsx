@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { Card, PageTitle } from "@/components/bc";
+import { MenuCard } from "@/components/home/menu-card";
+import { MySponsorshipsCard } from "@/components/home/my-sponsorships-card";
 import { getCurrentMember } from "@/lib/dal";
 
 const PROVIDER_LABEL = { google: "Google", slack: "Slack", "dev-login": "dev sign-in" } as const;
@@ -19,6 +21,8 @@ export default function Home() {
           Pancakes. Friends. Thursday. Menus, sponsors, RSVPs and orders are on their way.
         </p>
       </Card>
+      <MenuCard />
+      <MySponsorshipsCard />
     </div>
   );
 }
