@@ -49,7 +49,7 @@ to **#108state** every Tuesday at 10am ET, unless that Thursday is skipped (e.g.
 ## Tech stack
 - **Next.js (App Router) + TypeScript**, Tailwind CSS, shadcn/ui
 - **PostgreSQL on Neon** (via the Vercel Marketplace; branch `main` = live, `dev` = local + previews) via **Prisma 7** (`prisma.config.ts`, Neon driver adapter, client generated to `src/generated/prisma`)
-- **Tests:** Vitest (unit, `src/**/*.test.ts`); Playwright (end-to-end, `e2e/`) — runs its own dev server on :3100 against the Neon `dev` branch, signs in via the dev picker, and cleans up after itself. DB setup goes through `e2e/db-task.mts` (run with tsx; Playwright can't load the ESM Prisma client)
+- **Tests:** Vitest (unit, `src/**/*.test.ts`); Playwright (end-to-end, `e2e/`) — reuses `npm run dev` on :3000 (or starts it) against the Neon `dev` branch, signs in via the dev picker, and cleans up after itself. DB setup goes through `e2e/db-task.mts` (run with tsx; Playwright can't load the ESM Prisma client)
 - **Auth:** Auth.js v5, JWT sessions. Google OIDC now; Slack OIDC later (auto-enabled by its env vars)
   - `src/auth.ts` — providers + callbacks (domain allow-list, member upsert, #108state gate + 3-hour re-check for Slack, dev picker)
   - `src/lib/organizers.ts` — organizer and allowed-domain rules (env-driven)
