@@ -1,0 +1,120 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* Class-based so shadcn dark: styles never kick in; the design is light only. */
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-fredoka);
+  --font-heading: var(--font-titan-one);
+  --shadow-chunky: 4px 4px 0 var(--bc-brown);
+  --shadow-chunky-sm: 3px 3px 0 var(--bc-brown);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* Breakfast Club palette — from design/Breakfast Club.dc.html. Light only; the design has no dark mode. */
+:root {
+  --bc-cream: #fff4d6;
+  --bc-dot: #f0d58c;
+  --bc-card: #fffdf6;
+  --bc-brown: #3b2314;
+  --bc-brown-soft: #7a5c48;
+  --bc-brown-faint: #a8876f;
+  --bc-red: #e8433f;
+  --bc-yellow: #ffc629;
+  --bc-mint: #9be3c4;
+  --bc-green: #1e8e5a;
+  --bc-placed: #6c7bff;
+  --bc-cooking: #ff9f1c;
+  --bc-ready: #3dbe7a;
+  --bc-picked-up: #808080;
+
+  --background: var(--bc-cream);
+  --foreground: var(--bc-brown);
+  --card: var(--bc-card);
+  --card-foreground: var(--bc-brown);
+  --popover: var(--bc-card);
+  --popover-foreground: var(--bc-brown);
+  --primary: var(--bc-yellow);
+  --primary-foreground: var(--bc-brown);
+  --secondary: var(--bc-mint);
+  --secondary-foreground: var(--bc-brown);
+  --muted: var(--bc-cream);
+  --muted-foreground: var(--bc-brown-soft);
+  --accent: var(--bc-yellow);
+  --accent-foreground: var(--bc-brown);
+  --destructive: var(--bc-red);
+  --border: var(--bc-brown);
+  --input: var(--bc-brown);
+  --ring: var(--bc-red);
+  --chart-1: var(--bc-placed);
+  --chart-2: var(--bc-cooking);
+  --chart-3: var(--bc-ready);
+  --chart-4: var(--bc-picked-up);
+  --chart-5: var(--bc-red);
+  --radius: 1.125rem;
+  --sidebar: var(--bc-card);
+  --sidebar-foreground: var(--bc-brown);
+  --sidebar-primary: var(--bc-red);
+  --sidebar-primary-foreground: var(--bc-card);
+  --sidebar-accent: rgb(255 198 41 / 50%);
+  --sidebar-accent-foreground: var(--bc-red);
+  --sidebar-border: var(--bc-brown);
+  --sidebar-ring: var(--bc-red);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-medium;
+    background-image: radial-gradient(var(--bc-dot) 2px, transparent 2px);
+    background-size: 22px 22px;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  html {
+    @apply font-sans;
+  }
+}

@@ -1,0 +1,172 @@
+// Source of truth for the shape: docs/data-model.md (reconciled to design/Breakfast Club.dc.html).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ORGANIZER
+  MEMBER
+}
+
+enum EventStatus {
+  SCHEDULED
+  ORDERING_OPEN
+  ORDERING_CLOSED
+  COMPLETED
+  SKIPPED
+  CANCELLED
+}
+
+enum RsvpAnswer {
+  YES
+  NO
+}
+
+enum OrderStatus {
+  PLACED
+  COOKING
+  READY
+  PICKED_UP
+  CANCELLED
+}
+
+model Member {
+  id                  String              @id @default(cuid())
+  slackUserId         String              @unique
+  name                String
+  email               String?             @unique
+  avatarUrl           String?
+  role                Role                @default(MEMBER)
+  createdAt           DateTime            @default(now())
+  rsvps               Rsvp[]
+  orders              Order[]             @relation("OrderFor")
+  ordersEntered       Order[]             @relation("OrderEnteredBy")
+  sponsorships        SponsorshipMember[]
+  sponsorshipsCreated Sponsorship[]       @relation("SponsorshipCreatedBy")
+}
+
+model BreakfastEvent {
+  id               String      @id @default(cuid())
+  date             DateTime    @unique @db.Date // the Thursday (calendar date in America/New_York)
+  status           EventStatus @default(SCHEDULED)
+  orderingEnabled  Boolean     @default(true) // false = RSVP only (e.g. bagels)
+  orderingOpenedAt DateTime?
+  orderingClosedAt DateTime?
+  rsvpDeadline     DateTime? // default: Wednesday 5pm ET before
+  skipReason       String? // e.g. "Thanksgiving"
+  sponsorsNeeded   Int         @default(1) // set with −/+ on the Schedule; hides "Sponsor this" when filled
+  notes            String?
+  reminderSentAt   DateTime? // idempotency for the Tuesday post
+  createdAt        DateTime    @default(now())
+  rsvps            Rsvp[]
+  orders           Order[]
+  menuItems        MenuItem[]
+}
+
+model MenuItem {
+  id           String         @id @default(cuid())
+  eventId      String
+  event        BreakfastEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  name         String
+  description  String?
+  category     String?
+  orderable    Boolean        @default(true) // false = on the menu but not ordered individually
+  sortOrder    Int            @default(0)
+  options      ItemOption[]
+  sponsorships Sponsorship[]
+  orderLines   OrderLine[]
+}
+
+model ItemOption {
+  id         String   @id @default(cuid())
+  menuItemId String
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  group      String // e.g. "Style"
+  label      String // e.g. "Scrambled"
+  sortOrder  Int      @default(0)
+}
+
+model Sponsorship {
+  id          String              @id @default(cuid())
+  menuItemId  String
+  menuItem    MenuItem            @relation(fields: [menuItemId], references: [id])
+  teamName    String? // e.g. "Delivery team"
+  sponsorName String? // free-text name the organizer typed for a non-member
+  members     SponsorshipMember[] // 0–2 people (0 only if teamName or sponsorName is set)
+  amountCents Int                 @default(3000) // $30, copied from settings at creation
+  paid        Boolean             @default(false)
+  paidAt      DateTime?
+  createdById String
+  createdBy   Member              @relation("SponsorshipCreatedBy", fields: [createdById], references: [id])
+  createdAt   DateTime            @default(now())
+}
+
+model SponsorshipMember {
+  sponsorshipId String
+  sponsorship   Sponsorship @relation(fields: [sponsorshipId], references: [id], onDelete: Cascade)
+  memberId      String
+  member        Member      @relation(fields: [memberId], references: [id])
+
+  @@id([sponsorshipId, memberId])
+}
+
+model Rsvp {
+  id        String         @id @default(cuid())
+  eventId   String
+  event     BreakfastEvent @relation(fields: [eventId], references: [id])
+  memberId  String
+  member    Member         @relation(fields: [memberId], references: [id])
+  answer    RsvpAnswer
+  updatedAt DateTime       @updatedAt
+
+  @@unique([eventId, memberId])
+}
+
+model Order {
+  id          String         @id @default(cuid())
+  eventId     String
+  event       BreakfastEvent @relation(fields: [eventId], references: [id])
+  memberId    String? // null for guests
+  member      Member?        @relation("OrderFor", fields: [memberId], references: [id])
+  guestName   String? // required when memberId is null, e.g. "Client – Acme"
+  isWalkIn    Boolean        @default(false)
+  enteredById String? // organizer who entered it, if not self-placed
+  enteredBy   Member?        @relation("OrderEnteredBy", fields: [enteredById], references: [id])
+  status      OrderStatus    @default(PLACED)
+  notes       String?
+  lines       OrderLine[]
+  placedAt    DateTime       @default(now())
+  statusAt    DateTime       @default(now())
+
+  @@unique([eventId, memberId]) // one order per member per event; guests (null memberId) unrestricted
+}
+
+model OrderLine {
+  id              String   @id @default(cuid())
+  orderId         String
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItemId      String
+  menuItem        MenuItem @relation(fields: [menuItemId], references: [id])
+  itemName        String // snapshot
+  quantity        Int      @default(1)
+  selectedOptions Json // [{ group: "Style", label: "Scrambled" }]
+  notes           String?
+}
+
+model AppSettings {
+  id                     Int     @id @default(1)
+  breakfastWeekday       Int     @default(4) // Thursday
+  rsvpDeadlineWeekday    Int     @default(3) // Wednesday
+  rsvpDeadlineTime       String  @default("17:00") // America/New_York
+  reminderWeekday        Int     @default(2) // Tuesday
+  reminderTime           String  @default("10:00") // America/New_York
+  sponsorshipAmountCents Int     @default(3000) // $30
+  slackChannelId         String? // #108state
+  remindersEnabled       Boolean @default(true)
+}
