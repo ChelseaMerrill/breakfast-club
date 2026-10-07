@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { signOut } from "@/auth";
 import { Card, PageTitle } from "@/components/bc";
 import { getCurrentMember } from "@/lib/dal";
 
@@ -9,7 +8,7 @@ const PROVIDER_LABEL = { google: "Google", slack: "Slack", "dev-login": "dev sig
 // Placeholder home. The real Home screen — RSVP, menu, your order, my sponsorships — lands in M3–M6.
 export default function Home() {
   return (
-    <main className="mx-auto flex w-full max-w-xl flex-1 flex-col gap-5 px-4 py-8">
+    <div className="mx-auto flex w-full max-w-xl flex-col gap-5">
       <PageTitle>This Thursday</PageTitle>
       <Suspense fallback={<div className="h-10" />}>
         <Greeting />
@@ -20,7 +19,7 @@ export default function Home() {
           Pancakes. Friends. Thursday. Menus, sponsors, RSVPs and orders are on their way.
         </p>
       </Card>
-    </main>
+    </div>
   );
 }
 
@@ -32,11 +31,6 @@ async function Greeting() {
     .slice(0, 2)
     .join("")
     .toUpperCase();
-
-  async function doSignOut() {
-    "use server";
-    await signOut({ redirectTo: "/signin" });
-  }
 
   return (
     <div className="flex items-center gap-3">
@@ -60,11 +54,6 @@ async function Greeting() {
           )}
         </p>
       </div>
-      <form action={doSignOut}>
-        <button type="submit" className="cursor-pointer text-sm font-semibold text-destructive">
-          Sign out
-        </button>
-      </form>
     </div>
   );
 }

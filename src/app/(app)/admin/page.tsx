@@ -6,12 +6,12 @@ import { requireOrganizer } from "@/lib/dal";
 // Placeholder for the organizer area; Thursdays (M2), Payments (M5) and Settings (M8) land here.
 export default function AdminPage() {
   return (
-    <main className="mx-auto w-full max-w-xl flex-1 px-4 py-8">
+    <div className="mx-auto w-full max-w-xl">
       <PageTitle>Organizer</PageTitle>
       <Suspense>
         <OrganizerHome />
       </Suspense>
-    </main>
+    </div>
   );
 }
 
@@ -21,9 +21,9 @@ async function OrganizerHome() {
     <Card>
       <p className="font-bold">Hi, {member.name}</p>
       <p className="text-muted-foreground">
-        Thursdays, Payments and Settings are coming in the next milestones.
+        Manage Thursdays from the menu. Payments and Settings are coming in later milestones.
       </p>
-      <Link href="/">← Home</Link>
+      <Link href="/admin/events">Thursdays →</Link>
     </Card>
   );
 }

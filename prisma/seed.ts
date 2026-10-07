@@ -4,7 +4,7 @@
 import "dotenv/config";
 import { PrismaNeon } from "@prisma/adapter-neon";
 import { PrismaClient, Role, RsvpAnswer } from "../src/generated/prisma/client";
-import { upcomingThursdays } from "../src/lib/thursdays";
+import { nyToday, upcomingThursdays } from "../src/lib/thursdays";
 
 if (process.env.ALLOW_SEED !== "true" || process.env.VERCEL_ENV === "production") {
   console.error(
@@ -107,7 +107,34 @@ async function main() {
     }
   }
 
-  console.log(`Seeded ${MEMBERS.length} members and ${thursdays.length} Thursdays.`);
+  // Like the design: the coming Thanksgiving is skipped. Only touches a week that is still a
+  // plain scheduled week, so a real organizer change is never overwritten.
+  const thanksgiving = nextThanksgiving(nyToday());
+  const tg = await db.breakfastEvent.upsert({
+    where: { date: thanksgiving },
+    update: {},
+    create: { date: thanksgiving },
+  });
+  if (tg.status === "SCHEDULED") {
+    await db.breakfastEvent.update({
+      where: { id: tg.id },
+      data: { status: "SKIPPED", skipReason: "Thanksgiving" },
+    });
+  }
+
+  console.log(
+    `Seeded ${MEMBERS.length} members, ${thursdays.length} Thursdays, and Thanksgiving (${thanksgiving.toISOString().slice(0, 10)}) skipped.`,
+  );
+}
+
+/** US Thanksgiving (4th Thursday of November) on or after `today`, as a @db.Date value. */
+function nextThanksgiving(today: Date): Date {
+  for (let year = today.getUTCFullYear(); ; year++) {
+    const nov1 = new Date(Date.UTC(year, 10, 1));
+    const firstThursday = 1 + ((4 - nov1.getUTCDay() + 7) % 7);
+    const date = new Date(Date.UTC(year, 10, firstThursday + 21));
+    if (date >= today) return date;
+  }
 }
 
 main()

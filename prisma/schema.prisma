@@ -52,21 +52,22 @@ model Member {
 }
 
 model BreakfastEvent {
-  id               String      @id @default(cuid())
-  date             DateTime    @unique @db.Date // the Thursday (calendar date in America/New_York)
-  status           EventStatus @default(SCHEDULED)
-  orderingEnabled  Boolean     @default(true) // false = RSVP only (e.g. bagels)
-  orderingOpenedAt DateTime?
-  orderingClosedAt DateTime?
-  rsvpDeadline     DateTime? // default: Wednesday 5pm ET before
-  skipReason       String? // e.g. "Thanksgiving"
-  sponsorsNeeded   Int         @default(1) // set with −/+ on the Schedule; hides "Sponsor this" when filled
-  notes            String?
-  reminderSentAt   DateTime? // idempotency for the Tuesday post
-  createdAt        DateTime    @default(now())
-  rsvps            Rsvp[]
-  orders           Order[]
-  menuItems        MenuItem[]
+  id                 String      @id @default(cuid())
+  date               DateTime    @unique @db.Date // the Thursday (calendar date in America/New_York)
+  status             EventStatus @default(SCHEDULED)
+  orderingEnabled    Boolean     @default(true) // false = RSVP only (e.g. bagels)
+  orderingOpenedAt   DateTime?
+  orderingClosedAt   DateTime?
+  orderingAutoClosed Boolean     @default(false) // closed by the midnight rollover, not by the organizer
+  rsvpDeadline       DateTime? // default: Wednesday 5pm ET before
+  skipReason         String? // e.g. "Thanksgiving"
+  sponsorsNeeded     Int         @default(1) // set with −/+ on the Schedule; hides "Sponsor this" when filled
+  notes              String?
+  reminderSentAt     DateTime? // idempotency for the Tuesday post
+  createdAt          DateTime    @default(now())
+  rsvps              Rsvp[]
+  orders             Order[]
+  menuItems          MenuItem[]
 }
 
 model MenuItem {

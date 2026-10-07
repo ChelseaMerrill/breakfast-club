@@ -46,3 +46,7 @@ next-env.d.ts
 # prisma generated client
 /src/generated/
 .neon
+
+# playwright
+/test-results/
+/playwright-report/

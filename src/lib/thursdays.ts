@@ -31,3 +31,13 @@ export function formatThursday(date: Date): string {
     day: "numeric",
   }).format(date);
 }
+
+/** "Thu, Oct 8" for a @db.Date value (Schedule and Thursdays cards). */
+export function formatShortThursday(date: Date): string {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: "UTC",
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  }).format(date);
+}
