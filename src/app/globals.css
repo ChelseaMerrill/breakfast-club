@@ -118,3 +118,15 @@
     @apply font-sans;
   }
 }
+
+/* Breakfast mascot stickers (src/components/mascots.tsx), positioned via custom properties. */
+.mascot {
+  position: absolute;
+  top: var(--top);
+  aspect-ratio: 1;
+  width: calc(min(130px, (100vw - 232px) * 0.09) * var(--scale));
+  background: var(--src) center / contain no-repeat;
+  transform: rotate(var(--rot));
+  filter: drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff)
+    drop-shadow(0 -3px 0 #fff) drop-shadow(4px 5px 0 rgb(59 35 20 / 22%));
+}
