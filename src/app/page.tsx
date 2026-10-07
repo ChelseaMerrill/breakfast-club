@@ -4,6 +4,8 @@ import { signOut } from "@/auth";
 import { Card, PageTitle } from "@/components/bc";
 import { getCurrentMember } from "@/lib/dal";
 
+const PROVIDER_LABEL = { google: "Google", slack: "Slack", "dev-login": "dev sign-in" } as const;
+
 // Placeholder home. The real Home screen — RSVP, menu, your order, my sponsorships — lands in M3–M6.
 export default function Home() {
   return (
@@ -49,7 +51,7 @@ async function Greeting() {
       <div className="flex-1">
         <p className="font-bold">Hi, {member.name.split(" ")[0]}</p>
         <p className="text-xs text-muted-foreground">
-          Signed in with Slack
+          Signed in with {PROVIDER_LABEL[member.provider]}
           {member.isOrganizer && (
             <>
               {" · "}

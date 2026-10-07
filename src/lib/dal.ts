@@ -10,13 +10,20 @@ export type CurrentMember = {
   name: string;
   image: string | null;
   isOrganizer: boolean;
+  provider: "google" | "slack" | "dev-login";
 };
 
 export async function getCurrentMember(): Promise<CurrentMember> {
   const session = await auth();
   if (!session?.user?.id) redirect("/signin");
-  const { id, name, image, role } = session.user;
-  return { id, name: name ?? "Member", image: image ?? null, isOrganizer: role === "ORGANIZER" };
+  const { id, name, image, role, provider } = session.user;
+  return {
+    id,
+    name: name ?? "Member",
+    image: image ?? null,
+    isOrganizer: role === "ORGANIZER",
+    provider,
+  };
 }
 
 export async function requireOrganizer(): Promise<CurrentMember> {

@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
 import { CHANNEL_RECHECK_MS, createChannelMembership, needsChannelRecheck } from "./slack-channel";
-import { isOrganizer } from "./organizers";
 
 const page = (members: string[], next_cursor = "") =>
   new Response(JSON.stringify({ ok: true, members, response_metadata: { next_cursor } }));
@@ -58,14 +57,5 @@ describe("needsChannelRecheck", () => {
     expect(needsChannelRecheck(undefined, 0)).toBe(true);
     expect(needsChannelRecheck(1000, 1000 + CHANNEL_RECHECK_MS - 1)).toBe(false);
     expect(needsChannelRecheck(1000, 1000 + CHANNEL_RECHECK_MS)).toBe(true);
-  });
-});
-
-describe("isOrganizer", () => {
-  it("matches only the listed Slack IDs", () => {
-    expect(isOrganizer("U_CHELSEA", " U_CHELSEA ,U_OTHER")).toBe(true);
-    expect(isOrganizer("U_JORDAN", "U_CHELSEA")).toBe(false);
-    expect(isOrganizer("U_CHELSEA", undefined)).toBe(false);
-    expect(isOrganizer("", ",")).toBe(false);
   });
 });

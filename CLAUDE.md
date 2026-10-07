@@ -35,7 +35,7 @@ to **#108state** every Tuesday at 10am ET, unless that Thursday is skipped (e.g.
 - **RSVP names and headcount are visible to everyone.**
 - RSVP deadline: **Wednesday 5pm ET**. Reminder: **Tuesday 10–11am ET** (Vercel Hobby crons are daily and hour-precise).
 - Only Chelsea is an organizer — no role toggle.
-- **Anyone in #108state** can sign in with Slack; membership is re-checked every few hours. A local-dev-only "Sign in as…" picker is used until the Slack app is approved.
+- **Sign-in is Google for now** (open-questions #41): verified `@jahnelgroup.com` accounts only; **cmerrill@jahnelgroup.com** is the organizer. Slack sign-in + the #108state gate are built but off until the Slack app exists. A local-dev-only "Sign in as…" picker lists seed members.
 - A Thursday finishes at **midnight NY** (ordering auto-closes then if Chelsea forgot).
 - Full decision log: `docs/open-questions.md`.
 
@@ -50,8 +50,9 @@ to **#108state** every Tuesday at 10am ET, unless that Thursday is skipped (e.g.
 - **Next.js (App Router) + TypeScript**, Tailwind CSS, shadcn/ui
 - **PostgreSQL on Neon** (via the Vercel Marketplace; branch `main` = live, `dev` = local + previews) via **Prisma 7** (`prisma.config.ts`, Neon driver adapter, client generated to `src/generated/prisma`)
 - **Tests:** Vitest (unit) from M0; Playwright (end-to-end) from M3
-- **Auth:** Sign in with Slack (OpenID Connect) via Auth.js v5, JWT sessions
-  - `src/auth.ts` — providers + callbacks (#108state gate, member upsert, 3-hour re-check, dev picker)
+- **Auth:** Auth.js v5, JWT sessions. Google OIDC now; Slack OIDC later (auto-enabled by its env vars)
+  - `src/auth.ts` — providers + callbacks (domain allow-list, member upsert, #108state gate + 3-hour re-check for Slack, dev picker)
+  - `src/lib/organizers.ts` — organizer and allowed-domain rules (env-driven)
   - `src/proxy.ts` — Next 16 "proxy" (formerly middleware): redirects signed-out users, real 403 on `/admin/*`
   - `src/lib/dal.ts` — `getCurrentMember()` / `requireOrganizer()`; call from Server Components (inside `<Suspense>`) and at the top of every server action
 - **Slack:** Slack app with a bot token (`chat:write`) posting to #108state
@@ -76,11 +77,15 @@ Next.js 16 has breaking changes from older versions — see `AGENTS.md` and read
 ```
 DATABASE_URL=
 AUTH_SECRET=
-AUTH_SLACK_ID=
+AUTH_GOOGLE_ID=
+AUTH_GOOGLE_SECRET=
+ORGANIZER_EMAILS=        # cmerrill@jahnelgroup.com
+ALLOWED_EMAIL_DOMAINS=   # jahnelgroup.com
+AUTH_SLACK_ID=           # Slack sign-in turns on once these two are set
 AUTH_SLACK_SECRET=
 SLACK_BOT_TOKEN=
 SLACK_CHANNEL_ID=        # channel ID for #108state
-ORGANIZER_SLACK_IDS=     # Chelsea's Slack user ID
+ORGANIZER_SLACK_IDS=     # Chelsea's Slack user ID (once Slack is enabled)
 CRON_SECRET=
 APP_URL=
 ```

@@ -22,13 +22,13 @@ for each item and chasing their $30, figuring out who's eating, and keeping trac
 | Role | Who | Can do |
 |---|---|---|
 | **Organizer** (admin) | Chelsea | Everything: Thursdays, menu items, sponsorships, mark paid, open/close ordering, advance orders on the kitchen view, walk-ins, settings |
-| **Member** | Any coworker who signs in with Slack | Sponsor menu items, RSVP, see who's coming, place/edit own order, see own order status, watch the kitchen view (read-only) |
+| **Member** | Any coworker who signs in (Google for now; Slack later) | Sponsor menu items, RSVP, see who's coming, place/edit own order, see own order status, watch the kitchen view (read-only) |
 | **Guest** | Clients or visitors with no account | Nothing in the app — the organizer adds their order by name |
 
 ## Features
 
 ### MVP
-1. **Sign in with Slack** — auto-creates a member profile (name, avatar, Slack ID).
+1. **Sign in** — with a Jahnel Group **Google** account for now; **Slack** once the Slack app exists. Auto-creates a member profile (name, photo, email / Slack ID).
 2. **Weekly schedule** — upcoming Thursdays with their menu item, sponsors, status and headcount. On the **Thursdays** admin page the organizer can **skip** a Thursday (holiday) or **restore** it, and toggle *Ordering enabled*.
 3. **Menu item per Thursday** — each Thursday has **one menu item** (e.g. Waffles). Chelsea types it inline on the Schedule page and sets how many **sponsors are needed** (default 1). There is no separate Menu page.
 4. **Sponsor a menu item** — any member clicks *Sponsor this* and signs up as **Just me**, **Me + someone** (pick a coworker), or **A team** (team name). Each sponsorship is **$30 to Chelsea**. *Sponsor this* disappears once the sponsors-needed count is filled. Chelsea can also add a sponsor by typing the name of someone who isn't a member.

@@ -1,15 +1,17 @@
 import type { DefaultSession } from "next-auth";
 import type { Role } from "@/generated/prisma/enums";
 
+type Provider = "google" | "slack" | "dev-login";
+
 declare module "next-auth" {
   interface User {
-    slackUserId?: string;
+    slackUserId?: string | null;
   }
   interface Session {
     user: {
       id: string;
-      slackUserId: string;
       role: Role;
+      provider: Provider;
     } & DefaultSession["user"];
   }
 }
@@ -18,9 +20,8 @@ declare module "next-auth" {
 declare module "@auth/core/jwt" {
   interface JWT {
     memberId: string;
-    slackUserId: string;
-    role: Role;
-    provider: "slack" | "dev-login";
+    provider: Provider;
+    slackUserId?: string | null;
     channelCheckedAt?: number;
   }
 }

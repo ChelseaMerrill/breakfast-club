@@ -1,13 +1,15 @@
 import { connection } from "next/server";
 import { Suspense } from "react";
-import { signIn } from "@/auth";
+import { signIn, slackEnabled } from "@/auth";
 import { PageTitle, PillButton } from "@/components/bc";
 import { db } from "@/lib/db";
 
 const ERRORS: Record<string, string> = {
+  NotAllowedDomain:
+    "Breakfast Club is for Jahnel Group accounts. Sign in with your @jahnelgroup.com Google account.",
   NotInChannel:
     "Breakfast Club is for members of #108state. Ask to be added to the channel, then try again.",
-  AccessDenied: "Slack didn't let you sign in. Ask Chelsea to add your breakfast order by name.",
+  AccessDenied: "That account can't sign in. Ask Chelsea to add your breakfast order by name.",
 };
 
 /** Only same-site paths, so the callback can't bounce people to another site. */
@@ -25,7 +27,7 @@ export default function SignInPage({ searchParams }: PageProps<"/signin">) {
           Pancakes. Friends. Thursday.
         </p>
         <p className="text-muted-foreground">
-          Menu, sponsors, RSVPs and orders for every Thursday. Sign in with your Jahnel Group Slack
+          Menu, sponsors, RSVPs and orders for every Thursday. Sign in with your Jahnel Group
           account.
         </p>
         <Suspense>
@@ -40,7 +42,12 @@ async function SignInOptions({ searchParams }: Pick<PageProps<"/signin">, "searc
   const params = await searchParams;
   const redirectTo = safeCallback(params.callbackUrl);
   const error = typeof params.error === "string" ? params.error : undefined;
-  const slackConfigured = Boolean(process.env.AUTH_SLACK_ID && process.env.AUTH_SLACK_SECRET);
+  const googleConfigured = Boolean(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET);
+
+  async function googleSignIn() {
+    "use server";
+    await signIn("google", { redirectTo });
+  }
 
   async function slackSignIn() {
     "use server";
@@ -57,15 +64,22 @@ async function SignInOptions({ searchParams }: Pick<PageProps<"/signin">, "searc
           {ERRORS[error] ?? "Something went wrong signing in. Please try again."}
         </p>
       )}
-      <form action={slackSignIn}>
-        <PillButton type="submit" disabled={!slackConfigured} className="bg-primary">
-          Sign in with Slack
+      <form action={googleSignIn}>
+        <PillButton type="submit" disabled={!googleConfigured}>
+          Sign in with Google
         </PillButton>
       </form>
+      {slackEnabled && (
+        <form action={slackSignIn}>
+          <PillButton type="submit" className="bg-secondary">
+            Sign in with Slack
+          </PillButton>
+        </form>
+      )}
       <p className="text-xs text-[var(--bc-brown-faint)]">
-        {slackConfigured
-          ? "Your name and avatar are pulled from Slack. No password needed."
-          : "Slack sign-in isn't set up yet (AUTH_SLACK_ID / AUTH_SLACK_SECRET)."}
+        {googleConfigured
+          ? "Use your @jahnelgroup.com account. Your name and photo come from it. No password needed."
+          : "Google sign-in isn't set up yet (AUTH_GOOGLE_ID / AUTH_GOOGLE_SECRET)."}
       </p>
       {process.env.NODE_ENV === "development" && <DevPicker redirectTo={redirectTo} />}
     </>
