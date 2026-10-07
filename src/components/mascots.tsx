@@ -45,7 +45,11 @@ function placements(key: string) {
 
 export function Mascots() {
   const pathname = usePathname();
-  const inBrowser = useSyncExternalStore(noop, () => true, () => false);
+  const inBrowser = useSyncExternalStore(
+    noop,
+    () => true,
+    () => false,
+  );
   if (!inBrowser) return null;
   return (
     <div
