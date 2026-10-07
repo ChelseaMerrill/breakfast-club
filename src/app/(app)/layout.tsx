@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { Mascots } from "@/components/mascots";
 import { NavLinks } from "@/components/nav-links";
 import { getCurrentMember } from "@/lib/dal";
 
@@ -9,7 +10,8 @@ export default function AppLayout({ children }: LayoutProps<"/">) {
       <Suspense fallback={<div className="hidden md:block md:w-[232px] md:flex-none" />}>
         <AppNav />
       </Suspense>
-      <main className="min-w-0 flex-1 px-4 pt-8 pb-20 md:px-[clamp(16px,calc((100vw-232px)*0.11),160px)]">
+      <main className="relative isolate min-w-0 flex-1 px-4 pt-8 pb-20 md:px-[clamp(16px,calc((100vw-232px)*0.11),160px)]">
+        <Mascots />
         {children}
       </main>
     </div>

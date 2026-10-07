@@ -41,7 +41,7 @@ to **#108state** every Tuesday at 10am ET, unless that Thursday is skipped (e.g.
 
 ## Design
 - `design/Breakfast Club.dc.html` is the clickable prototype of every screen. Open it in a browser and use the MEMBER / ORGANIZER toggle to see both roles.
-- Look: Fredoka (body) and Titan One (headings, uppercase) fonts; cream `#FFF4D6` background with `#F0D58C` dots; card `#FFFDF6`; dark-brown `#3B2314` text, 3px outlines and hard `4px 4px 0` shadows; red `#E8433F` accents; yellow `#FFC629` primary pill buttons; mint `#9BE3C4` secondary; cute SVG breakfast mascots (drawn inline in the prototype) scattered as page decoration; animated cooking scenes on the kitchen view while ordering is open.
+- Look: Fredoka (body) and Titan One (headings, uppercase) fonts; cream `#FFF4D6` background with `#F0D58C` dots; card `#FFFDF6`; dark-brown `#3B2314` text, 3px outlines and hard `4px 4px 0` shadows; red `#E8433F` accents; yellow `#FFC629` primary pill buttons; mint `#9BE3C4` secondary; cute SVG breakfast mascots scattered down the side margins (`src/components/mascots.tsx`, art generated from the prototype into `mascots-art.ts`; drawn client-side only, hidden on phones); animated cooking scenes on the kitchen view while ordering is open.
 - Kitchen columns: Placed `#6C7BFF`, Cooking `#FF9F1C`, Ready `#3DBE7A`, Picked up `#808080`.
 - Layout: a fixed left nav (232px) listing Home, Schedule, Place order, Kitchen view, and for the organizer Thursdays, Payments and Settings.
 - `design/_ds/` is the Jahnel Group design system the prototype draws on.
