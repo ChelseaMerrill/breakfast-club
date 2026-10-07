@@ -1,11 +1,13 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { Card, PageTitle } from "@/components/bc";
+import { ThisThursdayCard } from "@/components/home/this-thursday-card";
 import { getCurrentMember } from "@/lib/dal";
 
 const PROVIDER_LABEL = { google: "Google", slack: "Slack", "dev-login": "dev sign-in" } as const;
 
-// Placeholder home. The real Home screen — RSVP, menu, your order, my sponsorships — lands in M3–M6.
+// Home (design: "This Thursday"). Each card is its own component: RSVP & headcount (M3),
+// menu + my sponsorships (M4), your order (M6).
 export default function Home() {
   return (
     <div className="mx-auto flex w-full max-w-xl flex-col gap-5">
@@ -13,14 +15,22 @@ export default function Home() {
       <Suspense fallback={<div className="h-10" />}>
         <Greeting />
       </Suspense>
-      <Card>
-        <p className="font-heading text-3xl text-destructive uppercase">🥞 Breakfast Club</p>
-        <p className="text-muted-foreground">
-          Pancakes. Friends. Thursday. Menus, sponsors, RSVPs and orders are on their way.
-        </p>
-      </Card>
+      <Suspense
+        fallback={
+          <Card>
+            <p className="text-muted-foreground">Loading this Thursday…</p>
+          </Card>
+        }
+      >
+        <ThisThursday />
+      </Suspense>
     </div>
   );
+}
+
+async function ThisThursday() {
+  const member = await getCurrentMember();
+  return <ThisThursdayCard member={member} />;
 }
 
 async function Greeting() {
