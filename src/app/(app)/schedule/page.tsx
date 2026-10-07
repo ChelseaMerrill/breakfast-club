@@ -40,10 +40,11 @@ async function ScheduleList() {
   ]);
   const viewer = { isOrganizer: member.isOrganizer, coworkers };
   const today = nyToday();
-  return events.map((event) => (
+  return events.map((event, i) => (
     <ScheduleCard
       key={event.id}
       event={event}
+      isCurrent={i === 0}
       amountCents={sponsorshipAmountCents}
       viewer={viewer}
       today={today}
@@ -56,11 +57,13 @@ const roundButton =
 
 function ScheduleCard({
   event,
+  isCurrent,
   amountCents,
   viewer,
   today,
 }: {
   event: UpcomingEvent;
+  isCurrent: boolean;
   amountCents: number;
   viewer: Viewer;
   today: Date;
@@ -188,7 +191,12 @@ function ScheduleCard({
         </p>
         {!skipped && !cancelled && (
           <p className="mt-1 text-xs text-muted-foreground">
-            {event.orderingEnabled ? "Ordering on" : "RSVP only"}
+            {/* Design: this week shows the headcount; later weeks show ordering on/off. */}
+            {isCurrent
+              ? `${event.headcount} coming`
+              : event.orderingEnabled
+                ? "Ordering on"
+                : "RSVP only"}
           </p>
         )}
       </div>

@@ -17,6 +17,7 @@ const eslintConfig = defineConfig([
     // Generated / reference code:
     "src/generated/**",
     "design/**",
+    ".claude/worktrees/**", // parallel agent checkouts
   ]),
 ]);
 

@@ -41,3 +41,28 @@ export function formatShortThursday(date: Date): string {
     day: "numeric",
   }).format(date);
 }
+
+/** New York's UTC offset in minutes at an instant (e.g. -240 in summer, -300 in winter). */
+function nyOffsetMinutes(at: Date): number {
+  const name = new Intl.DateTimeFormat("en-US", {
+    timeZone: TIME_ZONE,
+    timeZoneName: "shortOffset",
+  })
+    .formatToParts(at)
+    .find((p) => p.type === "timeZoneName")!.value; // "GMT-4", "GMT-5", "GMT"
+  const m = /GMT([+-])(\d{1,2})(?::(\d{2}))?/.exec(name);
+  if (!m) return 0;
+  const minutes = Number(m[2]) * 60 + Number(m[3] ?? 0);
+  return m[1] === "-" ? -minutes : minutes;
+}
+
+/** The instant of a New York wall-clock time ("17:00") on a calendar date (a @db.Date value). */
+export function nyWallTimeToUtc(date: Date, hhmm: string): Date {
+  const [h, min] = hhmm.split(":").map(Number);
+  const wall = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), h, min);
+  let utc = wall - nyOffsetMinutes(new Date(wall)) * 60_000;
+  // Near a DST change the offset at the real instant can differ from the first guess.
+  const corrected = wall - nyOffsetMinutes(new Date(utc)) * 60_000;
+  if (corrected !== utc) utc = corrected;
+  return new Date(utc);
+}

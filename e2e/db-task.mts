@@ -104,6 +104,46 @@ async function run(): Promise<unknown> {
       });
       return e && { status: e.status, item: e.menuItems[0]?.name ?? null };
     }
+    case "home-event": {
+      // The Thursday Home shows: first one from today (New York) onward.
+      const e = await db.breakfastEvent.findFirstOrThrow({
+        where: { date: { gte: nyToday() } },
+        orderBy: { date: "asc" },
+        select: { id: true, date: true, status: true, skipReason: true, rsvpDeadline: true },
+      });
+      return {
+        ...e,
+        date: e.date.toISOString(),
+        rsvpDeadline: e.rsvpDeadline?.toISOString() ?? null,
+      };
+    }
+    case "set-event": {
+      // Only the fields RSVP tests need to pin down.
+      const [id, json] = args;
+      const v = JSON.parse(json) as {
+        rsvpDeadline?: string | null;
+        status?: "SCHEDULED" | "SKIPPED";
+        skipReason?: string | null;
+      };
+      await db.breakfastEvent.update({
+        where: { id },
+        data: {
+          ...("rsvpDeadline" in v && {
+            rsvpDeadline: v.rsvpDeadline ? new Date(v.rsvpDeadline) : null,
+          }),
+          ...(v.status && { status: v.status }),
+          ...("skipReason" in v && { skipReason: v.skipReason }),
+        },
+      });
+      return { ok: true };
+    }
+    case "clear-rsvps": {
+      const [eventId, ...names] = args;
+      const { count } = await db.rsvp.deleteMany({
+        where: { eventId, member: { name: { in: names }, slackUserId: { startsWith: "SEED_" } } },
+      });
+      return { removed: count };
+    }
     default:
       throw new Error(`unknown task ${task}`);
   }
