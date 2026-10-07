@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Titan+One&display=swap">
+<style>body{margin:0;background:#FFF4D6}a{color:#E8433F;font-weight:600}a:hover{color:#3B2314}input,select,textarea{font-family:'Libre Franklin',sans-serif}@keyframes stir{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(14deg)}}@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}@keyframes pourFlow{0%,100%{transform:scaleY(.15)}50%{transform:scaleY(1)}}@keyframes spread{0%{transform:scale(.05)}80%,100%{transform:scale(1)}}@keyframes flipUp{0%{transform:translateY(0) rotate(0)}45%{transform:translateY(-62px) rotate(180deg)}90%,100%{transform:translateY(0) rotate(360deg)}}@keyframes steam{0%{transform:translateY(10px);opacity:0}30%{opacity:.9}100%{transform:translateY(-22px);opacity:0}}@keyframes drip{0%{transform:translateY(0);opacity:1}100%{transform:translateY(22px);opacity:0}}@keyframes belt{from{background-position:0 0}to{background-position:28px 0}}</style>
+</helmet>
+<div style="display:flex;min-height:100vh;background:#FFF4D6;background-image:radial-gradient(#F0D58C 2px,transparent 2px);background-size:22px 22px;color:#3B2314;font-family:'Fredoka',sans-serif;font-weight:500">
+<nav style="width:232px;flex:none;background:#FFFDF6;border-right:4px solid #3B2314;padding:20px 0;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh;box-sizing:border-box;overflow:auto">
+<div style="padding:0 20px 14px"><div style="font-family:'Titan One',cursive;font-size:24px;text-transform:uppercase;line-height:1">🥞 Breakfast Club</div><div style="font-size:12px;color:#7A5C48;margin-top:4px">Thursdays at 108 State</div></div>
+<div style="margin:0 16px 12px;display:flex;background:#FFF4D6;border-radius:999px;padding:3px">
+<div onClick="{{ setMember }}" style="flex:1;text-align:center;padding:7px 0;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;background:{{ memberBg }};color:{{ memberFg }}">MEMBER</div>
+<div onClick="{{ setOrganizer }}" style="flex:1;text-align:center;padding:7px 0;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;background:{{ orgBg }};color:{{ orgFg }}">ORGANIZER</div></div>
+<sc-for list="{{ navItems }}" as="n" hint-placeholder-count="8">
+<div onClick="{{ n.go }}" style="padding:9px 20px;cursor:pointer;font-size:14px;font-weight:{{ n.weight }};color:{{ n.color }};border-left:3px solid {{ n.bar }};background:{{ n.bg }}"><span style="{{ n.headStyle }}">{{ n.label }}</span><span style="display:block;font-size:11px;color:#A8876F;font-weight:300">{{ n.route }}</span></div>
+</sc-for>
+</nav>
+<main style="flex:1;min-width:0;padding:32px clamp(16px, calc((100vw - 232px) * .11), 160px) 80px;box-sizing:border-box;position:relative;isolation:isolate">
+<sc-if value="{{ stickersReady }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:-1"><sc-for list="{{ decor }}" as="d" hint-placeholder-count="0"><div style="position:absolute;top:{{ d.top }};left:{{ d.left }};right:{{ d.right }};width:calc(min(130px, (100vw - 232px) * .09) * {{ d.scale }});aspect-ratio:1;background:url({{ d.src }}) center/contain no-repeat;transform:rotate({{ d.rot }}deg);filter:drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff) drop-shadow(4px 5px 0 rgba(59,35,20,.22))"></div></sc-for></div></sc-if>
+<div style="display:flex;align-items:center;gap:20px;margin-bottom:28px">
+<div style="flex:1;height:16px;background:#9BE3C4;border:3px solid #3B2314;border-radius:10px"></div>
+<h1 style="margin:0;font-family:'Titan One',cursive;font-weight:400;text-transform:uppercase;font-size:36px;letter-spacing:.5px">{{ title }}</h1>
+<div style="flex:1;height:16px;background:#9BE3C4;border:3px solid #3B2314;border-radius:10px"></div></div>
+
+<sc-if value="{{ isSignin }}" hint-placeholder-val="{{ false }}">
+<div style="max-width:420px;margin:40px auto;text-align:center;display:flex;flex-direction:column;gap:20px;align-items:center">
+
+
+<div style="font-family:'Titan One',cursive;font-size:34px;text-transform:uppercase">Pancakes. Friends. Thursday.</div>
+<div style="color:#7A5C48">Menu, sponsors, RSVPs and orders for every Thursday. Sign in with your Jahnel Group Slack account.</div>
+<div onClick="{{ doSignin }}" style="cursor:pointer;background:#FFC629;color:#3B2314;font-weight:700;padding:14px 28px;border-radius:999px;border:3px solid #3B2314;box-shadow:3px 3px 0 #3B2314;text-transform:uppercase;font-size:15px">Sign in with Slack</div>
+<div style="font-size:12px;color:#A8876F">Your name and avatar are pulled from Slack. No password needed.</div></div>
+</sc-if>
+
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ false }}">
+<div style="max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:40px;border-radius:50%;background:#9BE3C4;display:flex;align-items:center;justify-content:center;font-weight:700">JR</div><div><div style="font-weight:700">Hi, Jordan</div><div style="font-size:12px;color:#7A5C48">Signed in with Slack</div></div></div>
+<div style="background:#FFFDF6;border:3px solid #3B2314;border-radius:18px;box-shadow:4px 4px 0 #3B2314;padding:22px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-family:'Titan One',cursive;font-size:30px;text-transform:uppercase;color:#E8433F">Thursday, Oct 8</div><div style="font-size:12px;color:#7A5C48">RSVP by Wed 5pm ET</div></div>
+<div style="display:flex;gap:12px;align-items:center"><div style="font-family:'Titan One',cursive;font-size:56px;line-height:1">{{ headcount }}</div><div style="font-size:14px;color:#7A5C48">coming so far<br>{{ yesCount }} RSVP yes, {{ walkinCount }} walk-in</div></div>
+<div style="display:flex;gap:10px">
+<div onClick="{{ rsvpYes }}" style="flex:1;text-align:center;cursor:pointer;padding:13px;border-radius:999px;border:3px solid #3B2314;box-shadow:3px 3px 0 #3B2314;font-weight:700;text-transform:uppercase;font-size:14px;background:{{ yesBg }};color:{{ yesFg }};border:2px solid #3B2314">I'm in</div>
+<div onClick="{{ rsvpNo }}" style="flex:1;text-align:center;cursor:pointer;padding:13px;border-radius:999px;border:3px solid #3B2314;box-shadow:3px 3px 0 #3B2314;font-weight:700;text-transform:uppercase;font-size:14px;background:{{ noBg }};color:{{ noFg }};border:2px solid #3B2314">Not this week</div></div>
+<div style="font-size:13px"><span style="color:#7A5C48">In:</span> {{ yesNames }}<br><span style="color:#7A5C48">Out:</span> {{ noNames }}</div></div>
+
+<div style="background:#FFFDF6;border:3px solid #3B2314;border-radius:18px;box-shadow:4px 4px 0 #3B2314;padding:22px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-weight:700;font-size:18px">Menu</div><a onClick="{{ goMenu }}" style="cursor:pointer;font-size:13px">Sponsor an item →</a></div>
+<sc-for list="{{ menuRows }}" as="m" hint-placeholder-count="4"><div style="display:flex;justify-content:space-between;gap:12px;font-size:14px;border-top:1px solid rgba(59,35,20,.18);padding-top:10px"><span style="font-weight:700">{{ m.name }}</span><span style="color:{{ m.color }};text-align:right">{{ m.sponsorText }}</span></div></sc-for></div>
+
+<div style="background:#FFFDF6;border:3px solid #3B2314;border-radius:18px;box-shadow:4px 4px 0 #3B2314;padding:22px;display:flex;flex-direction:column;gap:12px">
+<div style="font-weight:700;font-size:18px">Your order</div>
+<sc-if value="{{ hasMyOrder }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div style="font-size:14px">{{ myOrderSummary }}</div><div style="padding:6px 14px;border-radius:999px;font-size:12px;font-weight:700;text-transform:uppercase;background:{{ myStatusBg }};color:{{ myStatusFg }}">{{ myStatusLabel }}</div></div></sc-if>
+<sc-if value="{{ showPlaceOrder }}" hint-placeholder-val="{{ false }}"><div onClick="{{ goOrder }}" style="cursor:pointer;text-align:center;background:#FFC629;color:#3B2314;font-weight:700;padding:13px;border-radius:999px;border:3px solid #3B2314;box-shadow:3px 3px 0 #3B2314;text-transform:uppercase;font-size:14px">Place your order</div></sc-if>
+<sc-if value="{{ showOrderingClosedMsg }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;color:#7A5C48">{{ closedMsg }}</div></sc-if></div>
+
+<div style="background:#FFFDF6;border:3px solid #3B2314;border-radius:18px;box-shadow:4px 4px 0 #3B2314;padding:22px;display:flex;flex-direction:column;gap:10px">
+<div style="font-weight:700;font-size:18px">My sponsorships</div>
+<sc-if value="{{ noMine }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;color:#7A5C48">None yet. Pick an item on the Menu tab.</div></sc-if>
+<sc-for list="{{ mine }}" as="s" hint-placeholder-count="1"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;border-top:1px solid rgba(59,35,20,.18);padding-top:10px"><span>{{ s.item }} · {{ s.who }}</span><span style="display:flex;gap:10px;align-items:center"><span style="font-weight:700;color:{{ s.color }}">{{ s.status }}</span><a onClick="{{ s.remove }}" style="cursor:pointer;font-size:12px;display:{{ s.removeDisplay }}">Remove</a></span></div></sc-for></div>
+</div></sc-if>
+
+<sc-if value="{{ isSchedule }}" hint-placeholder-val="{{ false }}">
+<div style="max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{ events }}" as="e" hint-placeholder-count="6"><div style="background:#FFFDF6;border:3px solid #3B2314;border-radius:18px;box-shadow:4px 4px 0 #3B2314;padding:18px 22px;display:flex;justify-content:space-between;gap:16px;align-items:center;opacity:{{ e.opacity }}">
+<div><div style="font-family:'Titan One',cursive;font-size:24px;text-transform:uppercase;color:#E8433F">{{ e.date }}</div><div style="font-size:18px;font-weight:700;margin-top:4px">{{ e.menu }}</div><div style="font-size:14px;color:{{ e.sponsorColor }};margin-top:2px">{{ e.sponsorText }}</div>
+<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px">
+<sc-if value="{{ e.canSponsor }}" hint-placeholder-val="{{ false }}"><div onClick="{{ e.sponsor }}" style="cursor:pointer;background:#FFC629;color:#3B2314;font-weight:700;font-size:13px;padding:9px 18px;border-radius:999px;border:3px solid #3B2314;box-shadow:3px 3px 0 #3B2314;text-transform:uppercase">Sponsor this</div></sc-if>
+<sc-if value="{{ isOrganizer }}" hint-placeholder-val="{{ false }}"><input value="{{ e.itemValue }}" onInput="{{ e.setItem }}" placeholder="Menu item" style="background:#fff;border:3px solid #3B2314;color:#3B2314;padding:8px 12px;border-radius:14px;font-size:14px;width:180px">
+<div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600"><span onClick="{{ e.needMinus }}" style="cursor:pointer;width:28px;height:28px;border:2px solid #3B2314;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;font-weight:700">−</span><span onClick="{{ e.needPlus }}" style="cursor:pointer;width:28px;height:28px;border:2px solid #3B2314;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;font-weight:700">+</span>{{ e.needValue }}</div>
+<div style="display:flex;gap:6px;width:100%"><input value="{{ e.addNameValue }}" onInput="{{ e.setAddName }}" placeholder="Add sponsor by name (non-member)" style="background:#fff;border:3px solid #3B2314;color:#3B2314;padding:8px 12px;border-radius:14px;font-size:14px;flex:1;min-width:0"><span onClick="{{ e.addSponsor }}" style="cursor:pointer;background:#9BE3C4;border:3px solid #3B2314;border-radius:999px;padding:8px 16px;font-size:13px;font-weight:700;text-transform:uppercase">Add</span></div></sc-if></div></div>
+<div style="text-align:right;flex:none"><div style="font-size:12px;font-weight:700;text-transform:uppercase;color:{{ e.statusColor }}">{{ e.statusLabel }}</div><div style="font-size:12px;color:#7A5C48;margin-top:4px">{{ e.count }}</div></div></div></sc-for></div></sc-if>
+
+<sc-if value="{{ isOrder }}" hint-placeholder-val="{{ false }}">
+<div style="max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:16px">
+<div style="font-size:14px;color:#7A5C48">Thursday, Oct 8. Ordering is open. You can edit your order until it moves to Cooking.</div>
+<sc-for list="{{ orderChoices }}" as="o" hint-placeholder-count="3"><div style="background:#FFFDF6;border:3px solid #3B2314;border-radius:18px;box-shadow:4px 4px 0 #3B2314;padding:16px 20px;display:flex;flex-direction:column;gap:10px;border:3px solid {{ o.border }}">
+<div onClick="{{ o.toggle }}" style="display:flex;justify-content:space-between;cursor:pointer"><span style="font-weight:700;font-size:16px">{{ o.name }}</span><span style="color:#E8433F;font-weight:700">{{ o.mark }}</span></div>
+<sc-if value="{{ o.hasOpts }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ o.opts }}" as="op" hint-placeholder-count="3"><div onClick="{{ op.pick }}" style="cursor:pointer;padding:7px 14px;border-radius:999px;font-size:13px;background:{{ op.bg }};color:{{ op.fg }};border:2px solid #3B2314">{{ op.label }}</div></sc-for></div></sc-if></div></sc-for>
+<textarea value="{{ orderNotes }}" onInput="{{ setNotes }}" placeholder="Notes (allergies, no cheese...)" rows="2" style="background:#fff;border:3px solid #3B2314;color:#3B2314;padding:12px;border-radius:14px;font-size:14px"></textarea>
+<div onClick="{{ submitOrder }}" style="cursor:pointer;text-align:center;background:#FFC629;color:#3B2314;font-weight:700;padding:14px;border-radius:999px;border:3px solid #3B2314;box-shadow:3px 3px 0 #3B2314;text-transform:uppercase;opacity:{{ submitOpacity }}">Submit order</div></div></sc-if>
+
+<sc-if value="{{ isAdminEvents }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="font-size:13px;color:#7A5C48">Next 8 Thursdays are created automatically. Skipped and cancelled weeks get no Tuesday reminder.</div>
+<sc-for list="{{ events }}" as="e" hint-placeholder-count="6"><div style="background:#FFFDF6;border:3px solid #3B2314;border-radius:18px;box-shadow:4px 4px 0 #3B2314;padding:16px 22px;display:grid;grid-template-columns:1.2fr 1fr auto;gap:16px;align-items:center">
+<div><div style="font-family:'Titan One',cursive;font-size:22px;text-transform:uppercase">{{ e.date }}</div><div style="font-size:16px;font-weight:700;margin:2px 0">{{ e.menu }}</div><div style="font-size:12px;font-weight:700;text-transform:uppercase;color:{{ e.statusColor }}">{{ e.statusLabel }}</div></div>
+<div onClick="{{ e.toggleOrdering }}" style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px"><span style="width:38px;height:20px;border-radius:10px;background:{{ e.ordBg }};position:relative;display:inline-block"><span style="position:absolute;top:2px;left:{{ e.ordLeft }};width:16px;height:16px;border-radius:50%;background:#fff"></span></span>Ordering enabled</div>
+<div style="display:flex;gap:8px;font-size:12px;font-weight:700;text-transform:uppercase"><span onClick="{{ e.skip }}" style="cursor:pointer;padding:8px 14px;border:2px solid #3B2314;color:#7A5C48;border-radius:20px">{{ e.skipLabel }}</span></div></div></sc-for></div></sc-if>
+
+<sc-if value="{{ isPayments }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center">
+<div style="background:#FFFDF6;border:3px solid #3B2314;border-radius:18px;box-shadow:4px 4px 0 #3B2314;padding:16px 24px"><div style="font-size:12px;color:#7A5C48">COLLECTED</div><div style="font-family:'Titan One',cursive;font-size:34px;color:#E8433F">{{ collected }}</div></div>
+<div style="background:#FFFDF6;border:3px solid #3B2314;border-radius:18px;box-shadow:4px 4px 0 #3B2314;padding:16px 24px"><div style="font-size:12px;color:#7A5C48">OUTSTANDING</div><div style="font-family:'Titan One',cursive;font-size:34px">{{ outstanding }}</div></div>
+<div style="flex:1"></div>
+<div style="display:flex;gap:6px"><sc-for list="{{ filters }}" as="f" hint-placeholder-count="3"><div onClick="{{ f.set }}" style="cursor:pointer;padding:8px 16px;border-radius:999px;font-size:13px;font-weight:700;background:{{ f.bg }};color:{{ f.fg }};border:2px solid #3B2314">{{ f.label }}</div></sc-for></div></div>
+<div style="background:#FFFDF6;border:3px solid #3B2314;border-radius:18px;box-shadow:4px 4px 0 #3B2314;overflow:hidden">
+<div style="display:grid;grid-template-columns:1fr 1.2fr 1.4fr 80px 70px 70px;gap:12px;padding:12px 22px;font-size:11px;font-weight:700;color:#7A5C48;text-transform:uppercase"><span>Thursday</span><span>Item</span><span>Sponsor</span><span>Amount</span><span>Paid</span><span></span></div>
+<sc-for list="{{ payRows }}" as="p" hint-placeholder-count="4"><div style="display:grid;grid-template-columns:1fr 1.2fr 1.4fr 80px 70px 70px;gap:12px;padding:14px 22px;border-top:1px solid rgba(59,35,20,.18);font-size:14px;align-items:center"><span>{{ p.date }}</span><span>{{ p.item }}</span><span>{{ p.who }}</span><span>$30</span>
+<span onClick="{{ p.toggle }}" style="cursor:pointer;width:22px;height:22px;border:2px solid #3B2314;border-radius:14px;display:flex;align-items:center;justify-content:center;background:{{ p.bg }};color:#3B2314;font-weight:900">{{ p.mark }}</span>
+<a onClick="{{ p.remove }}" style="cursor:pointer;font-size:12px">Remove</a></div></sc-for>
+<sc-if value="{{ noPay }}" hint-placeholder-val="{{ false }}"><div style="padding:22px;color:#7A5C48;font-size:14px;border-top:1px solid rgba(59,35,20,.18)">Nothing here.</div></sc-if></div>
+<div style="font-size:12px;color:#A8876F">Payment status is visible only to you and the sponsors. It is never posted in Slack.</div></div></sc-if>
+
+<sc-if value="{{ isKitchen }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+<sc-if value="{{ isOrganizer }}" hint-placeholder-val="{{ false }}"><div onClick="{{ toggleOrdering }}" style="cursor:pointer;background:{{ ordBtnBg }};color:#3B2314;font-weight:700;padding:14px 28px;border-radius:999px;border:3px solid #3B2314;box-shadow:3px 3px 0 #3B2314;text-transform:uppercase">{{ ordBtnLabel }}</div></sc-if>
+<div style="font-size:14px;color:{{ ordStateColor }};font-weight:700;text-transform:uppercase">{{ ordState }}</div><div style="flex:1"></div>
+<div style="font-size:13px;color:#7A5C48">{{ orderCount }} orders · {{ headcount }} people</div></div>
+<sc-if value="{{ isOrganizer }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:#FFFDF6;border:3px solid #3B2314;border-radius:18px;box-shadow:4px 4px 0 #3B2314;padding:12px 16px"><span style="font-weight:700;font-size:13px;text-transform:uppercase">+ Walk-in</span>
+<input value="{{ walkName }}" onInput="{{ setWalkName }}" placeholder="Member or guest name, e.g. Client – Acme" style="flex:1;min-width:200px;background:#fff;border:3px solid #3B2314;color:#3B2314;padding:10px;border-radius:14px;font-size:14px">
+<select value="{{ walkItem }}" onChange="{{ setWalkItem }}" style="background:#fff;border:3px solid #3B2314;color:#3B2314;padding:10px;border-radius:14px"><sc-for list="{{ itemNames }}" as="i" hint-placeholder-count="4"><option value="{{ i }}">{{ i }}</option></sc-for></select>
+<div onClick="{{ addWalkin }}" style="cursor:pointer;background:#9BE3C4;padding:10px 20px;border-radius:999px;border:3px solid #3B2314;box-shadow:3px 3px 0 #3B2314;font-weight:700;font-size:13px;text-transform:uppercase">Add</div></div></sc-if>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px">
+<sc-for list="{{ cols }}" as="c" hint-placeholder-count="4"><div style="background:#FFFDF6;border:3px solid #3B2314;border-radius:18px;box-shadow:4px 4px 0 #3B2314;padding:14px;min-height:260px;display:flex;flex-direction:column;gap:10px">
+<div style="font-family:'Titan One',cursive;text-transform:uppercase;font-size:20px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><span>{{ c.label }}</span><span style="color:#E8433F">{{ c.n }}</span></div>
+<sc-for list="{{ c.orders }}" as="o" hint-placeholder-count="2"><div onClick="{{ o.advance }}" style="cursor:{{ c.cursor }};background:#fff;border:2px solid #3B2314;border-left:8px solid {{ c.color }};border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:4px">
+<div style="font-weight:700;font-size:15px">{{ o.name }} <span style="font-size:10px;color:#E8433F">{{ o.tag }}</span></div><div style="font-size:13px;color:#7A5C48">{{ o.summary }}</div>
+<div style="display:flex;justify-content:space-between;gap:4px 8px;flex-wrap:wrap;font-size:11px;color:#E8433F;text-transform:uppercase;font-weight:700"><span>{{ o.next }}</span><span onClick="{{ o.back }}" style="color:#7A5C48">{{ o.backLabel }}</span></div></div></sc-for></div></sc-for></div>
+<sc-if value="{{ orderingOpen }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:0;margin-top:56px"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px"><div style="opacity:{{ s0.opacity }};display:flex;justify-content:center;transition:opacity .4s"><svg viewBox="0 0 200 142" style="width:100%;max-width:240px;height:auto;display:block"><ellipse cx="100" cy="134" rx="62" ry="8" fill="#3B2314" opacity=".15"/><g style="animation:bob 1.2s ease-in-out infinite;animation-play-state:{{ s0.play }}"><path d="M38 66 h124 q0 58 -62 58 q-62 0 -62 -58z" fill="#9BE3C4" stroke="#3B2314" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="100" cy="66" rx="62" ry="11" fill="#FFE9A8" stroke="#3B2314" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M74 66 q13 -6 26 0 t26 0" stroke="#F2BC78" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="91" cy="96" r="3" fill="#3B2314"/><circle cx="109" cy="96" r="3" fill="#3B2314"/><ellipse cx="84" cy="102" rx="5" ry="3" fill="#FF9AA2"/><ellipse cx="116" cy="102" rx="5" ry="3" fill="#FF9AA2"/><path d="M96 101 q4 4 8 0" stroke="#3B2314" stroke-width="2.4" fill="none" stroke-linecap="round"/><g style="transform-box:view-box;transform-origin:100px 66px;animation:stir 1.1s ease-in-out infinite;animation-play-state:{{ s0.play }}"><rect x="96" y="8" width="8" height="58" rx="4" fill="#E9A862" stroke="#3B2314" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="100" cy="70" rx="13" ry="7" fill="#C86B2C" stroke="#3B2314" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></g></g><circle cx="150" cy="42" r="4" fill="#FFE9A8" stroke="#3B2314" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" style="animation:drip 1.4s ease-in infinite;animation-play-state:{{ s0.play }}"/><circle cx="52" cy="48" r="3" fill="#FFE9A8" stroke="#3B2314" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" style="animation:drip 1.4s ease-in .7s infinite;animation-play-state:{{ s0.play }}"/></svg></div><div style="opacity:{{ s1.opacity }};display:flex;justify-content:center;transition:opacity .4s"><svg viewBox="0 0 200 142" style="width:100%;max-width:240px;height:auto;display:block"><ellipse cx="100" cy="122" rx="66" ry="15" fill="#6B6F7A" stroke="#3B2314" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="100" cy="119" rx="54" ry="10" fill="#4A4E58"/><rect x="160" y="114" width="34" height="10" rx="5" fill="#6B6F7A" stroke="#3B2314" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="100" cy="119" rx="36" ry="7" fill="#FFE9A8" stroke="#3B2314" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" style="transform-box:fill-box;transform-origin:center;animation:spread 2.5s ease-out infinite;animation-play-state:{{ s1.play }}"/><rect x="109" y="52" width="7" height="64" rx="3" fill="#FFE9A8" stroke="#3B2314" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" style="transform-box:fill-box;transform-origin:top;animation:pourFlow 2.5s ease-in-out infinite;animation-play-state:{{ s1.play }}"/><g transform="rotate(28 100 40)"><rect x="58" y="16" width="46" height="46" rx="9" fill="#B9D7FF" stroke="#3B2314" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M58 28 q-16 2 -10 20 q4 4 10 2" fill="none" stroke="#3B2314" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="76" cy="38" r="2.6" fill="#3B2314"/><circle cx="90" cy="38" r="2.6" fill="#3B2314"/><path d="M79 44 q4 4 8 0" stroke="#3B2314" stroke-width="2.4" fill="none" stroke-linecap="round"/></g></svg></div><div style="opacity:{{ s2.opacity }};display:flex;justify-content:center;transition:opacity .4s"><svg viewBox="0 0 200 142" style="width:100%;max-width:240px;height:auto;display:block"><ellipse cx="100" cy="126" rx="66" ry="15" fill="#6B6F7A" stroke="#3B2314" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="100" cy="123" rx="54" ry="10" fill="#4A4E58"/><rect x="160" y="118" width="34" height="10" rx="5" fill="#6B6F7A" stroke="#3B2314" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="100" cy="112" rx="38" ry="10" fill="#F2BC78" stroke="#3B2314" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" style="transform-box:fill-box;transform-origin:center;animation:flipUp 2s ease-in-out infinite;animation-play-state:{{ s2.play }}"/><path d="M52 52 l-8 -6 M148 52 l8 -6 M100 22 v-10" stroke="#FFC629" stroke-width="4" stroke-linecap="round" style="animation:bob .6s ease-in-out infinite;animation-play-state:{{ s2.play }}"/></svg></div><div style="opacity:{{ s3.opacity }};display:flex;justify-content:center;transition:opacity .4s"><svg viewBox="0 0 200 142" style="width:100%;max-width:240px;height:auto;display:block"><ellipse cx="100" cy="128" rx="68" ry="13" fill="#fff" stroke="#3B2314" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M48 112 v-12 q52 16 104 0 v12 q-52 16 -104 0z" fill="#E9A862" stroke="#3B2314" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M50 98 v-12 q50 16 100 0 v12 q-50 16 -100 0z" fill="#F2BC78" stroke="#3B2314" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M52 84 v-10 q48 -14 96 0 v10 q-48 14 -96 0z" fill="#F2BC78" stroke="#3B2314" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M52 74 q48 -14 96 0 q-2 8 -8 6 q-3 10 -8 2 q-4 8 -10 0 q-6 8 -10 0 q-6 6 -10 0 q-8 4 -24 -8z" fill="#C86B2C" stroke="#3B2314" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><rect x="88" y="62" width="22" height="13" rx="3" fill="#FFE27A" stroke="#3B2314" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="91" cy="92" r="3" fill="#3B2314"/><circle cx="109" cy="92" r="3" fill="#3B2314"/><ellipse cx="84" cy="98" rx="5" ry="3" fill="#FF9AA2"/><ellipse cx="116" cy="98" rx="5" ry="3" fill="#FF9AA2"/><path d="M96 97 q4 4 8 0" stroke="#3B2314" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M82 64 q-6 -12 0 -22 q6 -10 0 -20" stroke="#7A5C48" stroke-width="3" fill="none" stroke-linecap="round" style="animation:steam 2s ease-out infinite;animation-play-state:{{ s3.play }}"/><path d="M100 54 q-6 -12 0 -22 q6 -10 0 -20" stroke="#7A5C48" stroke-width="3" fill="none" stroke-linecap="round" style="animation:steam 2s ease-out .6s infinite;animation-play-state:{{ s3.play }}"/><path d="M118 64 q-6 -12 0 -22 q6 -10 0 -20" stroke="#7A5C48" stroke-width="3" fill="none" stroke-linecap="round" style="animation:steam 2s ease-out 1.2s infinite;animation-play-state:{{ s3.play }}"/></svg></div></div><div style="height:16px;border:3px solid #3B2314;border-radius:10px;background:repeating-linear-gradient(90deg,#3B2314 0 14px,#6B4A36 14px 28px);animation:belt .8s linear infinite"></div></div></sc-if><div style="font-size:12px;color:#A8876F">{{ kitchenHint }}</div></div></sc-if>
+
+<sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;max-width:1000px">
+<div style="background:#FFFDF6;border:3px solid #3B2314;border-radius:18px;box-shadow:4px 4px 0 #3B2314;padding:22px;display:flex;flex-direction:column;gap:14px">
+<label style="font-size:13px;display:flex;flex-direction:column;gap:6px">Sponsorship amount<input value="$30" style="background:#fff;border:3px solid #3B2314;color:#3B2314;padding:10px;border-radius:14px;font-size:15px"></label>
+<label style="font-size:13px;display:flex;flex-direction:column;gap:6px">RSVP deadline<input value="Wednesday 5:00 pm ET" style="background:#fff;border:3px solid #3B2314;color:#3B2314;padding:10px;border-radius:14px;font-size:15px"></label>
+<label style="font-size:13px;display:flex;flex-direction:column;gap:6px">Reminder day and time<input value="Tuesday 10:00 am ET" style="background:#fff;border:3px solid #3B2314;color:#3B2314;padding:10px;border-radius:14px;font-size:15px"></label>
+<label style="font-size:13px;display:flex;flex-direction:column;gap:6px">Slack channel<input value="#108state" style="background:#fff;border:3px solid #3B2314;color:#3B2314;padding:10px;border-radius:14px;font-size:15px"></label>
+<div onClick="{{ toggleReminders }}" style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px"><span style="width:38px;height:20px;border-radius:10px;background:{{ remBg }};position:relative;display:inline-block"><span style="position:absolute;top:2px;left:{{ remLeft }};width:16px;height:16px;border-radius:50%;background:#fff"></span></span>Weekly reminders on</div>
+<div onClick="{{ testReminder }}" style="cursor:pointer;align-self:flex-start;background:#FFC629;color:#3B2314;font-weight:700;padding:11px 24px;border-radius:999px;border:3px solid #3B2314;box-shadow:3px 3px 0 #3B2314;text-transform:uppercase;font-size:13px">Send test reminder</div>
+<div style="font-size:13px;color:#E8433F">{{ toast }}</div></div>
+<div style="background:#FFFDF6;border:3px solid #3B2314;border-radius:18px;box-shadow:4px 4px 0 #3B2314;padding:22px;font-size:14px;line-height:1.7"><div style="font-size:11px;color:#7A5C48;font-weight:700;text-transform:uppercase;margin-bottom:8px">Slack preview · #108state</div>
+<b>Breakfast Club — Thursday, Oct 8</b><br>On the menu:<br><sc-for list="{{ menuRows }}" as="m" hint-placeholder-count="4">• {{ m.name }} — <i>{{ m.slackText }}</i><br></sc-for>Headcount so far: <b>{{ headcount }}</b><br>RSVP by <b>Wednesday 5pm</b>.<br>
+<span style="display:inline-block;margin-top:8px;border:2px solid #3B2314;padding:4px 12px;border-radius:14px;font-size:12px">RSVP</span> <span style="display:inline-block;border:2px solid #3B2314;padding:4px 12px;border-radius:14px;font-size:12px">Sponsor an item</span></div></div></sc-if>
+
+<sc-if value="{{ sponsorOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;background:rgba(59,35,20,.6);display:flex;align-items:center;justify-content:center;z-index:10">
+<div style="width:min(440px,92vw);background:#FFFDF6;border:2px solid #3B2314;border-radius:14px;padding:26px;display:flex;flex-direction:column;gap:16px">
+<sc-if value="{{ !sponsorDone }}" hint-placeholder-val="{{ true }}"></sc-if>
+<sc-if value="{{ sponsorForm }}" hint-placeholder-val="{{ true }}">
+<div style="font-family:'Titan One',cursive;font-size:28px;text-transform:uppercase">Sponsor {{ sponsorItem }}</div>
+<div style="display:flex;gap:8px"><sc-for list="{{ modes }}" as="md" hint-placeholder-count="3"><div onClick="{{ md.set }}" style="flex:1;text-align:center;cursor:pointer;padding:10px 4px;border-radius:999px;font-size:12px;font-weight:700;text-transform:uppercase;background:{{ md.bg }};color:{{ md.fg }};border:2px solid #3B2314">{{ md.label }}</div></sc-for></div>
+<sc-if value="{{ modeTwo }}" hint-placeholder-val="{{ false }}"><select value="{{ partner }}" onChange="{{ setPartner }}" style="background:#fff;border:3px solid #3B2314;color:#3B2314;padding:11px;border-radius:14px"><sc-for list="{{ coworkers }}" as="w" hint-placeholder-count="4"><option value="{{ w }}">{{ w }}</option></sc-for></select></sc-if>
+<sc-if value="{{ modeTeam }}" hint-placeholder-val="{{ false }}"><input value="{{ teamName }}" onInput="{{ setTeam }}" placeholder="Team name, e.g. Delivery team" style="background:#fff;border:3px solid #3B2314;color:#3B2314;padding:11px;border-radius:14px"></sc-if>
+<div style="font-size:13px;color:#7A5C48">One sponsorship is $30 paid to Chelsea, even when two people share it.</div>
+<div style="display:flex;gap:10px"><div onClick="{{ closeSponsor }}" style="flex:1;text-align:center;cursor:pointer;padding:12px;border:2px solid #3B2314;border-radius:24px;font-weight:700;font-size:13px;text-transform:uppercase">Cancel</div><div onClick="{{ confirmSponsor }}" style="flex:1;text-align:center;cursor:pointer;padding:12px;background:#FFC629;color:#3B2314;border-radius:999px;border:3px solid #3B2314;box-shadow:3px 3px 0 #3B2314;font-weight:700;font-size:13px;text-transform:uppercase">Confirm</div></div></sc-if>
+<sc-if value="{{ sponsorDone }}" hint-placeholder-val="{{ false }}">
+<div style="font-family:'Titan One',cursive;font-size:28px;text-transform:uppercase;color:#E8433F">You're on the menu</div><div style="font-size:16px">Please pay $30 to Chelsea.</div>
+<div onClick="{{ closeSponsor }}" style="text-align:center;cursor:pointer;padding:12px;background:#FFC629;color:#3B2314;border-radius:999px;border:3px solid #3B2314;box-shadow:3px 3px 0 #3B2314;font-weight:700;font-size:13px;text-transform:uppercase">Done</div></sc-if>
+</div></div></sc-if>
+</main></div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    screen: 'signin', role: 'member', rsvp: null, orderingOpen: false, remindersOn: true, toast: '',
+    menuEv: 0, tick: 0, addName: {},
+    spons: [
+      { id: 0, item: 'Waffles', who: 'Corbin', paid: false, mine: false, ev: 0 },
+      { id: 1, item: 'Quiche', who: 'Fred De Koker', paid: false, mine: false, ev: 1 },
+      { id: 2, item: 'Bagels and Lox', who: 'Joshua Cantor-Stone', paid: false, mine: false, ev: 2 },
+      { id: 3, item: 'McGriddles', who: 'Nicole Roberts', paid: false, mine: false, ev: 3 },
+    ],
+    orders: [
+      { id: 1, name: 'Priya Nair', summary: 'Waffles', status: 1, walkin: false, guest: false },
+      { id: 2, name: 'Marcus Cole', summary: 'Waffles', status: 0, walkin: false, guest: false },
+    ],
+    events: [
+      { d: 'Thu, Oct 8', st: 'ok', ord: true, item: 'Waffles', need: 1 }, { d: 'Thu, Oct 15', st: 'ok', ord: true, item: 'Quiche', need: 1 }, { d: 'Thu, Oct 22', st: 'ok', ord: true, item: 'Bagels and Lox', need: 2 }, { d: 'Thu, Oct 29', st: 'ok', ord: false, item: 'McGriddles', need: 1 },
+      { d: 'Thu, Nov 5', st: 'ok', ord: true, item: '', need: 1 }, { d: 'Thu, Nov 12', st: 'ok', ord: true, item: '', need: 1 }, { d: 'Thu, Nov 19', st: 'ok', ord: true, item: '', need: 1 },
+      { d: 'Thu, Nov 26', st: 'skip', ord: true, why: 'Thanksgiving', item: '', need: 1 }, { d: 'Thu, Dec 3', st: 'ok', ord: true, item: '', need: 1 },
+    ],
+    filter: 'unpaid', sponsorItem: null, mode: 'me', partner: 'Jane Doe', teamName: '', sponsorDone: false,
+    newItem: '', choice: {}, notes: '', walkName: '', walkItem: 'Waffles',
+  };
+  componentDidMount() { this.timer = setInterval(() => { if (this.state.orderingOpen) this.setState(st => ({ tick: st.tick + 1 })); }, 1000); }
+  componentWillUnmount() { clearInterval(this.timer); }
+  go = (s) => () => this.setState({ screen: s, toast: '' });
+  setOrderStatus(id, d) { this.setState(s => ({ orders: s.orders.map(o => o.id === id ? { ...o, status: Math.max(0, Math.min(4, o.status + d)) } : o) })); }
+  renderVals() {
+    const s = this.state, org = s.role === 'organizer', sc = s.screen;
+    const set = (o) => () => this.setState(o);
+    const yesBase = ['Jane Doe', 'Sam Lee', 'Priya Nair', 'Marcus Cole', 'Alex Kim'];
+    const yes = s.rsvp === 'yes' ? [...yesBase, 'Jordan Reyes'] : yesBase;
+    const no = s.rsvp === 'no' ? ['Dana Ortiz', 'Jordan Reyes'] : ['Dana Ortiz'];
+    const active = s.orders.filter(o => o.status < 4);
+    const walkin = active.filter(o => o.guest || !yes.includes(o.name)).length;
+    const hc = yes.length + walkin;
+    const items = [{ id: 1, name: s.events[0].item, opts: [] }];
+    const rowsFor = (ev) => { const e = s.events[ev]; if (!e.item) return []; const sp = s.spons.filter(x => x.ev === ev); const left = Math.max(0, e.need - sp.length), ask = sp.length > 0 && left > 0;
+      return [{ name: e.item, sponsorText: sp.length ? 'Sponsored by ' + sp.map(x => x.who).join(', ') + (ask ? ' · needs ' + left + ' more' : '') : 'Needs ' + e.need + (e.need === 1 ? ' sponsor' : ' sponsors') + ' ($30 each)',
+        slackText: sp.length ? 'sponsored by ' + sp.map(x => x.who).join(', ') + (ask ? ' (needs ' + left + ' more)' : '') : 'needs ' + e.need + ' sponsor(s) ($30 each)',
+        color: left === 0 ? '#3B2314' : '#E8433F',
+        sponsor: () => this.setState({ sponsorItem: e.item, sponsorDone: false, mode: 'me', teamName: '' }) }]; };
+    const menuRows = rowsFor(0), menuSelRows = rowsFor(s.menuEv);
+    const evChips = s.events.map((e, i) => ({ label: e.d.replace('Thu, ', ''), bg: s.menuEv === i ? '#FFC629' : 'transparent', fg: '#3B2314', set: () => this.setState({ menuEv: i }) }));
+    const F = (x, y) => '<circle cx="' + (x - 8) + '" cy="' + y + '" r="2.6" fill="#3B2314"/><circle cx="' + (x + 8) + '" cy="' + y + '" r="2.6" fill="#3B2314"/><ellipse cx="' + (x - 14) + '" cy="' + (y + 5) + '" rx="4" ry="2.6" fill="#FF9AA2"/><ellipse cx="' + (x + 14) + '" cy="' + (y + 5) + '" rx="4" ry="2.6" fill="#FF9AA2"/><path d="M' + (x - 3) + ' ' + (y + 4) + ' q3 3 6 0" stroke="#3B2314" stroke-width="2" fill="none" stroke-linecap="round"/>';
+    const K = 'stroke="#3B2314" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"';
+    const art = [
+      ['<path d="M20 52 C12 30 36 14 56 18 C80 18 92 36 84 58 C78 80 50 90 32 80 C22 74 22 62 20 52Z" fill="#fff" ' + K + '/><circle cx="52" cy="50" r="19" fill="#FFC629" ' + K + '/>' + F(52, 50), -6],
+      ['<ellipse cx="50" cy="78" rx="38" ry="10" fill="#fff" ' + K + '/><path d="M16 56 v14 q34 12 68 0 v-14z" fill="#E9A862" ' + K + '/><path d="M16 40 v16 q34 12 68 0 v-16z" fill="#F2BC78" ' + K + '/><path d="M16 26 v14 q34 12 68 0 v-14 q-34 -12 -68 0z" fill="#F2BC78" ' + K + '/><path d="M16 26 q34 -12 68 0 q-2 8 -8 6 q-3 10 -8 2 q-4 8 -10 0 q-6 8 -10 0 q-6 6 -10 0 q-8 4 -22 -8z" fill="#C86B2C" ' + K + '/><rect x="41" y="12" width="18" height="12" rx="3" fill="#FFE27A" ' + K + '/>' + F(50, 46), 5],
+      ['<path d="M24 38 h46 v26 q0 18 -23 18 q-23 0 -23 -18z" fill="#fff" ' + K + '/><path d="M70 46 q18 0 14 14 q-3 10 -16 8" fill="none" ' + K + '/><path d="M24 38 h46 v7 h-46z" fill="#8B5A3C" ' + K + '/><path d="M38 28 q-4 -6 0 -12 M52 28 q-4 -6 0 -12" stroke="#7A5C48" stroke-width="3" fill="none" stroke-linecap="round"/>' + F(47, 62), -4],
+      ['<path d="M12 18 q15 -10 30 0 t30 0 l8 24 q-15 10 -30 0 t-30 0z" fill="#E8605A" ' + K + '/><path d="M16 26 q13 -8 26 0 t26 0" stroke="#FFC9B8" stroke-width="3" fill="none"/><path d="M12 56 q15 -10 30 0 t30 0 l8 24 q-15 10 -30 0 t-30 0z" fill="#E8605A" ' + K + '/><path d="M16 64 q13 -8 26 0 t26 0" stroke="#FFC9B8" stroke-width="3" fill="none"/>' + F(46, 34), 6],
+      ['<path d="M20 80 V48 q-10 -6 -6 -20 q6 -14 22 -12 q10 -4 28 0 q16 -2 22 12 q4 14 -6 20 V80z" fill="#F2BC78" ' + K + '/><rect x="28" y="34" width="44" height="38" rx="10" fill="#E8605A" ' + K + '/><rect x="42" y="38" width="16" height="12" rx="3" fill="#FFE27A" ' + K + '/>' + F(50, 60), -5],
+      ['<path d="M26 30 h48 l-6 56 q-18 8 -36 0z" fill="#FFB347" ' + K + '/><path d="M26 30 h48 l-1 8 h-46z" fill="#fff" ' + K + '/><circle cx="76" cy="28" r="13" fill="#FFB347" ' + K + '/><circle cx="76" cy="28" r="6" fill="#FFE27A"/>' + F(50, 60), 4],
+      ['<rect x="16" y="26" width="68" height="56" rx="12" fill="#F2BC78" ' + K + '/><path d="M16 44 h68 M16 63 h68 M38 26 v56 M62 26 v56" stroke="#C86B2C" stroke-width="3"/><circle cx="50" cy="22" r="10" fill="#fff" ' + K + '/><circle cx="50" cy="14" r="5" fill="#FF5E5B" ' + K + '/>' + F(50, 56), 5],
+      ['<path d="M50 86 C20 68 18 38 34 32 q16 -6 16 2 q0 -8 16 -2 C82 38 80 68 50 86Z" fill="#FF5E5B" ' + K + '/><path d="M36 30 l14 -12 l14 12 l-14 4z" fill="#3DBE7A" ' + K + '/><circle cx="34" cy="48" r="1.8" fill="#FFE27A"/><circle cx="68" cy="46" r="1.8" fill="#FFE27A"/><circle cx="42" cy="74" r="1.8" fill="#FFE27A"/><circle cx="60" cy="74" r="1.8" fill="#FFE27A"/>' + F(50, 58), -7],
+    ].map(a => ({ src: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">' + a[0] + '</svg>').replace(/[()']/g, c => '%' + c.charCodeAt(0).toString(16).toUpperCase()), rot: a[1] }));
+    let seed = 7; for (const ch of sc) seed = (seed * 31 + ch.charCodeAt(0)) % 100000;
+    const rnd = () => { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; };
+    const cells = []; for (let r = 0; r < 5; r++) for (let c = 0; c < 3; c++) cells.push([r, c]);
+    cells.sort(() => rnd() - 0.5);
+    const order = art.map((_, i) => i).sort(() => rnd() - 0.5);
+    const decor = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => { const left = i < 5, j = rnd() * 12; return { src: art[order[i % art.length]].src, top: ((i % 5) * 19 + rnd() * 6) + '%', left: left ? j + 'px' : 'auto', right: left ? 'auto' : j + 'px', scale: (0.8 + rnd() * 0.25).toFixed(2), rot: Math.round(rnd() * 44 - 22) }; });
+    const nav = [
+      ['signin', 'Sign in', '/signin', 0], ['home', 'Home', '/', 0], ['schedule', 'Schedule', '/schedule', 0], ['order', 'Place order', '/order/[eventId]', 0],
+      ['events', 'Thursdays', '/admin/events', 1], ['payments', 'Payments', '/admin/payments', 1], ['kitchen', 'Kitchen view', '/kitchen/[id]', 0], ['settings', 'Settings', '/admin/settings', 1],
+    ].filter(n => !n[3] || org).map(n => ({ label: n[1], route: n[2], go: this.go(n[0]), weight: sc === n[0] ? 700 : 300, color: sc === n[0] ? '#E8433F' : '#3B2314', bar: sc === n[0] ? '#FFC629' : 'transparent', bg: sc === n[0] ? 'rgba(255,198,41,.5)' : 'transparent', headStyle: '' }));
+    const titles = { signin: 'Welcome', home: 'This Thursday', schedule: 'Schedule', menu: 'Menu', order: 'Place your order', events: 'Thursdays', payments: 'Payments', kitchen: 'Kitchen view', settings: 'Settings' };
+    const mine = s.spons.filter(x => x.mine).map(x => ({ item: x.item, who: x.who, status: x.paid ? 'Paid ✓' : '$30 due', color: x.paid ? '#1E8E5A' : '#3B2314', removeDisplay: x.paid ? 'none' : 'inline', remove: () => this.setState(st => ({ spons: st.spons.filter(y => y.id !== x.id) })) }));
+    const my = s.orders.find(o => o.name === 'Jordan Reyes');
+    const stLabels = ['Placed', 'Cooking', 'Ready', 'Picked up', 'Cancelled'];
+    const choiceItems = items.map(i => {
+      const c = s.choice[i.id];
+      return { name: i.name, border: c ? '#FF5E5B' : '#3B2314', mark: c ? 'Added ✓' : 'Add', hasOpts: !!c && i.opts.length > 0,
+        toggle: () => this.setState(st => { const ch = { ...st.choice }; if (ch[i.id]) delete ch[i.id]; else ch[i.id] = { opt: i.opts[0] || '' }; return { choice: ch }; }),
+        opts: i.opts.map(o => ({ label: o, bg: c && c.opt === o ? '#FFC629' : 'transparent', fg: c && c.opt === o ? '#3B2314' : '#3B2314', pick: () => this.setState(st => ({ choice: { ...st.choice, [i.id]: { opt: o } } })) })) };
+    });
+    const chosen = Object.keys(s.choice).length;
+    const sumFromChoice = () => s.items.filter(i => s.choice[i.id]).map(i => i.name + (s.choice[i.id].opt ? ' (' + s.choice[i.id].opt + ')' : '')).join(', ');
+    const eventRows = s.events.map((e, i) => {
+      const skipped = e.st === 'skip', cur = i === 0;
+      return { date: e.d, opacity: skipped ? 0.6 : 1, menu: skipped ? 'No breakfast: ' + e.why : e.item || 'No menu yet',
+        sponsors: skipped ? '' : e.item ? s.spons.filter(x => x.ev === i).length + ' sponsor(s)' : '',
+        statusLabel: skipped ? 'Skipped' : e.st === 'cancel' ? 'Cancelled' : cur && s.orderingOpen ? 'Ordering open' : 'Scheduled', statusColor: skipped || e.st === 'cancel' ? '#7A5C48' : '#E8433F',
+        count: skipped ? '' : cur ? hc + ' coming' : e.ord ? 'Ordering on' : 'RSVP only',
+        ordBg: e.ord ? '#FFC629' : '#C9B79C', ordLeft: e.ord ? '20px' : '2px', skipLabel: skipped ? 'Restore' : 'Skip',
+        toggleOrdering: () => this.setState(st => ({ events: st.events.map((x, j) => j === i ? { ...x, ord: !x.ord } : x) })),
+        skip: () => this.setState(st => ({ events: st.events.map((x, j) => j === i ? { ...x, st: x.st === 'skip' ? 'ok' : 'skip', why: 'Holiday' } : x) })),
+        sponsorText: skipped ? '' : rowsFor(i).length ? rowsFor(i)[0].sponsorText : '', sponsorColor: rowsFor(i).length ? rowsFor(i)[0].color : '#7A5C48',
+        canSponsor: !skipped && !!e.item && s.spons.filter(x => x.ev === i).length < e.need, needValue: e.need + (e.need === 1 ? ' sponsor needed' : ' sponsors needed'),
+        needMinus: () => this.setState(st => ({ events: st.events.map((x, j) => j === i ? { ...x, need: Math.max(1, x.need - 1) } : x) })),
+        needPlus: () => this.setState(st => ({ events: st.events.map((x, j) => j === i ? { ...x, need: x.need + 1 } : x) })),
+        addNameValue: s.addName[i] || '', setAddName: (ev) => { const v = ev.target.value; this.setState(st => ({ addName: { ...st.addName, [i]: v } })); },
+        addSponsor: () => { const n = (s.addName[i] || '').trim(); if (n && e.item) this.setState(st => ({ spons: [...st.spons, { id: Date.now(), item: e.item, who: n, paid: false, mine: false, ev: i }], addName: { ...st.addName, [i]: '' } })); }, itemValue: e.item,
+        sponsor: () => this.setState({ menuEv: i, sponsorItem: e.item, sponsorDone: false, mode: 'me', teamName: '' }),
+        setItem: (ev) => { const v = ev.target.value; this.setState(st => ({ events: st.events.map((x, j) => j === i ? { ...x, item: v } : x), spons: st.spons.map(x => x.ev === i ? { ...x, item: v } : x) })); },
+      };
+    });
+    const pay = s.spons.filter(x => s.filter === 'all' || (s.filter === 'unpaid' && !x.paid) || (s.filter === 'week' && x.ev === 0));
+    const total = s.spons.length * 30, coll = s.spons.filter(x => x.paid).length * 30;
+    const filters = [['unpaid', 'Unpaid'], ['week', 'This week'], ['all', 'All']].map(f => ({ label: f[1], bg: s.filter === f[0] ? '#FFC629' : 'transparent', fg: s.filter === f[0] ? '#3B2314' : '#3B2314', set: set({ filter: f[0] }) }));
+    const colDefs = [['Placed', '#6C7BFF', 'Start cooking'], ['Cooking', '#FF9F1C', 'Mark ready'], ['Ready', '#3DBE7A', 'Picked up'], ['Picked up', '#808080', '']];
+    const cols = colDefs.map((c, k) => { const os = s.orders.filter(o => o.status === k); return { label: c[0], color: c[1], n: os.length, cursor: org ? 'pointer' : 'default',
+      orders: os.map(o => ({ name: o.name, summary: o.summary, tag: o.guest ? 'GUEST' : o.walkin || !yes.includes(o.name) ? 'WALK-IN' : '', next: !org ? '' : c[2] ? 'Tap: ' + c[2] : 'Done', backLabel: !org ? '' : k > 0 ? '← Back' : 'Cancel',
+        advance: () => org && k < 3 && this.setOrderStatus(o.id, 1), back: (e) => { e.stopPropagation(); if (!org) return; k > 0 ? this.setOrderStatus(o.id, -1) : this.setOrderStatus(o.id, 4); } })) }; });
+    const tot = {}; active.forEach(o => o.summary.split(', ').forEach(p => { const n = p.replace(/ \(.*\)/, ''); tot[n] = (tot[n] || 0) + 1; }));
+    const modes = [['me', 'Just me'], ['two', 'Me + someone'], ['team', 'A team']].map(m => ({ label: m[1], bg: s.mode === m[0] ? '#FFC629' : 'transparent', fg: s.mode === m[0] ? '#3B2314' : '#3B2314', set: set({ mode: m[0] }) }));
+    const oc = s.orderingOpen;
+    const stage = Math.floor(s.tick / 10) % 4;
+    const stn = (k) => ({ opacity: k === stage ? 1 : 0.4, play: k === stage ? 'running' : 'paused', bg: k === stage ? '#FFE27A' : '#FFFDF6', shadow: k === stage ? '4px 4px 0 #3B2314' : 'none' });
+    return {
+      navItems: nav, stickersReady: true, decor, stickers: art, stickersHome: [art[0], art[2], art[1]], title: titles[sc], setMember: set({ role: 'member', screen: org && ['events', 'event', 'payments', 'settings'].includes(sc) ? 'home' : sc }), setOrganizer: set({ role: 'organizer' }),
+      memberBg: org ? 'transparent' : '#FFC629', memberFg: org ? '#7A5C48' : '#3B2314', orgBg: org ? '#FFC629' : 'transparent', orgFg: org ? '#3B2314' : '#7A5C48',
+      isSignin: sc === 'signin', isHome: sc === 'home', isSchedule: sc === 'schedule', isOrder: sc === 'order', isAdminEvents: sc === 'events', isPayments: sc === 'payments', isKitchen: sc === 'kitchen', isSettings: sc === 'settings',
+      isOrganizer: org, doSignin: this.go('home'), goMenu: this.go('schedule'), goOrder: this.go('order'), goKitchen: this.go('kitchen'),
+      headcount: hc, yesCount: yes.length, walkinCount: walkin, yesNames: yes.join(', '), noNames: no.join(', '),
+      rsvpYes: set({ rsvp: 'yes' }), rsvpNo: set({ rsvp: 'no' }),
+      yesBg: s.rsvp === 'yes' ? '#FFC629' : 'transparent', yesFg: s.rsvp === 'yes' ? '#3B2314' : '#3B2314', noBg: s.rsvp === 'no' ? '#FFC629' : 'transparent', noFg: s.rsvp === 'no' ? '#3B2314' : '#3B2314',
+      menuRows, mine, noMine: mine.length === 0, hasMyOrder: !!my, myOrderSummary: my ? my.summary : '',
+      myStatusLabel: my ? stLabels[my.status] : '', myStatusBg: my && my.status === 2 ? '#9BE3C4' : '#FFE1B8', myStatusFg: my && my.status === 2 ? '#3B2314' : '#3B2314',
+      showPlaceOrder: oc && !my, showOrderingClosedMsg: !oc && !my, closedMsg: 'Ordering opens when Chelsea starts it on Thursday morning.',
+      events: eventRows, copyMenu: set({ toast: "Last weeks menu item copied" }), newItem: s.events[s.menuEv].item, menuSelRows, evChips, menuDate: s.events[s.menuEv].d.replace('Thu', 'Thursday'), noMenu: menuSelRows.length === 0,
+      setNewItem: (e) => { const v = e.target.value; this.setState(st => ({ events: st.events.map((x, j) => j === st.menuEv ? { ...x, item: v } : x), spons: st.spons.map(x => x.ev === st.menuEv ? { ...x, item: v } : x) })); },
+      orderChoices: choiceItems, orderNotes: s.notes, setNotes: (e) => this.setState({ notes: e.target.value }), submitOpacity: chosen ? 1 : 0.4,
+      submitOrder: () => chosen && this.setState(st => ({ orders: [...st.orders, { id: Date.now(), name: 'Jordan Reyes', summary: sumFromChoice(), status: 0, walkin: !yes.includes('Jordan Reyes') }], choice: {}, notes: '', screen: 'home' })),
+      orderCount: active.length, orderTotals: Object.keys(tot).map(n => ({ name: n, qty: tot[n] })),
+      collected: '$' + coll, outstanding: '$' + (total - coll), filters, noPay: pay.length === 0,
+      payRows: pay.map(x => ({ date: s.events[x.ev].d, item: x.item, who: x.who, mark: x.paid ? '✓' : '', bg: x.paid ? '#FFC629' : 'transparent',
+        toggle: () => this.setState(st => ({ spons: st.spons.map(y => y.id === x.id ? { ...y, paid: !y.paid } : y) })), remove: () => this.setState(st => ({ spons: st.spons.filter(y => y.id !== x.id) })) })),
+      cols, orderingOpen: oc, s0: stn(0), s1: stn(1), s2: stn(2), s3: stn(3), kitchenHint: org ? 'Tap a card to advance it. Ordering stays open until you close it.' : 'Only Chelsea moves orders along. This board updates as she goes.', toggleOrdering: () => this.setState({ orderingOpen: !oc, tick: 0 }), ordBtnLabel: oc ? 'Close ordering' : 'Open ordering', ordBtnBg: oc ? '#FFB4A2' : '#FFC629',
+      ordState: oc ? 'Ordering is open' : 'Ordering is closed', ordStateColor: oc ? '#1E8E5A' : '#7A5C48',
+      walkName: s.walkName, setWalkName: (e) => this.setState({ walkName: e.target.value }), walkItem: s.walkItem, setWalkItem: (e) => this.setState({ walkItem: e.target.value }), itemNames: items.map(i => i.name),
+      addWalkin: () => s.walkName.trim() && this.setState(st => ({ orders: [...st.orders, { id: Date.now(), name: st.walkName.trim(), summary: st.walkItem, status: 0, walkin: true, guest: !yes.includes(st.walkName.trim()) && !['Dana Ortiz', 'Jordan Reyes'].includes(st.walkName.trim()) }], walkName: '' })),
+      remBg: s.remindersOn ? '#FFC629' : '#C9B79C', remLeft: s.remindersOn ? '20px' : '2px', toggleReminders: set({ remindersOn: !s.remindersOn }), testReminder: set({ toast: 'Test reminder sent to #108state' }), toast: s.toast,
+      sponsorOpen: !!s.sponsorItem, sponsorItem: s.sponsorItem, sponsorDone: s.sponsorDone, sponsorForm: !s.sponsorDone, modes, modeTwo: s.mode === 'two', modeTeam: s.mode === 'team',
+      coworkers: ['Jane Doe', 'Sam Lee', 'Priya Nair', 'Marcus Cole', 'Alex Kim', 'Dana Ortiz'], partner: s.partner, setPartner: (e) => this.setState({ partner: e.target.value }), teamName: s.teamName, setTeam: (e) => this.setState({ teamName: e.target.value }),
+      closeSponsor: set({ sponsorItem: null, sponsorDone: false }),
+      confirmSponsor: () => { const who = s.mode === 'me' ? 'Jordan Reyes' : s.mode === 'two' ? 'Jordan Reyes & ' + s.partner : (s.teamName.trim() || 'Team'); this.setState(st => ({ spons: [...st.spons, { id: Date.now(), item: st.sponsorItem, who, paid: false, mine: true, ev: st.menuEv }], sponsorDone: true })); },
+    };
+  }
+}
+</script>
+</body>
+</html>

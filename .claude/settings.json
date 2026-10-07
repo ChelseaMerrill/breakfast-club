@@ -1,0 +1,13 @@
+{
+  "enabledPlugins": {
+    "atlas@atlas-plugins": true
+  },
+  "extraKnownMarketplaces": {
+    "atlas-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "jahnelgroup/atlas-plugins"
+      }
+    }
+  }
+}
