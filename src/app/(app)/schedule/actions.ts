@@ -29,6 +29,7 @@ function refresh() {
   revalidatePath("/schedule");
   revalidatePath("/");
   revalidatePath("/admin/events");
+  revalidatePath("/admin/payments");
 }
 
 const lockedEventQuery = {

@@ -15,6 +15,7 @@ const MEMBER_ITEMS = [
 ];
 const ORGANIZER_ITEMS = [
   { href: "/admin/events", label: "Thursdays" },
+  { href: "/admin/payments", label: "Payments" },
   { href: "/admin/settings", label: "Settings" },
 ];
 
