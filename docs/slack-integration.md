@@ -23,6 +23,7 @@
   3. Post to #108state, then set `reminderSentAt`.
 
 ### Message (Block Kit)
+Built by `src/lib/reminder-message.ts` (`buildReminder` + `reminderMrkdwn`), which also drives the Settings preview.
 ```
 *Breakfast Club — Thursday, Oct 8*
 On the menu:

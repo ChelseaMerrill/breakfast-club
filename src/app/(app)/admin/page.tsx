@@ -21,7 +21,7 @@ async function OrganizerHome() {
     <Card>
       <p className="font-bold">Hi, {member.name}</p>
       <p className="text-muted-foreground">
-        Manage Thursdays from the menu. Payments and Settings are coming in later milestones.
+        Manage Thursdays and Settings from the menu. Payments is coming in a later milestone.
       </p>
       <Link href="/admin/events">Thursdays →</Link>
     </Card>

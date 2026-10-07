@@ -55,11 +55,11 @@ Paste one milestone at a time into Claude Code: *"Implement Milestone N from doc
 - `/api/cron/weekly-reminder` with CRON_SECRET, two Tuesday crons (14:00 + 15:00 UTC), at-or-after-10am NY check, `reminderSentAt` guard
 - Message lists menu items with sponsors and items still needing one
 - Skips SKIPPED/CANCELLED Thursdays and when reminders are off
-- `vercel.json` cron config; *Send test reminder* button and live Slack preview in settings
+- `vercel.json` cron config; wire up the *Send test reminder* button (already on Settings, disabled until Slack is connected). Message text comes from `src/lib/reminder-message.ts` (same builder as the Settings preview)
 - **Done when:** the test button posts to #108state, and a skipped week posts nothing.
 
 ## M8 — Polish & deploy
-- Settings page; empty/loading/error states
+- ~~Settings page~~ (built early: `/admin/settings` — amount, RSVP deadline, reminders on/off, live Slack preview; reminder time + channel shown read-only); empty/loading/error states
 - Desktop-first QA, then phone width: left nav → hamburger menu, kitchen cooking animation hidden
 - Deploy to Vercel + Neon (`main` branch for production), set env vars, run migrations
 - Test sign-in with a real workspace guest and a real Slack Connect user
