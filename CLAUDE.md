@@ -49,7 +49,7 @@ to **#108state** every Tuesday at 10am ET, unless that Thursday is skipped (e.g.
 ## Tech stack
 - **Next.js (App Router) + TypeScript**, Tailwind CSS, shadcn/ui
 - **PostgreSQL on Neon** (via the Vercel Marketplace; branch `main` = live, `dev` = local + previews) via **Prisma 7** (`prisma.config.ts`, Neon driver adapter, client generated to `src/generated/prisma`)
-- **Tests:** Vitest (unit) from M0; Playwright (end-to-end) from M3
+- **Tests:** Vitest (unit, `src/**/*.test.ts`); Playwright (end-to-end, `e2e/`) — runs its own dev server on :3100 against the Neon `dev` branch, signs in via the dev picker, and cleans up after itself. DB setup goes through `e2e/db-task.mts` (run with tsx; Playwright can't load the ESM Prisma client)
 - **Auth:** Auth.js v5, JWT sessions. Google OIDC now; Slack OIDC later (auto-enabled by its env vars)
   - `src/auth.ts` — providers + callbacks (domain allow-list, member upsert, #108state gate + 3-hour re-check for Slack, dev picker)
   - `src/lib/organizers.ts` — organizer and allowed-domain rules (env-driven)
@@ -97,7 +97,8 @@ npm run dev          # local dev (http://localhost:3000)
 npm run build        # prisma generate + next build
 npm run lint         # eslint
 npm run typecheck    # next typegen + tsc
-npm test             # vitest
+npm test             # vitest (unit)
+npm run test:e2e     # playwright (end-to-end; needs .env with the dev database)
 npm run format       # prettier --write
 npm run db:push      # push prisma/schema.prisma to the database in DATABASE_URL
 npm run db:seed      # dev-only sample data (needs ALLOW_SEED=true)

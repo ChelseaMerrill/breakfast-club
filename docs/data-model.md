@@ -45,6 +45,7 @@ model BreakfastEvent {
   orderingEnabled  Boolean     @default(true)  // false = RSVP only (e.g. bagels)
   orderingOpenedAt DateTime?
   orderingClosedAt DateTime?
+  orderingAutoClosed Boolean  @default(false) // closed by the midnight rollover (open-questions #34)
   rsvpDeadline     DateTime?               // default: Wednesday 5pm ET before
   skipReason       String?                 // e.g. "Thanksgiving"
   sponsorsNeeded   Int         @default(1) // set with −/+ on the Schedule; hides "Sponsor this" when filled

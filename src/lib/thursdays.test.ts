@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatThursday, nyToday, upcomingThursdays } from "./thursdays";
+import { formatShortThursday, formatThursday, nyToday, upcomingThursdays } from "./thursdays";
 
 const iso = (d: Date) => d.toISOString().slice(0, 10);
 
@@ -36,5 +36,11 @@ describe("upcomingThursdays", () => {
 describe("formatThursday", () => {
   it("formats like the design", () => {
     expect(formatThursday(new Date("2026-10-08T00:00:00Z"))).toBe("Thursday, Oct 8");
+  });
+});
+
+describe("formatShortThursday", () => {
+  it("formats like the design's cards", () => {
+    expect(formatShortThursday(new Date("2026-10-08T00:00:00Z"))).toBe("Thu, Oct 8");
   });
 });

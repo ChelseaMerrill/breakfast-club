@@ -19,13 +19,15 @@ Paste one milestone at a time into Claude Code: *"Implement Milestone N from doc
 ## M2 — Schedule & skip weeks
 - `/schedule` list of Thursdays
 - `/admin/events` (*Thursdays*): top up to 8 Thursdays ahead on load, *Add next Thursday*, Skip (with reason) / Restore, toggle *Ordering enabled*
-- Midnight-NY rollover: events become `COMPLETED`; forgotten-open ordering auto-closes with a note
+- Midnight-NY rollover: events become `COMPLETED`; forgotten-open ordering auto-closes with a note (runs on page load — `syncThursdays()` in `src/lib/events.ts`)
+- App shell: the design's left nav (hamburger on phones)
+- Playwright end-to-end tests start here (pulled forward from M3)
 - **Done when:** Chelsea skips a Thursday and it shows faded on the Schedule as "No breakfast: <reason>".
 
 ## M3 — RSVP & headcount
 - Home card with Yes/No; names of who's in/out and headcount visible to everyone
 - RSVP deadline (Wednesday 5pm ET) enforced — buttons disabled with "RSVPs closed Wed 5pm"; organizer can edit anytime
-- Add Playwright; first end-to-end test covers RSVP
+- End-to-end test covers RSVP
 - **Done when:** two members RSVP and both see each other's names and the count; edits are blocked after the deadline.
 
 ## M4 — Menu & sponsorship

@@ -45,7 +45,7 @@
 | 36 | Reminder timing (Hobby cron is daily, ±59 min) | **Two Tuesday crons, 14:00 and 15:00 UTC**; the first run at/after 10:00 NY posts (`reminderSentAt` guard). Lands **10:00–10:59 ET**; Settings shows "Tuesday, 10–11am ET". |
 | 37 | Walk-in name box | **Suggests members as you type**; a name not picked becomes a guest. |
 | 38 | RSVP after the deadline | Buttons **shown disabled** with "RSVPs closed Wed 5pm". |
-| 39 | Tests | **Vitest** for rules and logic from M0; **Playwright** end-to-end from M3. |
+| 39 | Tests | **Vitest** for rules and logic from M0; **Playwright** end-to-end from M2 (moved up from M3 to verify the Skip flow). |
 | 40 | Workflow | **One branch + PR per milestone**, reviewed and merged by Chelsea. |
 
 ### Decided 2026-10-07 (later)
