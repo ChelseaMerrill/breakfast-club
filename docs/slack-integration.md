@@ -2,18 +2,24 @@
 
 ## Slack app setup
 1. Create a Slack app at api.slack.com/apps in the Jahnel Group workspace.
-2. **Bot scopes:** `chat:write`, `chat:write.public`, `users:read`, `users:read.email`.
-3. **Sign in with Slack:** enable OpenID Connect (`openid`, `profile`, `email`) — used by Auth.js.
-4. Install to workspace → copy the **Bot Token** (`SLACK_BOT_TOKEN`) and the **channel ID of #108state** (`SLACK_CHANNEL_ID`; open channel details → bottom of the About tab).
-5. Invite the bot: `/invite @Breakfast Club` in #108state.
+2. **Bot scopes:** `chat:write`, `chat:write.public`, `users:read`, `users:read.email`, `channels:read` (to check #108state membership — it's a public channel).
+3. **Sign in with Slack:** enable OpenID Connect (`openid`, `profile`, `email`) — used by Auth.js. Redirect URL: `APP_URL/api/auth/callback/slack` (HTTPS).
+4. **Manage Distribution → Activate Public Distribution** (unlisted, not in the Slack Marketplace) so Slack Connect members of #108state from other orgs can sign in, if their org allows it. Workspace guests are likely blocked by Slack regardless — they get entered by name.
+5. Install to workspace → copy the **Bot Token** (`SLACK_BOT_TOKEN`) and the **channel ID of #108state** (`SLACK_CHANNEL_ID`; open channel details → bottom of the About tab).
+6. Invite the bot: `/invite @Breakfast Club` in #108state.
+
+## Channel-membership gate
+- On sign-in, page through `conversations.members` for `SLACK_CHANNEL_ID` (cursor, `limit` 200; Tier 4) and allow the user only if their Slack user ID is in it. Cache the member set for a few minutes.
+- Re-check every few hours during a session; sign the user out if they've left.
+- Slack Connect external users appear in `conversations.members`; verify their OIDC `https://slack.com/user_id` matches (fall back to email if not).
 
 ## Tuesday reminder (MVP)
-- **When:** Tuesdays at **10:00am America/New_York**.
-- **Trigger:** Vercel Cron → `GET /api/cron/weekly-reminder` with `Authorization: Bearer $CRON_SECRET`.
-- Vercel cron is UTC, so run it hourly on Tuesdays (`0 * * * 2`) and have the route post only when NY time matches `AppSettings.reminderTime`.
+- **When:** Tuesdays, **10:00–10:59am America/New_York**. Vercel Hobby crons run at most once a day, in UTC, anywhere within the scheduled hour.
+- **Trigger:** two Vercel Crons → `GET /api/cron/weekly-reminder` with `Authorization: Bearer $CRON_SECRET`:
+  - `0 14 * * 2` (10am EDT) and `0 15 * * 2` (10am EST). The route posts only when NY time is at or after `AppSettings.reminderTime`, so DST is handled.
 - **Logic:**
-  1. Find this week's Thursday BreakfastEvent.
-  2. **Skip** if `remindersEnabled = false`, status is `SKIPPED` or `CANCELLED`, or `reminderSentAt` is set.
+  1. Top up Thursdays to 8 weeks ahead; find this week's Thursday BreakfastEvent.
+  2. **Skip** if `remindersEnabled = false`, status is `SKIPPED` or `CANCELLED`, NY time is before `reminderTime`, or `reminderSentAt` is set.
   3. Post to #108state, then set `reminderSentAt`.
 
 ### Message (Block Kit)

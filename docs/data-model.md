@@ -40,7 +40,7 @@ model Member {
 
 model BreakfastEvent {
   id               String      @id @default(cuid())
-  date             DateTime    @unique   // the Thursday (date only, NY time)
+  date             DateTime    @unique @db.Date // the Thursday (calendar date in America/New_York)
   status           EventStatus @default(SCHEDULED)
   orderingEnabled  Boolean     @default(true)  // false = RSVP only (e.g. bagels)
   orderingOpenedAt DateTime?
@@ -163,4 +163,6 @@ model AppSettings {
 - `amountCents` is copied from settings when created, so changing the setting later doesn't change old sponsorships.
 - **Guests:** `memberId = null`, `guestName` set. Validate that exactly one of the two is present.
 - **Headcount** = count(Rsvp YES) + count(non-cancelled Orders where the person has no YES RSVP).
-- Thursdays are auto-generated 8 weeks ahead.
+- Thursdays are topped up to 8 weeks ahead (see business-rules); the organizer can add more.
+- `BreakfastEvent.date` is a `@db.Date` holding the Thursday's calendar date in New York (see `src/lib/thursdays.ts`).
+- Seed members use fake Slack IDs (`SEED_…`) and exist only in the dev database.
