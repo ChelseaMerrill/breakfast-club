@@ -86,7 +86,7 @@ model Sponsorship {
   menuItem     MenuItem            @relation(fields: [menuItemId], references: [id])
   teamName     String?             // e.g. "Delivery team"
   sponsorName  String?             // free-text name the organizer typed for a non-member
-  members      SponsorshipMember[] // 0–2 people (0 only if teamName or sponsorName is set)
+  members      SponsorshipMember[] // 0–2 people (0 only for an organizer-typed sponsorName; a team links the member who signed it up)
   amountCents  Int                 @default(3000)  // $30, copied from settings at creation
   paid         Boolean             @default(false)
   paidAt       DateTime?
@@ -159,7 +159,7 @@ model AppSettings {
 
 ## Notes
 - **Menu is per BreakfastEvent, and the design has exactly one MenuItem per Thursday** (set inline on the Schedule). The MenuItem table and ItemOption stay so more items and options can be added later without a migration; the MVP UI creates and edits one item per event.
-- **Sponsorship** is exactly one of: 1–2 `members`, a `teamName`, or a `sponsorName` (organizer-typed). One sponsorship = one $30 payment, regardless of how many people are on it.
+- **Sponsorship** is exactly one of: 1–2 `members` (Just me / Me + someone), a `teamName` (A team; the member who signed the team up is also linked in `members`, so it's "theirs" on Home), or a `sponsorName` (organizer-typed, no members). The display name prefers `teamName`, then `sponsorName`, then the members' names. One sponsorship = one $30 payment, regardless of how many people are on it.
 - New sponsorships are refused once an event's sponsorship count reaches `sponsorsNeeded`.
 - `amountCents` is copied from settings when created, so changing the setting later doesn't change old sponsorships.
 - **Guests:** `memberId = null`, `guestName` set. Validate that exactly one of the two is present.

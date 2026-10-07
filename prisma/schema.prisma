@@ -99,7 +99,7 @@ model Sponsorship {
   menuItem    MenuItem            @relation(fields: [menuItemId], references: [id])
   teamName    String? // e.g. "Delivery team"
   sponsorName String? // free-text name the organizer typed for a non-member
-  members     SponsorshipMember[] // 0–2 people (0 only if teamName or sponsorName is set)
+  members     SponsorshipMember[] // 0–2 people (0 only for an organizer-typed sponsorName; a team links the member who signed it up)
   amountCents Int                 @default(3000) // $30, copied from settings at creation
   paid        Boolean             @default(false)
   paidAt      DateTime?

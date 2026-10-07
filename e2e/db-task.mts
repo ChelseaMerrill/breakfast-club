@@ -60,6 +60,50 @@ async function run(): Promise<unknown> {
       });
       return { removed: count };
     }
+    case "sponsor-target": {
+      // Furthest-out scheduled Thursday with no menu, for the M4 menu & sponsorship tests.
+      const e = await db.breakfastEvent.findFirst({
+        where: { date: { gte: nyToday() }, status: "SCHEDULED", menuItems: { none: {} } },
+        orderBy: { date: "desc" },
+        select: { id: true, date: true, sponsorsNeeded: true },
+      });
+      return e && { id: e.id, date: e.date.toISOString(), sponsorsNeeded: e.sponsorsNeeded };
+    }
+    case "menu-state": {
+      const e = await db.breakfastEvent.findUniqueOrThrow({
+        where: { id: args[0] },
+        select: {
+          sponsorsNeeded: true,
+          menuItems: { select: { name: true, _count: { select: { sponsorships: true } } } },
+        },
+      });
+      return {
+        sponsorsNeeded: e.sponsorsNeeded,
+        items: e.menuItems.map((i) => ({ name: i.name, sponsorships: i._count.sponsorships })),
+      };
+    }
+    case "reset-menu": {
+      // Removes the Thursday's menu item and its sponsorships, and restores sponsors needed.
+      const [id, sponsorsNeeded] = args;
+      const items = await db.menuItem.findMany({ where: { eventId: id }, select: { id: true } });
+      const menuItemId = { in: items.map((i) => i.id) };
+      const { count } = await db.sponsorship.deleteMany({ where: { menuItemId } });
+      await db.menuItem.deleteMany({ where: { eventId: id } });
+      await db.breakfastEvent.update({
+        where: { id },
+        data: { sponsorsNeeded: Number(sponsorsNeeded) },
+      });
+      return { sponsorshipsRemoved: count, itemsRemoved: items.length };
+    }
+    case "home-menu": {
+      // What the Home Menu card should show: the first Thursday from today on.
+      const e = await db.breakfastEvent.findFirst({
+        where: { date: { gte: nyToday() } },
+        orderBy: { date: "asc" },
+        select: { status: true, menuItems: { select: { name: true }, take: 1 } },
+      });
+      return e && { status: e.status, item: e.menuItems[0]?.name ?? null };
+    }
     case "home-event": {
       // The Thursday Home shows: first one from today (New York) onward.
       const e = await db.breakfastEvent.findFirstOrThrow({

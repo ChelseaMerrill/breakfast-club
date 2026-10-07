@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { Card, PageTitle } from "@/components/bc";
+import { MenuCard } from "@/components/home/menu-card";
+import { MySponsorshipsCard } from "@/components/home/my-sponsorships-card";
 import { ThisThursdayCard } from "@/components/home/this-thursday-card";
 import { getCurrentMember } from "@/lib/dal";
 
@@ -24,6 +26,8 @@ export default function Home() {
       >
         <ThisThursday />
       </Suspense>
+      <MenuCard />
+      <MySponsorshipsCard />
     </div>
   );
 }

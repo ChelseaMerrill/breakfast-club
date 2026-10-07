@@ -13,13 +13,15 @@
 
 ## Menu
 - Each Thursday has **one menu item** (e.g. Waffles). Only the organizer sets it, inline on the Schedule page. Renaming it also renames it on that Thursday's sponsorships.
-- Each Thursday has a **sponsors needed** count (default 1, minimum 1), set by the organizer with −/+ on the Schedule page.
+- Each Thursday has a **sponsors needed** count (default 1, minimum 1, maximum 10), set by the organizer with −/+ on the Schedule page. It can't go below the number of sponsorships already on the item.
+- Emptying the menu item box removes the item, unless it has sponsorships or orders (then rename it instead).
 - Editing a menu after orders exist does not change placed orders (OrderLine keeps a name snapshot). An item with orders or sponsorships can't be deleted — hide it instead.
 
 ## Sponsorship & payments
 - **Anyone** signed in can sponsor the menu item on an upcoming (not skipped) Thursday **while it still needs sponsors**. Once sponsorships reach the sponsors-needed count, *Sponsor this* is hidden.
 - A Sponsorship is **one person (Just me), two people (Me + someone), or a team name (A team)**.
-- The organizer can also add a Sponsorship by typing any name (for someone who isn't a member).
+- A member can be on only one Sponsorship per menu item.
+- The organizer can also add a Sponsorship by typing any name (for someone who isn't a member). This also respects sponsors needed; she presses + first to add more.
 - Each Sponsorship owes the **sponsorship amount ($30)** to Chelsea — one payment per sponsorship, even if two people share it.
 - An item can have more than one Sponsorship, up to its sponsors-needed count (each owes $30).
 - A member can remove a sponsorship they're on until it's marked **Paid** or the Thursday has passed; after that only the organizer can change it.

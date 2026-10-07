@@ -69,6 +69,10 @@ test("two members RSVP and both see each other's names and the count", async ({ 
   await card(jordan).getByRole("button", { name: "Not this week" }).click();
   await expect(card(jordan)).toContainText(/Out:.*Jordan Reyes/);
   await expect.poll(() => headcount(jordan)).toBe(before + 1);
+
+  // The Schedule's current week shows the same headcount (design: "N coming").
+  await jordan.goto("/schedule");
+  await expect(jordan.locator("article").first()).toContainText(`${before + 1} coming`);
 });
 
 test("after the deadline members can't change their RSVP, but the organizer can", async ({

@@ -6,6 +6,7 @@ import {
   nextThursdayAfter,
   rolloverUpdate,
 } from "@/lib/event-lifecycle";
+import { headcount } from "@/lib/rsvp";
 import { nyToday, upcomingThursdays } from "@/lib/thursdays";
 
 /**
@@ -74,6 +75,8 @@ export async function listUpcomingEvents(now = new Date()) {
             },
           },
         },
+        rsvps: { where: { answer: "YES" }, select: { memberId: true } },
+        orders: { select: { memberId: true, status: true } },
       },
     }),
     db.appSettings.findUnique({ where: { id: 1 } }),
@@ -81,8 +84,12 @@ export async function listUpcomingEvents(now = new Date()) {
 
   return {
     sponsorshipAmountCents: settings?.sponsorshipAmountCents ?? 3000,
-    events: events.map((e) => ({
+    events: events.map(({ rsvps, orders, ...e }) => ({
       ...e,
+      headcount: headcount(
+        rsvps.map((r) => r.memberId),
+        orders,
+      ).total,
       menuItems: e.menuItems.map((item) => ({
         ...item,
         sponsorships: item.sponsorships.map((s) => ({
