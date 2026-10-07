@@ -100,6 +100,27 @@ async function run(): Promise<unknown> {
       });
       return { removed: count };
     }
+    case "get-settings": {
+      const s = await db.appSettings.findUnique({ where: { id: 1 } });
+      return (
+        s && {
+          sponsorshipAmountCents: s.sponsorshipAmountCents,
+          rsvpDeadlineWeekday: s.rsvpDeadlineWeekday,
+          rsvpDeadlineTime: s.rsvpDeadlineTime,
+          remindersEnabled: s.remindersEnabled,
+        }
+      );
+    }
+    case "set-settings": {
+      const v = JSON.parse(args[0]) as {
+        sponsorshipAmountCents: number;
+        rsvpDeadlineWeekday: number;
+        rsvpDeadlineTime: string;
+        remindersEnabled: boolean;
+      };
+      await db.appSettings.upsert({ where: { id: 1 }, update: v, create: { id: 1, ...v } });
+      return { ok: true };
+    }
     default:
       throw new Error(`unknown task ${task}`);
   }

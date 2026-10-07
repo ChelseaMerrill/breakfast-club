@@ -8,12 +8,15 @@ import { cn } from "@/lib/utils";
 
 // Left nav from the design; collapses to a hamburger menu on phones (decision #24).
 // Items appear as their milestones land: Place order (M6), Kitchen view (M6),
-// Payments (M5), Settings (M8).
+// Payments (M5).
 const MEMBER_ITEMS = [
   { href: "/", label: "Home" },
   { href: "/schedule", label: "Schedule" },
 ];
-const ORGANIZER_ITEMS = [{ href: "/admin/events", label: "Thursdays" }];
+const ORGANIZER_ITEMS = [
+  { href: "/admin/events", label: "Thursdays" },
+  { href: "/admin/settings", label: "Settings" },
+];
 
 function Brand() {
   return (
