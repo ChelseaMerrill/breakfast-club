@@ -1,8 +1,12 @@
 # Business Rules
 
 ## BreakfastEvents
-- One BreakfastEvent per Thursday; auto-create the next 8 weeks.
-- Status flow: `SCHEDULED → ORDERING_OPEN → ORDERING_CLOSED → COMPLETED`.
+- One BreakfastEvent per Thursday. The app tops up to **8 weeks ahead** whenever Schedule or Thursdays loads, or the reminder cron runs. The organizer can add more with **Add next Thursday** (always the next Thursday after the last one).
+- Status flow: `SCHEDULED → ORDERING_OPEN ⇄ ORDERING_CLOSED → COMPLETED`.
+  - **Close ordering** ends the morning; the organizer can **reopen** the same day.
+  - At **midnight NY** after the Thursday the event becomes `COMPLETED` and Home moves to the next Thursday. Until then Home keeps showing it (so members can follow orders still cooking).
+  - If ordering is still open at midnight it is **closed automatically** and the organizer sees a "closed automatically" note. A "still open" warning shows on admin pages from Thursday afternoon.
+  - Ordering-off Thursdays go `SCHEDULED → COMPLETED` at midnight NY.
   - Organizer can mark any future Thursday `SKIPPED` (holiday, with optional reason, default "Holiday") and **Restore** it. `CANCELLED` stays in the schema but has no UI in the design (see PRD → Next).
   - Skipped Thursdays get **no Tuesday reminder**, appear faded on the Schedule as "No breakfast: <reason>", and show no RSVP or *Sponsor this* buttons.
 - `orderingEnabled = false` (e.g. bagels): RSVP only; no Open ordering button.
@@ -32,13 +36,19 @@
 
 ## Walk-ins & guests
 - **Walk-ins are always allowed.** A member without a Yes RSVP can still order while ordering is open (`isWalkIn`).
-- The organizer can add an order for any member or for a **guest** by name (e.g. "Client – Acme").
+- The organizer can add an order for any member or for a **guest** by name (e.g. "Client – Acme"). The name box **suggests members as you type**; a name not picked from the suggestions becomes a guest.
 - Guests can have multiple orders per event; members have one.
 - Walk-ins count toward the headcount.
 
 ## RSVP & headcount
 - One Rsvp per member per Thursday; changing overwrites.
-- Members can change their RSVP until **Wednesday 5pm ET**; organizer can edit anytime.
+- Members can change their RSVP until **Wednesday 5pm ET**; after that the buttons show **disabled** with "RSVPs closed Wed 5pm". The organizer can edit anytime.
+
+## Sign-in & access
+- **Anyone in #108state** can sign in with Slack. Membership is checked at sign-in and re-checked every few hours; someone who has left the channel is signed out (their history stays).
+- People Slack won't let sign in (workspace guests, or external orgs that block the app) are entered **by name** by the organizer.
+- **Only Chelsea** (`ORGANIZER_SLACK_IDS`) is an organizer. There is no role toggle: her nav shows the member pages plus Thursdays, Payments and Settings.
+- In **local development only**, a "Sign in as…" picker lists seed members. It must be impossible to enable in production.
 - **Everyone can see** who RSVP'd Yes and No, and the headcount (= Yes + walk-ins).
 
 ## Permissions
@@ -54,6 +64,6 @@
 | Open/close ordering, advance orders, add walk-ins/guests | — | ✅ |
 
 ## Edge cases
-- Organizer forgets to close ordering → stays open; show a "still open" warning on admin pages the next day.
+- Organizer forgets to close ordering → "still open" warning Thursday afternoon, then auto-closed at midnight NY (see BreakfastEvents).
 - Member RSVP'd No but orders → allowed, counted as walk-in.
 - Sponsor leaves the company with an unpaid sponsorship → still listed on Payments for Chelsea to resolve.

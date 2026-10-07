@@ -4,24 +4,28 @@ Build in this order. Each milestone should be working end-to-end before starting
 Paste one milestone at a time into Claude Code: *"Implement Milestone N from docs/build-plan.md."*
 
 ## M0 — Scaffold
-- Next.js + TS + Tailwind + shadcn/ui, Prisma + Neon Postgres, ESLint/Prettier
-- Schema from `docs/data-model.md`; seed script with 4 upcoming Thursdays and a sample menu
-- **Done when:** `npm run dev` shows a placeholder home page and `db:seed` fills the database.
+- Next.js + TS + Tailwind + shadcn/ui, Prisma + Neon Postgres (Neon `dev` branch locally), ESLint/Prettier, Vitest
+- Schema from `docs/data-model.md`; dev-only seed script with 4 upcoming Thursdays and the design's sample menu
+- **Done when:** `npm run dev` shows a placeholder home page and `db:seed` fills the dev database.
 
 ## M1 — Auth & roles
 - Sign in with Slack via Auth.js; create/update the Member on login
-- `ORGANIZER_SLACK_IDS` grants ORGANIZER (Chelsea)
+- Only members of #108state may sign in (`conversations.members`), re-checked every few hours
+- `ORGANIZER_SLACK_IDS` grants ORGANIZER (Chelsea); no role toggle
+- Local-dev-only "Sign in as…" picker of seed members (can be built first, while the Slack app awaits approval)
 - Server-side role guard for `/admin/*`
-- **Done when:** a member can sign in; non-organizers get 403 on admin routes.
+- **Done when:** a #108state member can sign in, someone outside the channel can't, and non-organizers get 403 on admin routes.
 
 ## M2 — Schedule & skip weeks
 - `/schedule` list of Thursdays
-- `/admin/events` (*Thursdays*): auto-generate the next 8 Thursdays, Skip (with reason) / Restore, toggle *Ordering enabled*
+- `/admin/events` (*Thursdays*): top up to 8 Thursdays ahead on load, *Add next Thursday*, Skip (with reason) / Restore, toggle *Ordering enabled*
+- Midnight-NY rollover: events become `COMPLETED`; forgotten-open ordering auto-closes with a note
 - **Done when:** Chelsea skips a Thursday and it shows faded on the Schedule as "No breakfast: <reason>".
 
 ## M3 — RSVP & headcount
 - Home card with Yes/No; names of who's in/out and headcount visible to everyone
-- RSVP deadline (Wednesday 5pm ET) enforced; organizer can edit anytime
+- RSVP deadline (Wednesday 5pm ET) enforced — buttons disabled with "RSVPs closed Wed 5pm"; organizer can edit anytime
+- Add Playwright; first end-to-end test covers RSVP
 - **Done when:** two members RSVP and both see each other's names and the count; edits are blocked after the deadline.
 
 ## M4 — Menu & sponsorship
@@ -39,12 +43,12 @@ Paste one milestone at a time into Claude Code: *"Implement Milestone N from doc
 - Organizer **Open ordering / Close ordering** (no timers); reopen allowed
 - `/order/[eventId]`: order builder from orderable items; walk-in if no Yes RSVP
 - `/kitchen/[id]`: Placed / Cooking / Ready / Picked up columns; everyone can watch, only the organizer can tap to advance / *← Back* / *Cancel*; animated cooking scene while ordering is open
-- **+ Walk-in**: pick a member or type a guest name
+- **+ Walk-in**: name box suggests members as you type; anything else becomes a guest
 - Member home shows live order status (5s polling)
 - **Done when:** Chelsea opens ordering, takes member + guest orders, runs them to Picked up, and closes ordering. Ordering-off Thursdays show no ordering UI.
 
 ## M7 — Slack Tuesday reminder
-- `/api/cron/weekly-reminder` with CRON_SECRET, 10am NY-time check, `reminderSentAt` guard
+- `/api/cron/weekly-reminder` with CRON_SECRET, two Tuesday crons (14:00 + 15:00 UTC), at-or-after-10am NY check, `reminderSentAt` guard
 - Message lists menu items with sponsors and items still needing one
 - Skips SKIPPED/CANCELLED Thursdays and when reminders are off
 - `vercel.json` cron config; *Send test reminder* button and live Slack preview in settings
@@ -53,7 +57,8 @@ Paste one milestone at a time into Claude Code: *"Implement Milestone N from doc
 ## M8 — Polish & deploy
 - Settings page; empty/loading/error states
 - Desktop-first QA, then phone width: left nav → hamburger menu, kitchen cooking animation hidden
-- Deploy to Vercel + Neon, set env vars, run migrations
+- Deploy to Vercel + Neon (`main` branch for production), set env vars, run migrations
+- Test sign-in with a real workspace guest and a real Slack Connect user
 - **Done when:** Chelsea runs a real Thursday on it.
 
 ## Backlog (post-MVP)

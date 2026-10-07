@@ -27,3 +27,23 @@
 | 22 | Cancel a Thursday | **Not in the design** — Skip/Restore only for MVP. |
 | 23 | Item options (e.g. egg style) | **Seed/DB-only for MVP.** The order form shows them; there's no editor screen. |
 | 24 | Screen sizes | **Desktop-first**, matching the design. Responsive down to phone width: the left nav becomes a **hamburger menu**, and the kitchen view's **cooking animation is hidden** on phones. |
+
+### Decided 2026-10-07 (grilling session)
+| # | Question | Decision |
+|---|---|---|
+| 25 | Hosting account | **Chelsea's personal Vercel (Hobby) account.** Hobby is "non-commercial, personal use only" — revisit if that becomes a problem. |
+| 26 | Database | **Neon via the Vercel Marketplace.** Neon branch `main` = live app; branch `dev` = local `.env` and preview deploys. |
+| 27 | Seed data | **Dev only.** `db:seed` refuses to run unless `ALLOW_SEED=true` and never in production. Live members come only from Slack sign-in; the organizer comes from `ORGANIZER_SLACK_IDS`. |
+| 28 | Who can sign in | **Anyone who is a member of #108state** (public channel). Checked with `conversations.members` (scope `channels:read`) at sign-in and re-checked every few hours; leavers are signed out, their history stays. |
+| 29 | Guests & Slack Connect users | Slack app has **public distribution on** (unlisted) so external users can sign in if their org allows it. Workspace guests are likely blocked by Slack itself. Anyone who can't sign in is **entered by name** by Chelsea. Test with a real guest and a real external account. |
+| 30 | Slack app | Chelsea creates it now and requests admin approval in parallel. |
+| 31 | Organizer access | **Only Chelsea's account.** No role toggle; one nav = member pages + Thursdays, Payments, Settings. |
+| 32 | Signing in during development | A **"Sign in as…" picker** of seed members, **local dev only** (never in production). Seed Chelsea is the only organizer in it. |
+| 33 | When a Thursday is done | Ordering weeks: when **Chelsea closes ordering** (she can reopen that day). Home keeps showing that Thursday until **midnight NY**, then moves on and the event becomes `COMPLETED`. Ordering-off weeks complete automatically at midnight NY. |
+| 34 | Forgotten close | "Still open" warning on Thursday afternoon, then **auto-close at midnight NY** with a "closed automatically" note. |
+| 35 | Creating Thursdays | Topped up to **8 weeks ahead** whenever Schedule/Thursdays loads or the reminder cron runs. Chelsea can go further with **Add next Thursday** (Thursdays only). |
+| 36 | Reminder timing (Hobby cron is daily, ±59 min) | **Two Tuesday crons, 14:00 and 15:00 UTC**; the first run at/after 10:00 NY posts (`reminderSentAt` guard). Lands **10:00–10:59 ET**; Settings shows "Tuesday, 10–11am ET". |
+| 37 | Walk-in name box | **Suggests members as you type**; a name not picked becomes a guest. |
+| 38 | RSVP after the deadline | Buttons **shown disabled** with "RSVPs closed Wed 5pm". |
+| 39 | Tests | **Vitest** for rules and logic from M0; **Playwright** end-to-end from M3. |
+| 40 | Workflow | **One branch + PR per milestone**, reviewed and merged by Chelsea. |

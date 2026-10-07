@@ -33,8 +33,11 @@ to **#108state** every Tuesday at 10am ET, unless that Thursday is skipped (e.g.
 - Some weeks (e.g. bagels) have **ordering turned off** — RSVP only.
 - **Walk-ins allowed**, including **guests** with no account (e.g. clients), added by name.
 - **RSVP names and headcount are visible to everyone.**
-- RSVP deadline: **Wednesday 5pm ET**. Reminder: **Tuesday 10am ET**.
-- Only Chelsea is an organizer.
+- RSVP deadline: **Wednesday 5pm ET**. Reminder: **Tuesday 10–11am ET** (Vercel Hobby crons are daily and hour-precise).
+- Only Chelsea is an organizer — no role toggle.
+- **Anyone in #108state** can sign in with Slack; membership is re-checked every few hours. A local-dev-only "Sign in as…" picker is used until the Slack app is approved.
+- A Thursday finishes at **midnight NY** (ordering auto-closes then if Chelsea forgot).
+- Full decision log: `docs/open-questions.md`.
 
 ## Design
 - `design/Breakfast Club.dc.html` is the clickable prototype of every screen. Open it in a browser and use the MEMBER / ORGANIZER toggle to see both roles.
@@ -45,12 +48,16 @@ to **#108state** every Tuesday at 10am ET, unless that Thursday is skipped (e.g.
 
 ## Tech stack
 - **Next.js (App Router) + TypeScript**, Tailwind CSS, shadcn/ui
-- **PostgreSQL on Neon** via **Prisma**
+- **PostgreSQL on Neon** (via the Vercel Marketplace; branch `main` = live, `dev` = local + previews) via **Prisma 7** (`prisma.config.ts`, Neon driver adapter, client generated to `src/generated/prisma`)
+- **Tests:** Vitest (unit) from M0; Playwright (end-to-end) from M3
 - **Auth:** Sign in with Slack (OpenID Connect) via Auth.js
 - **Slack:** Slack app with a bot token (`chat:write`) posting to #108state
 - **Scheduling:** Vercel Cron hitting a protected API route (`/api/cron/weekly-reminder`)
 - **Realtime kitchen view:** polling every 5s for MVP
-- **Hosting:** Vercel
+- **Hosting:** Vercel (Chelsea's personal Hobby account)
+- **Workflow:** one branch + PR per milestone; Chelsea reviews and merges
+
+Next.js 16 has breaking changes from older versions — see `AGENTS.md` and read `node_modules/next/dist/docs/` before writing Next.js code.
 
 ## Conventions
 - Use the terms in `docs/domain-glossary.md` exactly.
@@ -74,10 +81,15 @@ CRON_SECRET=
 APP_URL=
 ```
 
-## Commands (fill in once scaffolded)
+## Commands
 ```
-npm run dev       # local dev
-npm run db:push   # prisma db push
-npm run db:seed   # seed sample Thursdays + a sample menu
-npm test
+npm run dev          # local dev (http://localhost:3000)
+npm run build        # prisma generate + next build
+npm run lint         # eslint
+npm run typecheck    # next typegen + tsc
+npm test             # vitest
+npm run format       # prettier --write
+npm run db:push      # push prisma/schema.prisma to the database in DATABASE_URL
+npm run db:seed      # dev-only sample data (needs ALLOW_SEED=true)
+npm run db:studio    # browse the database
 ```
