@@ -50,7 +50,10 @@ to **#108state** every Tuesday at 10am ET, unless that Thursday is skipped (e.g.
 - **Next.js (App Router) + TypeScript**, Tailwind CSS, shadcn/ui
 - **PostgreSQL on Neon** (via the Vercel Marketplace; branch `main` = live, `dev` = local + previews) via **Prisma 7** (`prisma.config.ts`, Neon driver adapter, client generated to `src/generated/prisma`)
 - **Tests:** Vitest (unit) from M0; Playwright (end-to-end) from M3
-- **Auth:** Sign in with Slack (OpenID Connect) via Auth.js
+- **Auth:** Sign in with Slack (OpenID Connect) via Auth.js v5, JWT sessions
+  - `src/auth.ts` — providers + callbacks (#108state gate, member upsert, 3-hour re-check, dev picker)
+  - `src/proxy.ts` — Next 16 "proxy" (formerly middleware): redirects signed-out users, real 403 on `/admin/*`
+  - `src/lib/dal.ts` — `getCurrentMember()` / `requireOrganizer()`; call from Server Components (inside `<Suspense>`) and at the top of every server action
 - **Slack:** Slack app with a bot token (`chat:write`) posting to #108state
 - **Scheduling:** Vercel Cron hitting a protected API route (`/api/cron/weekly-reminder`)
 - **Realtime kitchen view:** polling every 5s for MVP
@@ -65,7 +68,8 @@ Next.js 16 has breaking changes from older versions — see `AGENTS.md` and read
 - Store money as integer cents (`3000` = $30.00).
 - **Desktop-first UI**, matching the design. It must also work at phone width: the left nav collapses into a hamburger menu, and the kitchen view's cooking animation is hidden on phones.
 - Server actions for mutations; validate all input with Zod.
-- Role checks happen on the server, never only in the UI.
+- Role checks happen on the server, never only in the UI. The proxy is only an optimistic gate.
+- Cache Components is on: anything reading the session, `searchParams` or the database goes behind `<Suspense>`; call `await connection()` before a DB read that isn't otherwise request-bound.
 - Keep it simple: a ~20–50 person office tool, not a SaaS product.
 
 ## Environment variables
@@ -80,6 +84,7 @@ ORGANIZER_SLACK_IDS=     # Chelsea's Slack user ID
 CRON_SECRET=
 APP_URL=
 ```
+**Local env files:** `.env` holds local dev settings (Neon `dev` branch). Next.js loads `.env.local` *over* `.env`, and `vercel env pull` writes `.env.local` with the **live** database — so never pull into `.env.local`. Use `vercel env pull .env.vercel` (git-ignored, not loaded by Next).
 
 ## Commands
 ```

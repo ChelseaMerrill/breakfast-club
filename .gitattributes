@@ -1,0 +1,4 @@
+# Keep LF everywhere (matches Prettier) so Windows checkouts do not show line-ending churn.
+* text=auto eol=lf
+*.ico binary
+*.png binary
