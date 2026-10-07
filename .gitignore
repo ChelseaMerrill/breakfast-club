@@ -50,3 +50,6 @@ next-env.d.ts
 # playwright
 /test-results/
 /playwright-report/
+
+# parallel agent checkouts (git worktrees)
+/.claude/worktrees/

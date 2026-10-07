@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { formatShortThursday, formatThursday, nyToday, upcomingThursdays } from "./thursdays";
+import {
+  formatShortThursday,
+  formatThursday,
+  nyToday,
+  nyWallTimeToUtc,
+  upcomingThursdays,
+} from "./thursdays";
 
 const iso = (d: Date) => d.toISOString().slice(0, 10);
 
@@ -42,5 +48,18 @@ describe("formatThursday", () => {
 describe("formatShortThursday", () => {
   it("formats like the design's cards", () => {
     expect(formatShortThursday(new Date("2026-10-08T00:00:00Z"))).toBe("Thu, Oct 8");
+  });
+});
+
+describe("nyWallTimeToUtc", () => {
+  it("handles daylight time (EDT, UTC-4)", () => {
+    expect(nyWallTimeToUtc(new Date("2026-10-07T00:00:00Z"), "17:00").toISOString()).toBe(
+      "2026-10-07T21:00:00.000Z",
+    );
+  });
+  it("handles standard time (EST, UTC-5) after the November change", () => {
+    expect(nyWallTimeToUtc(new Date("2026-11-04T00:00:00Z"), "17:00").toISOString()).toBe(
+      "2026-11-04T22:00:00.000Z",
+    );
   });
 });
