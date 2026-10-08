@@ -80,6 +80,10 @@ Paste one milestone at a time into Claude Code: *"Implement Milestone N from doc
 - ~~Settings page~~ (built early: `/admin/settings` — amount, RSVP deadline, reminders on/off, live Slack preview; reminder time + channel shown read-only); empty/loading/error states
 - Desktop-first QA, then phone width: left nav → hamburger menu, kitchen cooking animation hidden
 - Deploy to Vercel + Neon (`main` branch for production), set env vars, run migrations
+  - As built: Prisma migrations baselined (`prisma/migrations/0_init`, marked applied on `dev` and `main`); Vercel runs `vercel-build` → `prisma migrate deploy` on **production builds only** (`scripts/migrate-if-production.mjs`), so preview builds never change a schema
+  - `.vercelignore` keeps local `.env` files out of CLI deploys
+  - Vercel env: `AUTH_SECRET` (Production + Preview), `CRON_SECRET` (Production) set; Slack keys, `ORGANIZER_SLACK_IDS` and `APP_URL` still to add
+  - Preview deploy verified (Vercel Authentication protects previews)
 - Test sign-in with a real workspace guest and a real Slack Connect user
 - **Done when:** Chelsea runs a real Thursday on it.
 

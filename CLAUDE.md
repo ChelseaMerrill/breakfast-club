@@ -85,6 +85,8 @@ ORGANIZER_SLACK_IDS=     # Chelsea's Slack user ID
 CRON_SECRET=
 APP_URL=
 ```
+**Schema changes:** edit `prisma/schema.prisma`, run `npm run db:migrate -- --name <change>`, commit the migration. Production applies it on deploy; previews never migrate.
+
 **Local env files:** `.env` holds local dev settings (Neon `dev` branch). Next.js loads `.env.local` *over* `.env`, and `vercel env pull` writes `.env.local` with the **live** database — so never pull into `.env.local`. Use `vercel env pull .env.vercel` (git-ignored, not loaded by Next).
 
 ## Commands
@@ -96,7 +98,9 @@ npm run typecheck    # next typegen + tsc
 npm test             # vitest (unit)
 npm run test:e2e     # playwright (end-to-end; needs .env with the dev database)
 npm run format       # prettier --write
-npm run db:push      # push prisma/schema.prisma to the database in DATABASE_URL
+npm run db:migrate   # schema change: create + apply a migration on the dev branch (direct URL)
+npm run db:migrate:deploy  # apply pending migrations (production builds do this automatically)
+npm run db:push      # prototyping only — prefer migrations now that main is live
 npm run db:seed      # dev-only sample data (needs ALLOW_SEED=true)
 npm run db:studio    # browse the database
 ```
