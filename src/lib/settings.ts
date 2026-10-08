@@ -52,6 +52,7 @@ export async function reminderPreview(now = new Date()) {
   const item = event.menuItems[0];
   return {
     skipped: false as const,
+    date: event.date,
     message: buildReminder({
       date: event.date,
       orderingEnabled: event.orderingEnabled,

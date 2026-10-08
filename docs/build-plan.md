@@ -75,6 +75,14 @@ Paste one milestone at a time into Claude Code: *"Implement Milestone N from doc
 - Skips SKIPPED/CANCELLED Thursdays and when reminders are off
 - `vercel.json` cron config; wire up the *Send test reminder* button (already on Settings, disabled until Slack is connected). Message text comes from `src/lib/reminder-message.ts` (same builder as the Settings preview)
 - **Done when:** the test button posts to #108state, and a skipped week posts nothing.
+- Notes (as built; Slack-free — everything runs against a simulated Slack until the real app exists):
+  - `src/lib/slack.ts` — `chat.postMessage` client (`SLACK_BOT_TOKEN`, `SLACK_CHANNEL_ID`, base URL from `SLACK_API_BASE`, default `https://slack.com/api`). Returns ok / not-configured / slack-error; never throws on Slack or network errors; the token is never logged and is redacted from errors.
+  - `src/lib/reminder-blocks.ts` — Block Kit: mrkdwn section from `reminderMrkdwn` + *RSVP* (`APP_URL/`) and *Sponsor an item* (`APP_URL/schedule`) buttons; test posts get a "Test from Settings" context line and a `[Test]` text prefix.
+  - `src/lib/reminder-decision.ts` — pure `decideReminder` (reminders off · no Thursday · skipped/cancelled · not Tuesday in New York · before `reminderTime` · already sent), unit-tested across EDT and EST. `src/lib/cron-auth.ts` — constant-time `CRON_SECRET` check that fails closed.
+  - `src/lib/reminder.ts` + `src/app/api/cron/weekly-reminder/route.ts` — claim-then-post: `updateMany … where reminderSentAt is null` must return 1, and a Slack failure releases the claim (502) so the 15:00 UTC cron retries. Responses: 200 `{status:"sent"}` / `{status:"skipped",reason}` (incl. `slack-not-configured`), 401 wrong secret, 500 no `CRON_SECRET`, 502 Slack error.
+  - `vercel.json` — the two Tuesday crons (`0 14 * * 2`, `0 15 * * 2`).
+  - Settings → *Send test reminder* (`src/app/(app)/admin/settings/test-reminder-action.ts`): organizer-only; posts the current preview marked as a test, never sets `reminderSentAt`; shows "Test reminder sent to #108state" or the error. Still disabled with its hint while Slack isn't configured.
+  - Testing "Tuesday 10:30 ET" on any day: the route accepts `?now=<ISO>` **only when `NODE_ENV === "development"`** (`next dev`; builds and Vercel deployments run as production, so it's ignored there), and still requires `CRON_SECRET`. e2e (`e2e/reminder.spec.ts`) uses the most recent Tuesday (never a future one, so syncing can't roll real weeks over) and a fake Slack (`e2e/fake-slack.ts`, a node:http server on `SLACK_API_BASE`'s port). Without `SLACK_*`/`CRON_SECRET` in `.env` those tests skip and the "button disabled" test runs instead.
 
 ## M8 — Polish & deploy
 - ~~Settings page~~ (built early: `/admin/settings` — amount, RSVP deadline, reminders on/off, live Slack preview; reminder time + channel shown read-only); empty/loading/error states

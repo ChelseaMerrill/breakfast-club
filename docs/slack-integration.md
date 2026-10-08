@@ -17,13 +17,22 @@
 - **When:** Tuesdays, **10:00–10:59am America/New_York**. Vercel Hobby crons run at most once a day, in UTC, anywhere within the scheduled hour.
 - **Trigger:** two Vercel Crons → `GET /api/cron/weekly-reminder` with `Authorization: Bearer $CRON_SECRET`:
   - `0 14 * * 2` (10am EDT) and `0 15 * * 2` (10am EST). The route posts only when NY time is at or after `AppSettings.reminderTime`, so DST is handled.
-- **Logic:**
-  1. Top up Thursdays to 8 weeks ahead; find this week's Thursday BreakfastEvent.
-  2. **Skip** if `remindersEnabled = false`, status is `SKIPPED` or `CANCELLED`, NY time is before `reminderTime`, or `reminderSentAt` is set.
-  3. Post to #108state, then set `reminderSentAt`.
+- **Logic** (as built: `src/lib/reminder.ts`, decision in `src/lib/reminder-decision.ts`):
+  1. Check `Authorization: Bearer $CRON_SECRET` (constant-time; **401** if wrong, **500** if `CRON_SECRET` isn't set — fail closed).
+  2. Top up Thursdays to 8 weeks ahead; find this week's Thursday (first BreakfastEvent from today, New York).
+  3. **Skip** (200, `{status:"skipped", reason}`) if `remindersEnabled = false`, there's no Thursday, its status is `SKIPPED` or `CANCELLED`, it isn't `reminderWeekday` (Tuesday) in New York, NY time is before `reminderTime`, `reminderSentAt` is set, or Slack isn't configured (`slack-not-configured` — not an error).
+  4. **Claim** the Thursday: `updateMany where reminderSentAt is null` → set it; only the caller that gets count 1 posts, so the two crons can't both post.
+  5. Post to #108state. If Slack fails, **release** the claim (`reminderSentAt` back to null) and return **502** `{status:"error"}` so the second cron retries. Success → 200 `{status:"sent"}`.
+- **Local dev / tests:** `?now=<ISO>` overrides the clock **only under `next dev`** (`NODE_ENV === "development"`); production ignores it.
+
+### Slack client
+`src/lib/slack.ts` posts `chat.postMessage` with `SLACK_BOT_TOKEN` to `SLACK_CHANNEL_ID`. `SLACK_API_BASE` (default `https://slack.com/api`) lets local dev and e2e point it at a fake Slack (`e2e/fake-slack.ts`). It returns ok / not-configured / slack-error and never throws, logs or returns the token.
+
+### Send test reminder (Settings)
+Organizer-only. Posts the current Settings preview with a "Test from Settings" context line (text prefixed `[Test]`). Does **not** set `reminderSentAt`. Disabled with "Available once Slack is connected" until `SLACK_BOT_TOKEN` and `SLACK_CHANNEL_ID` are set.
 
 ### Message (Block Kit)
-Built by `src/lib/reminder-message.ts` (`buildReminder` + `reminderMrkdwn`), which also drives the Settings preview.
+Text built by `src/lib/reminder-message.ts` (`buildReminder` + `reminderMrkdwn`), which also drives the Settings preview; Block Kit by `src/lib/reminder-blocks.ts` (a mrkdwn section + an actions block with two URL buttons; `text` fallback = the same mrkdwn).
 ```
 *Breakfast Club — Thursday, Oct 8*
 On the menu:

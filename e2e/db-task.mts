@@ -248,6 +248,23 @@ async function run(): Promise<unknown> {
       }
       return { ok: true };
     }
+    // ---- M7 Tuesday reminder ----
+    case "reminder-event": {
+      // The Thursday on a given date, with what the reminder tests change and put back.
+      const e = await db.breakfastEvent.findUniqueOrThrow({
+        where: { date: new Date(args[0]) },
+        select: { id: true, status: true, skipReason: true, reminderSentAt: true },
+      });
+      return { ...e, reminderSentAt: e.reminderSentAt?.toISOString() ?? null };
+    }
+    case "set-reminder-sent": {
+      const [id, iso] = args;
+      await db.breakfastEvent.update({
+        where: { id },
+        data: { reminderSentAt: iso && iso !== "null" ? new Date(iso) : null },
+      });
+      return { ok: true };
+    }
     default:
       throw new Error(`unknown task ${task}`);
   }
