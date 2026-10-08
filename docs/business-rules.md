@@ -34,6 +34,7 @@
 - **No automatic ordering times.** Ordering is open only between the organizer tapping **Open ordering** and **Close ordering**; reopening is allowed.
 - Members can edit or cancel their own order while it's `PLACED` and ordering is open.
 - Status changes are organizer-only: tap a card to go `PLACED → COOKING → READY → PICKED_UP`; *← Back* steps back one; *Cancel* (on Placed cards) cancels.
+- The organizer can **Delete** an order once it's **Picked up** (asks to confirm; can't be undone). It drops out of the headcount if it was a walk-in or guest, and a member whose order is deleted can order again while ordering is open (open-questions #46).
 - Members can edit their order until it moves to Cooking.
 - Only items with `orderable = true` appear in the order form.
 - Ordering can only be opened for **this Thursday** (the one Home shows), and never on ordering-off weeks.
@@ -49,7 +50,7 @@
 
 ## RSVP & headcount
 - One Rsvp per member per Thursday; changing overwrites.
-- Members can change their RSVP until **Wednesday 5pm ET**; after that the buttons show **disabled** with "RSVPs closed Wed 5pm". The organizer can edit anytime.
+- Members can change their RSVP until **Wednesday 5pm ET**; after that the buttons show **disabled** with "RSVPs closed Wed 5pm". The organizer can change her own RSVP anytime, but not other people's (open-questions #43).
 
 ## Sign-in & access
 - **Sign in with Slack only** (open-questions #42): **anyone in #108state** can sign in. Membership is checked at sign-in and re-checked every few hours; someone who has left the channel is signed out (their history stays).

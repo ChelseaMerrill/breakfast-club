@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Card, PageTitle } from "@/components/bc";
+import { ConfirmSubmit } from "@/components/kitchen/confirm-submit";
 import { CookingScenes } from "@/components/kitchen/cooking-scenes";
 import { WalkInForm } from "@/components/kitchen/walk-in-form";
 import { LiveRefresh } from "@/components/live-refresh";
@@ -10,7 +11,7 @@ import { getKitchen, memberNames, orderableMenu, type Kitchen } from "@/lib/kitc
 import { STATUS_LABEL } from "@/lib/ordering";
 import { formatThursday } from "@/lib/thursdays";
 import { cn } from "@/lib/utils";
-import { closeOrdering, moveOrder, openOrdering } from "../actions";
+import { closeOrdering, deleteOrder, moveOrder, openOrdering } from "../actions";
 
 // Kitchen view (design: "Kitchen view", route /kitchen/[id]). Everyone can watch; only the
 // organizer opens/closes ordering, moves orders and adds walk-ins (decision #21).
@@ -182,17 +183,31 @@ function OrderCard({ card, organizer }: { card: Card; organizer: boolean }) {
           </span>
         </button>
       </form>
-      <form action={moveOrder} className="px-3 pb-2 text-right">
-        <input type="hidden" name="orderId" value={card.id} />
-        <input type="hidden" name="from" value={card.status} />
-        <input type="hidden" name="move" value={card.status === "PLACED" ? "cancel" : "back"} />
-        <button
-          type="submit"
-          className="cursor-pointer text-[11px] font-bold text-muted-foreground uppercase"
-        >
-          {card.status === "PLACED" ? "Cancel" : "← Back"}
-        </button>
-      </form>
+      <div className="flex justify-end gap-4 px-3 pb-2">
+        {card.status === "PICKED_UP" && (
+          <form action={deleteOrder}>
+            <input type="hidden" name="orderId" value={card.id} />
+            <ConfirmSubmit
+              question={`Delete ${card.name}'s order? This can't be undone.`}
+              aria-label={`Delete ${card.name}'s order`}
+              className="cursor-pointer text-[11px] font-bold text-destructive uppercase"
+            >
+              Delete
+            </ConfirmSubmit>
+          </form>
+        )}
+        <form action={moveOrder}>
+          <input type="hidden" name="orderId" value={card.id} />
+          <input type="hidden" name="from" value={card.status} />
+          <input type="hidden" name="move" value={card.status === "PLACED" ? "cancel" : "back"} />
+          <button
+            type="submit"
+            className="cursor-pointer text-[11px] font-bold text-muted-foreground uppercase"
+          >
+            {card.status === "PLACED" ? "Cancel" : "← Back"}
+          </button>
+        </form>
+      </div>
     </article>
   );
 }

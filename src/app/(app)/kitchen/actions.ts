@@ -160,3 +160,14 @@ export async function addWalkIn(_prev: KitchenState, formData: FormData): Promis
   refresh(eventId);
   return { ok: true };
 }
+
+/** Delete an order that has been picked up (organizer only; open-questions #46). */
+export async function deleteOrder(formData: FormData) {
+  await requireOrganizer();
+  const orderId = id.parse(formData.get("orderId"));
+  const order = await db.order.findUnique({ where: { id: orderId }, select: { eventId: true } });
+  if (!order) return; // already gone
+  // Only while it's still Picked up; lines cascade with the order.
+  await db.order.deleteMany({ where: { id: orderId, status: "PICKED_UP" } });
+  refresh(order.eventId);
+}

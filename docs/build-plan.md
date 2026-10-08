@@ -27,7 +27,7 @@ Paste one milestone at a time into Claude Code: *"Implement Milestone N from doc
 
 ## M3 — RSVP & headcount
 - Home card with Yes/No; names of who's in/out and headcount visible to everyone
-- RSVP deadline (Wednesday 5pm ET) enforced — buttons disabled with "RSVPs closed Wed 5pm"; organizer can edit anytime
+- RSVP deadline (Wednesday 5pm ET) enforced — buttons disabled with "RSVPs closed Wed 5pm"; the organizer can still change her own RSVP (not other people's — open-questions #43)
 - End-to-end test covers RSVP
 - Implementation: rules in `src/lib/rsvp.ts` (deadline from settings, DST-safe; organizer exempt; headcount = Yes + walk-ins/guests); Home card `src/components/home/this-thursday-card.tsx`; action `src/app/(app)/rsvp-actions.ts`
 - Skipped/cancelled Thursday on Home: banner + next breakfast date instead of RSVP buttons

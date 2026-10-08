@@ -114,8 +114,8 @@ export function OrderForm({
         name="notes"
         defaultValue={initialNotes}
         maxLength={300}
-        placeholder="Notes (allergies, no cheese...)"
-        aria-label="Notes"
+        placeholder="Customize"
+        aria-label="Customize"
         rows={2}
         className="rounded-[14px] border-[3px] border-border bg-white p-3 text-sm text-foreground"
       />

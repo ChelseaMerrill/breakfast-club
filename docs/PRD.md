@@ -47,9 +47,9 @@ for each item and chasing their $30, figuring out who's eating, and keeping trac
 - Slack DM to a member when their order is **Ready**
 - Slack DM reminder to sponsors who haven't paid
 - "My usual" one-tap reorder
-- Cancel a Thursday (separate from Skip) — not in the design
+- ~~Cancel a Thursday~~ — not needed; Skip covers it (open-questions #44)
 - Organizer event-detail page (Yes / No / no-response lists) — not in the design
-- More than one menu item per Thursday, and an editor for item options (e.g. egg style)
+- ~~More than one menu item per Thursday / an item-options editor~~ — not needed; one item per Thursday, and the order form's **Customize** box covers choices like egg style (open-questions #45)
 - "Copy last week's menu"
 
 ### Later
