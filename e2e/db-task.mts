@@ -265,6 +265,13 @@ async function run(): Promise<unknown> {
       });
       return { ok: true };
     }
+    case "set-slack-id": {
+      // Give a seed member a Slack-looking ID (or put the SEED_ one back) for DM tests.
+      const [name, slackUserId] = args;
+      const m = await db.member.findFirstOrThrow({ where: { name }, select: { id: true } });
+      await db.member.update({ where: { id: m.id }, data: { slackUserId } });
+      return { ok: true };
+    }
     default:
       throw new Error(`unknown task ${task}`);
   }

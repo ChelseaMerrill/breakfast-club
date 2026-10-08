@@ -2,7 +2,6 @@ import "server-only";
 import { db } from "@/lib/db";
 import { syncThursdays } from "@/lib/events";
 import { buildReminder } from "@/lib/reminder-message";
-import { headcount } from "@/lib/rsvp";
 import { nyToday } from "@/lib/thursdays";
 
 export const SETTINGS_DEFAULTS = {
@@ -39,8 +38,6 @@ export async function reminderPreview(now = new Date()) {
             },
           },
         },
-        rsvps: { where: { answer: "YES" }, select: { memberId: true } },
-        orders: { select: { memberId: true, status: true } },
       },
     }),
   ]);
@@ -65,10 +62,6 @@ export async function reminderPreview(now = new Date()) {
       },
       sponsorsNeeded: event.sponsorsNeeded,
       amountCents: settings.sponsorshipAmountCents,
-      headcount: headcount(
-        event.rsvps.map((r) => r.memberId),
-        event.orders,
-      ).total,
       rsvpDeadline: { weekday: settings.rsvpDeadlineWeekday, time: settings.rsvpDeadlineTime },
     }),
   };

@@ -102,7 +102,8 @@ export async function placeOrder(_prev: OrderState, formData: FormData): Promise
     await tx.orderLine.createMany({ data: lines.map((l) => ({ orderId: order.id, ...l })) });
   });
   refresh(eventId);
-  redirect("/");
+  // After ordering, members watch their order on the kitchen queue (open-questions #48).
+  redirect(`/kitchen/${eventId}`);
 }
 
 export async function cancelMyOrder(formData: FormData) {

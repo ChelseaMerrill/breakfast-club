@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { requireOrganizer } from "@/lib/dal";
@@ -11,6 +12,7 @@ import {
   nextStatus,
   previousStatus,
 } from "@/lib/ordering";
+import { notifyOrderReady } from "@/lib/ready-notify";
 import { nyToday } from "@/lib/thursdays";
 
 // Organizer-only kitchen actions (docs/business-rules.md → Ordering, Walk-ins & guests).
@@ -81,11 +83,15 @@ export async function moveOrder(formData: FormData) {
   });
   if (!order || order.event.status === "COMPLETED") return;
   // Only moves if it's still where the organizer saw it.
-  await db.order.updateMany({
+  const moved = await db.order.updateMany({
     where: { id: orderId, status: from },
     data: { status: to, statusAt: new Date() },
   });
   refresh(order.eventId);
+  // Cooking → Ready: DM the member once the tap has responded, so Slack never slows the board.
+  if (moved.count === 1 && move === "advance" && to === "READY") {
+    after(() => notifyOrderReady(orderId));
+  }
 }
 
 const walkInInput = z.object({

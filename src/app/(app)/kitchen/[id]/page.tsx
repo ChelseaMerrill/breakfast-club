@@ -13,7 +13,8 @@ import { formatThursday } from "@/lib/thursdays";
 import { cn } from "@/lib/utils";
 import { closeOrdering, deleteOrder, moveOrder, openOrdering } from "../actions";
 
-// Kitchen view (design: "Kitchen view", route /kitchen/[id]). Everyone can watch; only the
+// Kitchen queue (the design's "Kitchen view", renamed — open-questions #47; route /kitchen/[id]).
+// Everyone can watch; only the
 // organizer opens/closes ordering, moves orders and adds walk-ins (decision #21).
 
 const COLUMNS = {
@@ -26,7 +27,7 @@ const COLUMNS = {
 export default function KitchenPage({ params }: PageProps<"/kitchen/[id]">) {
   return (
     <div className="flex flex-col gap-[18px]">
-      <PageTitle>Kitchen view</PageTitle>
+      <PageTitle>Kitchen queue</PageTitle>
       <Suspense fallback={<p className="text-muted-foreground">Loading the kitchen…</p>}>
         <KitchenBoard params={params} />
       </Suspense>

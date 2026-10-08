@@ -37,7 +37,6 @@ Text built by `src/lib/reminder-message.ts` (`buildReminder` + `reminderMrkdwn`)
 *Breakfast Club — Thursday, Oct 8*
 On the menu:
 • Waffles — _sponsored by Corbin_
-Headcount so far: *6*
 RSVP by *Wednesday 5pm*.
 [ RSVP ]  [ Sponsor an item ]   (buttons → APP_URL/ and APP_URL/schedule)
 ```
@@ -49,11 +48,18 @@ Sponsor text per item (matches the Settings preview in the design):
 - If the menu isn't posted yet: "_Menu coming soon!_"
 - Payment status is **never** posted in the channel.
 
+## "Your order is ready" DM (built — open-questions #50)
+- **When:** the organizer moves an order **Cooking → Ready** on the kitchen queue.
+- **To:** the member who placed it, via `chat.postMessage` with their Slack user ID as `channel` (bot DM; `chat:write` only). Guests and `SEED_` members are skipped.
+- **Message:** ":fried_egg: *Your breakfast is ready!* Waffles (Blueberry) — come grab it from the kitchen." + a **View the kitchen queue** button (`APP_URL/kitchen/<id>`).
+- Sent with Next's `after()` so the kitchen tap never waits on Slack; best effort (errors are logged, never shown to the organizer).
+- In the Slack app, enable **App Home → Messages Tab** (read-only is fine) so the DM shows up.
+- Code: `src/lib/ready-dm.ts` (pure), `src/lib/ready-notify.ts`, `postDirectMessage` in `src/lib/slack.ts`.
+
 ## Next-phase messages
 | When | Where | Message |
 |---|---|---|
 | Chelsea taps Open ordering (checkbox "Post to #108state") | Channel | "Ordering is open! Place your order →" |
-| Order marked READY | DM to member | "Your breakfast is ready :fried_egg:" |
 | Sponsorship unpaid 3+ days after the Thursday | DM to sponsor(s) | "Friendly reminder: $30 for Pancakes (Oct 15) to Chelsea" |
 
 ## Later: interactive RSVP

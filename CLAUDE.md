@@ -6,7 +6,7 @@ Chelsea (the **organizer**) posts each Thursday's **menu** and cooks breakfast. 
 means paying **$30 to Chelsea**, and Chelsea checks off who has paid. Members RSVP yes/no
 (names and headcount visible to everyone) and, on weeks that need it, place their order the
 morning of. The organizer **manually opens and closes ordering** and works from a live
-**kitchen view** that tracks every order from placed → cooking → ready → picked up, including
+**kitchen queue** that tracks every order from placed → cooking → ready → picked up, including
 **walk-ins** (unscheduled coworkers and visiting clients). A Slack bot posts a sign-up reminder
 to **#108state** every Tuesday at 10am ET, unless that Thursday is skipped (e.g. a holiday).
 
@@ -28,7 +28,7 @@ to **#108state** every Tuesday at 10am ET, unless that Thursday is skipped (e.g.
 - **One menu item per Thursday** (e.g. Waffles), set by Chelsea inline on the Schedule page. There is no separate Menu page.
 - **Sponsorship is per menu item.** Anyone can add their name (or a team, or two people) next to an item. Each sponsorship = **$30 paid to Chelsea**; she marks it **paid** in the app. The app tracks payment status only — it does not process payments.
 - Each Thursday has a **sponsors needed** count (default 1). *Sponsor this* disappears once it's filled. Chelsea can also add a sponsor by typing the name of someone who isn't a member.
-- The **kitchen view is visible to everyone** (read-only for members); only Chelsea moves orders along.
+- The **kitchen queue is visible to everyone** (read-only for members); only Chelsea moves orders along.
 - **No automatic ordering window.** The organizer clicks *Open ordering* / *Close ordering*.
 - Some weeks (e.g. bagels) have **ordering turned off** — RSVP only.
 - **Walk-ins allowed**, including **guests** with no account (e.g. clients), added by name.
@@ -41,9 +41,9 @@ to **#108state** every Tuesday at 10am ET, unless that Thursday is skipped (e.g.
 
 ## Design
 - `design/Breakfast Club.dc.html` is the clickable prototype of every screen. Open it in a browser and use the MEMBER / ORGANIZER toggle to see both roles.
-- Look: Fredoka (body) and Titan One (headings, uppercase) fonts; cream `#FFF4D6` background with `#F0D58C` dots; card `#FFFDF6`; dark-brown `#3B2314` text, 3px outlines and hard `4px 4px 0` shadows; red `#E8433F` accents; yellow `#FFC629` primary pill buttons; mint `#9BE3C4` secondary; cute SVG breakfast mascots scattered down the side margins (`src/components/mascots.tsx`, art generated from the prototype into `mascots-art.ts`; drawn client-side only, hidden on phones); animated cooking scenes on the kitchen view while ordering is open.
+- Look: Fredoka (body) and Titan One (headings, uppercase) fonts; cream `#FFF4D6` background with `#F0D58C` dots; card `#FFFDF6`; dark-brown `#3B2314` text, 3px outlines and hard `4px 4px 0` shadows; red `#E8433F` accents; yellow `#FFC629` primary pill buttons; mint `#9BE3C4` secondary; cute SVG breakfast mascots scattered down the side margins (`src/components/mascots.tsx`, art generated from the prototype into `mascots-art.ts`; drawn client-side only, hidden on phones); animated cooking scenes on the kitchen queue while ordering is open.
 - Kitchen columns: Placed `#6C7BFF`, Cooking `#FF9F1C`, Ready `#3DBE7A`, Picked up `#808080`.
-- Layout: a fixed left nav (232px) listing Home, Schedule, Place order, Kitchen view, and for the organizer Thursdays, Payments and Settings.
+- Layout: a fixed left nav (232px) listing Home, Schedule, Place order, Kitchen queue, and for the organizer Thursdays, Payments and Settings.
 - `design/_ds/` is the Jahnel Group design system the prototype draws on.
 
 ## Tech stack
@@ -57,7 +57,7 @@ to **#108state** every Tuesday at 10am ET, unless that Thursday is skipped (e.g.
   - `src/lib/dal.ts` — `getCurrentMember()` / `requireOrganizer()`; call from Server Components (inside `<Suspense>`) and at the top of every server action
 - **Slack:** Slack app with a bot token (`chat:write`) posting to #108state
 - **Scheduling:** Vercel Cron hitting a protected API route (`/api/cron/weekly-reminder`)
-- **Realtime kitchen view:** polling every 5s for MVP
+- **Realtime kitchen queue:** polling every 5s for MVP
 - **Hosting:** Vercel (Chelsea's personal Hobby account)
 - **Workflow:** one branch + PR per milestone; Chelsea reviews and merges
 
@@ -67,7 +67,7 @@ Next.js 16 has breaking changes from older versions — see `AGENTS.md` and read
 - Use the terms in `docs/domain-glossary.md` exactly.
 - All times stored in UTC; display in `America/New_York`.
 - Store money as integer cents (`3000` = $30.00).
-- **Desktop-first UI**, matching the design. It must also work at phone width: the left nav collapses into a hamburger menu, and the kitchen view's cooking animation is hidden on phones.
+- **Desktop-first UI**, matching the design. It must also work at phone width: the left nav collapses into a hamburger menu, and the kitchen queue's cooking animation is hidden on phones.
 - Server actions for mutations; validate all input with Zod.
 - Role checks happen on the server, never only in the UI. The proxy is only an optimistic gate.
 - Cache Components is on: anything reading the session, `searchParams` or the database goes behind `<Suspense>`; call `await connection()` before a DB read that isn't otherwise request-bound.

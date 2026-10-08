@@ -13,7 +13,7 @@ flowchart LR
   G -- no, e.g. bagels --> K[Breakfast served]
   G -- yes --> H[Thu: Chelsea taps<br/>Open ordering]
   H --> I[Members + walk-ins order<br/>Chelsea adds guests]
-  I --> J[Kitchen view:<br/>Placed → Cooking → Ready → Picked up]
+  I --> J[Kitchen queue:<br/>Placed → Cooking → Ready → Picked up]
   J --> L[Chelsea taps Close ordering]
   L --> K
   K --> P[Chelsea marks sponsors Paid]
@@ -25,7 +25,7 @@ flowchart LR
 3. **Sponsor a menu item** — Home → *Sponsor an item →* (or Schedule) → *Sponsor this* on a Thursday → choose **Just me**, **Me + someone** (pick a coworker), or **A team** (team name) → Confirm. Screen says: "You're on the menu. Please pay $30 to Chelsea."
 4. **Check my sponsorships** — Home → *My sponsorships* shows each with *$30 due* or *Paid ✓*, and *Remove* while unpaid.
 5. **Order** — when ordering is open, Home → *Your order* shows **Place your order** → pick items/options → notes → Submit. Works without a Yes RSVP (walk-in). When ordering is closed it says "Ordering opens when Chelsea starts it on Thursday morning."
-6. **Track order** — status pill on Home updates live; the read-only kitchen view shows the whole board.
+6. **Track order** — status pill on Home updates live; the read-only kitchen queue shows the whole board.
 
 ## Organizer flows
 1. **Thursdays** (`/admin/events`) — next 8 Thursdays; **Skip** / **Restore** each one; toggle *Ordering enabled*.
@@ -45,7 +45,7 @@ Routes and nav labels come from the design (`design/Breakfast Club.dc.html`).
 | `/` | Home | Member | This Thursday: RSVP, In/Out names, headcount, menu, your order, my sponsorships |
 | `/schedule` | Schedule | Everyone | Upcoming Thursdays with menu item, sponsors, *Sponsor this*; organizer edits menu item, sponsors needed, adds sponsors by name |
 | `/order/[eventId]` | Place order | Member | Build/edit order |
-| `/kitchen/[id]` | Kitchen view | Everyone | Live board; organizer also opens/closes ordering, advances orders, adds walk-ins/guests |
+| `/kitchen/[id]` | Kitchen queue | Everyone | Live board; organizer also opens/closes ordering, advances orders, adds walk-ins/guests |
 | `/admin/events` | Thursdays | Organizer | Skip/restore, ordering on/off |
 | `/admin/payments` | Payments | Organizer | Sponsorships with Paid checkboxes, totals |
 | `/admin/settings` | Settings | Organizer | Amount, deadline, Slack, reminders, Slack preview |

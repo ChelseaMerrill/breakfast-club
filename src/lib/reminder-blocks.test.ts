@@ -11,7 +11,6 @@ const msg = buildReminder({
   },
   sponsorsNeeded: 2,
   amountCents: 3000,
-  headcount: 6,
   rsvpDeadline: { weekday: 3, time: "17:00" },
 });
 

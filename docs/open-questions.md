@@ -23,10 +23,10 @@
 | 18 | More than one sponsorship per item | **Yes, up to the Thursday's sponsors-needed count** (default 1). (design) |
 | 19 | Payment status visibility | **Chelsea + the sponsor only; never in Slack.** (design) |
 | 20 | Menu items per Thursday | **One**, edited inline on the Schedule; no Menu page. (design) |
-| 21 | Kitchen view visibility | **Everyone can watch; only Chelsea moves orders.** Route `/kitchen/[id]`. (design) |
+| 21 | Kitchen queue visibility | **Everyone can watch; only Chelsea moves orders.** Route `/kitchen/[id]`. (design) |
 | 22 | Cancel a Thursday | **Not in the design** — Skip/Restore only for MVP. |
 | 23 | Item options (e.g. egg style) | **Seed/DB-only for MVP.** The order form shows them; there's no editor screen. |
-| 24 | Screen sizes | **Desktop-first**, matching the design. Responsive down to phone width: the left nav becomes a **hamburger menu**, and the kitchen view's **cooking animation is hidden** on phones. |
+| 24 | Screen sizes | **Desktop-first**, matching the design. Responsive down to phone width: the left nav becomes a **hamburger menu**, and the kitchen queue's **cooking animation is hidden** on phones. |
 
 ### Decided 2026-10-07 (grilling session)
 | # | Question | Decision |
@@ -57,3 +57,7 @@
 | 44 | Cancel a Thursday (vs. Skip) | **Not needed — Skip covers it.** `CANCELLED` stays in the schema, unused. |
 | 45 | More than one menu item / item-options editor | **Not needed.** One menu item per Thursday. The order form's free-text box is labelled **"Customize"** (was "Notes (allergies, no cheese...)") and covers choices like egg style; item options stay DB-only (#23). |
 | 46 | Removing finished orders | **Chelsea can Delete an order once it's Picked up** (kitchen card, with a confirm). Organizer-only, enforced on the server; other statuses can't be deleted (Placed orders can still be Cancelled). |
+| 47 | Name of the kitchen board | **"Kitchen queue"** for everyone (was the design's "Kitchen view"). Route stays `/kitchen/[id]`. |
+| 48 | After placing an order | Members are **redirected to the kitchen queue** to watch their order (was: back to Home). Cancelling still returns Home. |
+| 49 | Headcount in the Tuesday reminder | **Removed** — the Slack message no longer has a "Headcount so far" line (the Settings preview matches). Headcount still shows in the app. |
+| 50 | "Your order is ready" | **Slack DM to the member when their order moves Cooking → Ready** (needs only `chat:write`). Guests and seed members are skipped; sent after the kitchen tap responds, only if the order is still Ready; Picked up / ← Back don't re-send. Turn on **App Home → Messages Tab** in the Slack app so people see it. |

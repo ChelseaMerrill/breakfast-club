@@ -34,15 +34,32 @@ export function isSlackConfigured(env: Record<string, string | undefined> = proc
   return slackConfig(env) !== null;
 }
 
-/** chat.postMessage to the configured channel. */
-export async function postToChannel(
+type PostOptions = { config?: SlackConfig | null; fetch?: FetchLike };
+
+/** chat.postMessage to the configured channel (#108state). */
+export function postToChannel(message: SlackMessage, options: PostOptions = {}) {
+  return postMessage("channel", message, options);
+}
+
+/**
+ * chat.postMessage to one person: passing their Slack user ID as `channel` opens the
+ * bot's DM with them (needs only chat:write). Used for "your order is ready".
+ */
+export function postDirectMessage(
+  slackUserId: string,
   message: SlackMessage,
-  {
-    config = slackConfig(),
-    fetch: fetchImpl = fetch,
-  }: { config?: SlackConfig | null; fetch?: FetchLike } = {},
+  options: PostOptions = {},
+) {
+  return postMessage(slackUserId, message, options);
+}
+
+async function postMessage(
+  target: "channel" | string,
+  message: SlackMessage,
+  { config = slackConfig(), fetch: fetchImpl = fetch }: PostOptions,
 ): Promise<SlackPostResult> {
   if (!config) return { ok: false, reason: "not-configured" };
+  const channel = target === "channel" ? config.channelId : target;
   const fail = (error: string): SlackPostResult => ({
     ok: false,
     reason: "slack-error",
@@ -55,7 +72,7 @@ export async function postToChannel(
         Authorization: `Bearer ${config.token}`,
         "Content-Type": "application/json; charset=utf-8",
       },
-      body: JSON.stringify({ channel: config.channelId, unfurl_links: false, ...message }),
+      body: JSON.stringify({ channel, unfurl_links: false, ...message }),
       signal: AbortSignal.timeout(10_000),
     });
     const body = (await res.json().catch(() => null)) as {
