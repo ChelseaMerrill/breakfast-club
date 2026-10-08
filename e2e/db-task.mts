@@ -25,6 +25,51 @@ async function run(): Promise<unknown> {
       });
       return m.id;
     }
+    // ---- M5 Payments (cleaned up with reset-menu) ----
+    case "payments-setup": {
+      // Gives a Thursday a menu item with one unpaid sponsorship by a seed member.
+      const [eventId, itemName, memberName] = args;
+      const member = await db.member.findFirstOrThrow({
+        where: { name: memberName, slackUserId: { startsWith: "SEED_" } },
+        select: { id: true },
+      });
+      const item = await db.menuItem.create({
+        data: {
+          eventId,
+          name: itemName,
+          sponsorships: {
+            create: { createdById: member.id, members: { create: { memberId: member.id } } },
+          },
+        },
+        select: { sponsorships: { select: { id: true } } },
+      });
+      return item.sponsorships[0].id;
+    }
+    case "payments-summary": {
+      // Collected / Outstanding over every sponsorship, and how many are on Home's Thursday.
+      const all = await db.sponsorship.findMany({
+        select: { amountCents: true, paid: true, menuItem: { select: { eventId: true } } },
+      });
+      const home = await db.breakfastEvent.findFirst({
+        where: { date: { gte: nyToday() } },
+        orderBy: { date: "asc" },
+        select: { id: true },
+      });
+      const sum = (paid: boolean) =>
+        all.filter((s) => s.paid === paid).reduce((n, s) => n + s.amountCents, 0);
+      return {
+        collectedCents: sum(true),
+        outstandingCents: sum(false),
+        thisWeekCount: all.filter((s) => s.menuItem.eventId === home?.id).length,
+      };
+    }
+    case "sponsorship-paid": {
+      const s = await db.sponsorship.findUnique({
+        where: { id: args[0] },
+        select: { paid: true, paidAt: true },
+      });
+      return s && { paid: s.paid, paidAt: s.paidAt?.toISOString() ?? null };
+    }
     case "last-scheduled": {
       // Furthest-out scheduled Thursday with no menu, so seed weeks stay untouched.
       const e = await db.breakfastEvent.findFirst({
