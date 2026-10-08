@@ -82,7 +82,8 @@ AUTH_SLACK_SECRET=
 SLACK_BOT_TOKEN=
 SLACK_CHANNEL_ID=        # channel ID for #108state
 ORGANIZER_SLACK_IDS=     # Chelsea's Slack user ID
-CRON_SECRET=
+CRON_SECRET=             # Vercel Cron bearer secret; the reminder route refuses everything without it
+SLACK_API_BASE=          # optional; default https://slack.com/api (local dev/e2e: the fake Slack, e.g. http://127.0.0.1:3901/api)
 APP_URL=
 ```
 **Schema changes:** edit `prisma/schema.prisma`, run `npm run db:migrate -- --name <change>`, commit the migration. Production applies it on deploy; previews never migrate.
