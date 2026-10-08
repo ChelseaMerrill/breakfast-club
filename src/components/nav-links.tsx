@@ -101,13 +101,28 @@ export function NavLinks({
             </Link>
           );
         })}
-        <div className="mt-auto px-5 pt-6 text-xs text-muted-foreground">
-          <div className="font-semibold text-foreground">{name}</div>
-          <form action={signOutAction}>
-            <button type="submit" className="cursor-pointer font-semibold text-destructive">
-              Sign out
-            </button>
-          </form>
+        <div className="mt-auto flex flex-col gap-3 px-5 pt-6 text-xs text-muted-foreground">
+          <Link
+            href="/guide"
+            onClick={() => setOpen(false)}
+            aria-current={pathname === "/guide" ? "page" : undefined}
+            className={cn(
+              "-mx-5 border-l-[3px] px-5 py-2 text-sm no-underline",
+              pathname === "/guide"
+                ? "border-primary bg-[rgb(255_198_41/50%)] font-bold text-destructive hover:text-destructive"
+                : "border-transparent font-semibold text-foreground hover:text-destructive",
+            )}
+          >
+            📖 App Guide
+          </Link>
+          <div>
+            <div className="font-semibold text-foreground">{name}</div>
+            <form action={signOutAction}>
+              <button type="submit" className="cursor-pointer font-semibold text-destructive">
+                Sign out
+              </button>
+            </form>
+          </div>
         </div>
       </nav>
     </>

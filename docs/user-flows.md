@@ -48,4 +48,5 @@ Routes and nav labels come from the design (`design/Breakfast Club.dc.html`).
 | `/kitchen/[id]` | Kitchen queue | Everyone | Live board; organizer also opens/closes ordering, advances orders, adds walk-ins/guests |
 | `/admin/events` | Thursdays | Organizer | Skip/restore, ordering on/off |
 | `/admin/payments` | Payments | Organizer | Sponsorships with Paid checkboxes, totals |
+| `/guide` | App Guide (bottom of nav) | Everyone | How to use the app; organizer section only for Chelsea |
 | `/admin/settings` | Settings | Organizer | Amount, deadline, Slack, reminders, Slack preview |
