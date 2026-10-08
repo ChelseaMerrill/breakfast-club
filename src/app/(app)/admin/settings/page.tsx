@@ -74,9 +74,6 @@ async function SettingsContent() {
               </p>
             ))}
             <p>
-              Headcount so far: <b>{preview.message.headcount}</b>
-            </p>
-            <p>
               RSVP by <b>{preview.message.rsvpBy}</b>.
             </p>
             <p className="mt-2 flex gap-2">

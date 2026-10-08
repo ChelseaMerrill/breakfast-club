@@ -8,7 +8,6 @@ const base = {
   item: { name: "Waffles", sponsorships: [person("Corbin")] },
   sponsorsNeeded: 1,
   amountCents: 3000,
-  headcount: 6,
   rsvpDeadline: { weekday: 3, time: "17:00" },
 };
 
@@ -36,7 +35,6 @@ describe("buildReminder / reminderMrkdwn", () => {
         "*Breakfast Club — Thursday, Oct 8*",
         "On the menu:",
         "• Waffles — _sponsored by Corbin_",
-        "Headcount so far: *6*",
         "RSVP by *Wednesday 5pm*.",
       ].join("\n"),
     );
@@ -49,7 +47,7 @@ describe("buildReminder / reminderMrkdwn", () => {
     expect(reminderMrkdwn(msg)).not.toContain("On the menu:");
   });
 
-  it("never mentions payment status", () => {
-    expect(reminderMrkdwn(buildReminder(base))).not.toMatch(/paid|due/i);
+  it("never mentions payment status or the headcount", () => {
+    expect(reminderMrkdwn(buildReminder(base))).not.toMatch(/paid|due|headcount/i);
   });
 });

@@ -1,6 +1,6 @@
 // The Tuesday reminder (docs/slack-integration.md → Message). One builder feeds both the
 // Settings preview and, in M7, the real Slack post, so they always say the same thing.
-// Payment status is never included.
+// Payment status and the headcount are never included (open-questions #49).
 import { formatDollars, sponsorshipLabel, type SponsorshipNames } from "@/lib/sponsorship-display";
 import { formatThursday } from "@/lib/thursdays";
 
@@ -20,7 +20,6 @@ export type ReminderInput = {
   item: { name: string; sponsorships: SponsorshipNames[] } | null;
   sponsorsNeeded: number;
   amountCents: number;
-  headcount: number;
   rsvpDeadline: { weekday: number; time: string }; // AppSettings rsvpDeadlineWeekday / Time
 };
 
@@ -28,7 +27,6 @@ export type ReminderMessage = {
   title: string; // "Breakfast Club — Thursday, Oct 8"
   menu: { name: string; sponsorText: string }[]; // empty → "Menu coming soon!"
   notes: string[]; // italic lines, e.g. "No orders needed this week — just RSVP!"
-  headcount: number;
   rsvpBy: string; // "Wednesday 5pm"
 };
 
@@ -71,7 +69,6 @@ export function buildReminder(input: ReminderInput): ReminderMessage {
     title: `Breakfast Club — ${formatThursday(input.date)}`,
     menu,
     notes,
-    headcount: input.headcount,
     rsvpBy: rsvpByText(input.rsvpDeadline),
   };
 }
@@ -84,7 +81,6 @@ export function reminderMrkdwn(msg: ReminderMessage): string {
       ? ["On the menu:", ...msg.menu.map((m) => `• ${m.name} — _${m.sponsorText}_`)]
       : []),
     ...msg.notes.map((n) => `_${n}_`),
-    `Headcount so far: *${msg.headcount}*`,
     `RSVP by *${msg.rsvpBy}*.`,
   ].join("\n");
 }

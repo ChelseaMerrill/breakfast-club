@@ -10,7 +10,7 @@ for each item and chasing their $30, figuring out who's eating, and keeping trac
 2. Track which sponsors have **paid their $30** to Chelsea.
 3. Know **who's coming** and the **headcount** before shopping — visible to everyone.
 4. Collect **orders the morning of** when the menu needs it — opened and closed by hand.
-5. Give the organizer a **kitchen view** to track each order, including walk-ins and guests.
+5. Give the organizer a **kitchen queue** to track each order, including walk-ins and guests.
 6. **Automatically remind** #108state every Tuesday to sign up (skipping holiday weeks).
 
 ## Non-goals (for now)
@@ -21,8 +21,8 @@ for each item and chasing their $30, figuring out who's eating, and keeping trac
 ## Users & roles
 | Role | Who | Can do |
 |---|---|---|
-| **Organizer** (admin) | Chelsea | Everything: Thursdays, menu items, sponsorships, mark paid, open/close ordering, advance orders on the kitchen view, walk-ins, settings |
-| **Member** | Any coworker in #108state who signs in with Slack | Sponsor menu items, RSVP, see who's coming, place/edit own order, see own order status, watch the kitchen view (read-only) |
+| **Organizer** (admin) | Chelsea | Everything: Thursdays, menu items, sponsorships, mark paid, open/close ordering, advance orders on the kitchen queue, walk-ins, settings |
+| **Member** | Any coworker in #108state who signs in with Slack | Sponsor menu items, RSVP, see who's coming, place/edit own order, see own order status, watch the kitchen queue (read-only) |
 | **Guest** | Clients or visitors with no account | Nothing in the app — the organizer adds their order by name |
 
 ## Features
@@ -38,13 +38,12 @@ for each item and chasing their $30, figuring out who's eating, and keeping trac
 8. **Manual ordering control** — Chelsea taps **Open ordering** and **Close ordering**. No automatic times.
 9. **Ordering** — while open, members order from that Thursday's menu. No RSVP needed (walk-in).
 10. **Walk-ins & guests** — Chelsea can add an order for any member or for a guest by name (e.g. "Client — Acme").
-11. **Kitchen view** — tablet-friendly board: *Placed → Cooking → Ready → Picked up*. Everyone can watch it; only the organizer can tap a card to advance it, step it back, or cancel it. Shows an animated cooking scene while ordering is open (hidden on phones).
+11. **Kitchen queue** — tablet-friendly board: *Placed → Cooking → Ready → Picked up*. Everyone can watch it; only the organizer can tap a card to advance it, step it back, or cancel it. Shows an animated cooking scene while ordering is open (hidden on phones).
 12. **Order status for members** — live status on their home screen.
-13. **Tuesday Slack reminder** — 10am ET to #108state: Thursday date, the menu item with its sponsors (or how many more it needs), headcount, and *RSVP* / *Sponsor an item* buttons. Not sent if that Thursday is skipped.
+13. **Tuesday Slack reminder** — 10am ET to #108state: Thursday date, the menu item with its sponsors (or how many more it needs), the RSVP deadline, and *RSVP* / *Sponsor an item* buttons. Not sent if that Thursday is skipped.
 
 ### Next
 - Optional Slack post when ordering opens ("Ordering is open!")
-- Slack DM to a member when their order is **Ready**
 - Slack DM reminder to sponsors who haven't paid
 - "My usual" one-tap reorder
 - ~~Cancel a Thursday~~ — not needed; Skip covers it (open-questions #44)

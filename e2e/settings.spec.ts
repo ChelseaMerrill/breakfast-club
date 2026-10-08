@@ -31,7 +31,8 @@ test("Chelsea changes the RSVP deadline and amount; Home and the Slack preview f
   await page.goto("/admin/settings");
   const preview = page.getByLabel("Slack preview");
   await expect(preview).toContainText("Breakfast Club — Thursday");
-  await expect(preview).toContainText("Headcount so far:");
+  await expect(preview).toContainText("RSVP by");
+  await expect(preview).not.toContainText("Headcount");
 
   await page.getByLabel("Sponsorship amount").fill("35");
   await page.getByLabel("RSVP deadline day").selectOption("Tuesday");

@@ -24,6 +24,6 @@ Use these names in code, UI copy, and conversation. Don't introduce synonyms.
 | **Walk-in** | An Order from someone who didn't RSVP Yes (member or guest) | — |
 | **OrderLine** | One MenuItem (+ options, qty) within an Order | item |
 | **OrderStatus** | PLACED → COOKING → READY → PICKED_UP (or CANCELLED) | — |
-| **Kitchen view** | Live order board everyone can watch; only the organizer moves orders | dashboard, queue |
+| **Kitchen queue** | Live order board everyone can watch; only the organizer moves orders (renamed from "kitchen view") | dashboard, kitchen view |
 | **Sponsors needed** | How many Sponsorships a Thursday's menu item is looking for (default 1) | slots |
 | **Reminder** | The Tuesday Slack post to #108state | notification |

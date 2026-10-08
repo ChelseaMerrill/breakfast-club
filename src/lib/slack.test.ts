@@ -1,5 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { DEFAULT_SLACK_API_BASE, isSlackConfigured, postToChannel, slackConfig } from "./slack";
+import {
+  DEFAULT_SLACK_API_BASE,
+  isSlackConfigured,
+  postDirectMessage,
+  postToChannel,
+  slackConfig,
+} from "./slack";
 
 const TOKEN = "xoxb-secret-123";
 const config = { token: TOKEN, channelId: "C108", apiBase: "http://fake.test/api" };
@@ -85,5 +91,25 @@ describe("postToChannel", () => {
     for (const spy of logs) {
       for (const call of spy.mock.calls) expect(JSON.stringify(call)).not.toContain(TOKEN);
     }
+  });
+});
+
+describe("postDirectMessage", () => {
+  it("sends to the person (their user ID as channel), not #108state", async () => {
+    const fetch = vi.fn().mockResolvedValue(reply({ ok: true, ts: "9.9" }));
+    const result = await postDirectMessage("U03ABC", { text: "ready" }, { config, fetch });
+    expect(result).toEqual({ ok: true, ts: "9.9" });
+    const body = JSON.parse(fetch.mock.calls[0][1].body);
+    expect(body.channel).toBe("U03ABC");
+    expect(body.text).toBe("ready");
+  });
+
+  it("does nothing when Slack is not configured", async () => {
+    const fetch = vi.fn();
+    expect(await postDirectMessage("U03ABC", { text: "x" }, { config: null, fetch })).toEqual({
+      ok: false,
+      reason: "not-configured",
+    });
+    expect(fetch).not.toHaveBeenCalled();
   });
 });

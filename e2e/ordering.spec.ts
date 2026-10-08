@@ -1,7 +1,7 @@
 import { expect, test, type Browser, type Page } from "@playwright/test";
 import { dbTask, signInAs } from "./helpers";
 
-// M6 — Ordering & kitchen view (docs/build-plan.md). Uses this Thursday; every test starts
+// M6 — Ordering & kitchen queue (docs/build-plan.md). Uses this Thursday; every test starts
 // from no orders + ordering closed, and the original state is restored at the end.
 
 type HomeEvent = { id: string; status: string };
@@ -70,7 +70,10 @@ test("Chelsea runs a Thursday: opens ordering, member + guest orders to Picked u
   await jordan.getByRole("button", { name: new RegExp(item.name) }).click();
   await jordan.getByLabel("Customize").fill("Extra syrup");
   await jordan.getByRole("button", { name: "Submit order" }).click();
-  await expect(jordan).toHaveURL(/\/$/);
+  // After ordering, members land on the kitchen queue with their order in Placed.
+  await expect(jordan).toHaveURL(new RegExp(`/kitchen/${eventId}$`));
+  await expect(card(jordan, "Placed", "Jordan Reyes")).toBeVisible();
+  await jordan.goto("/");
   await expect(jordan.getByLabel("Your order")).toContainText("Placed");
 
   // Guest walk-in.
@@ -122,11 +125,15 @@ test("a member changes and cancels their own order while it's Placed", async ({ 
   await priya.goto(`/order/${eventId}`);
   await priya.getByRole("button", { name: new RegExp(item.name) }).click();
   await priya.getByRole("button", { name: "Submit order" }).click();
+  await expect(priya).toHaveURL(new RegExp(`/kitchen/${eventId}$`));
+  await priya.goto("/");
   await expect(priya.getByLabel("Your order")).toContainText("Placed");
 
   await priya.getByLabel("Your order").getByRole("link", { name: "Change" }).click();
   await priya.getByLabel("Customize").fill("No butter");
   await priya.getByRole("button", { name: "Update order" }).click();
+  await expect(priya).toHaveURL(new RegExp(`/kitchen/${eventId}$`));
+  await priya.goto("/");
   await expect(priya.getByLabel("Your order")).toContainText("Placed");
 
   await priya.goto(`/order/${eventId}`);
@@ -186,6 +193,8 @@ test("item options are chosen on the order form and shown in the kitchen", async
   await jordan.getByRole("button", { name: new RegExp(item.name) }).click();
   await jordan.getByRole("radio", { name: "Blueberry" }).click();
   await jordan.getByRole("button", { name: "Submit order" }).click();
+  await expect(jordan).toHaveURL(new RegExp(`/kitchen/${eventId}$`));
+  await jordan.goto("/");
   await expect(jordan.getByLabel("Your order")).toContainText(`${item.name} (Blueberry)`);
 
   const chelsea = await as(browser, "Chelsea Merrill");
@@ -205,7 +214,7 @@ test("members watch the kitchen read-only", async ({ browser }) => {
   await expect(jordan.getByRole("button", { name: /ordering/i })).toHaveCount(0);
   await expect(jordan.getByLabel("Walk-in name")).toHaveCount(0);
   await expect(jordan.getByText("Only Chelsea moves orders along.")).toBeVisible();
-  await expect(jordan.getByRole("link", { name: "Kitchen view" })).toBeVisible();
+  await expect(jordan.getByRole("link", { name: "Kitchen queue" })).toBeVisible();
 });
 
 test("ordering-off Thursdays show no ordering UI", async ({ browser }) => {

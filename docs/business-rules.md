@@ -34,6 +34,8 @@
 - **No automatic ordering times.** Ordering is open only between the organizer tapping **Open ordering** and **Close ordering**; reopening is allowed.
 - Members can edit or cancel their own order while it's `PLACED` and ordering is open.
 - Status changes are organizer-only: tap a card to go `PLACED → COOKING → READY → PICKED_UP`; *← Back* steps back one; *Cancel* (on Placed cards) cancels.
+- When the organizer moves an order **Cooking → Ready**, the member gets a **Slack DM** that it's ready (open-questions #50).
+- After placing or updating an order, members land on the **kitchen queue** (#48).
 - The organizer can **Delete** an order once it's **Picked up** (asks to confirm; can't be undone). It drops out of the headcount if it was a walk-in or guest, and a member whose order is deleted can order again while ordering is open (open-questions #46).
 - Members can edit their order until it moves to Cooking.
 - Only items with `orderable = true` appear in the order form.
@@ -63,7 +65,7 @@
 | Action | Member | Organizer |
 |---|---|---|
 | View schedule, menu, sponsors, RSVP names, headcount | ✅ | ✅ |
-| Watch the kitchen view (everyone's orders, read-only) | ✅ | ✅ |
+| Watch the kitchen queue (everyone's orders, read-only) | ✅ | ✅ |
 | Sponsor a menu item / remove own unpaid sponsorship | ✅ | ✅ |
 | See own sponsorships' payment status | ✅ | ✅ |
 | See everyone's payment status, mark Paid | — | ✅ |

@@ -7,7 +7,7 @@ import { signOutAction } from "@/app/(app)/actions";
 import { cn } from "@/lib/utils";
 
 // Left nav from the design; collapses to a hamburger menu on phones (decision #24).
-// Items appear as their milestones land: Payments (M5). Place order and Kitchen view point
+// Items appear as their milestones land: Payments (M5). Place order and Kitchen queue point
 // at this Thursday, so they're built from `thursdayId`.
 const MEMBER_ITEMS = [
   { href: "/", label: "Home" },
@@ -42,7 +42,7 @@ export function NavLinks({
   const thursdayItems = thursdayId
     ? [
         { href: `/order/${thursdayId}`, label: "Place order", section: "/order" },
-        { href: `/kitchen/${thursdayId}`, label: "Kitchen view", section: "/kitchen" },
+        { href: `/kitchen/${thursdayId}`, label: "Kitchen queue", section: "/kitchen" },
       ]
     : [];
   const memberItems = [...MEMBER_ITEMS, ...thursdayItems];
