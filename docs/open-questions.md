@@ -61,3 +61,4 @@
 | 48 | After placing an order | Members are **redirected to the kitchen queue** to watch their order (was: back to Home). Cancelling still returns Home. |
 | 49 | Headcount in the Tuesday reminder | **Removed** — the Slack message no longer has a "Headcount so far" line (the Settings preview matches). Headcount still shows in the app. |
 | 50 | "Your order is ready" | **Slack DM to the member when their order moves Cooking → Ready** (needs only `chat:write`). Guests and seed members are skipped; sent after the kitchen tap responds, only if the order is still Ready; Picked up / ← Back don't re-send. Turn on **App Home → Messages Tab** in the Slack app so people see it. |
+| 51 | In-app help | **App Guide** page at `/guide`, linked at the bottom of the nav for everyone. Same content as the shared guide artifact; the "For Chelsea" section shows only to the organizer. |
