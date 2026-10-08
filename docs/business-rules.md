@@ -35,6 +35,10 @@
 - Status changes are organizer-only: tap a card to go `PLACED → COOKING → READY → PICKED_UP`; *← Back* steps back one; *Cancel* (on Placed cards) cancels.
 - Members can edit their order until it moves to Cooking.
 - Only items with `orderable = true` appear in the order form.
+- Ordering can only be opened for **this Thursday** (the one Home shows), and never on ordering-off weeks.
+- The kitchen shows a **"To make"** item total for orders not yet picked up. Order **notes** (may include allergies) are shown to the organizer only; members watching the board see names and items.
+- Order moves are guarded on the status the organizer saw, so a double tap can't skip a column. Moves still work after ordering closes, until the Thursday completes at midnight.
+- The "still open" warning (decision #34) shows on the kitchen from **2pm New York time** on the day.
 
 ## Walk-ins & guests
 - **Walk-ins are always allowed.** A member without a Yes RSVP can still order while ordering is open (`isWalkIn`).

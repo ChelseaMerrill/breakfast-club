@@ -130,3 +130,108 @@
   filter: drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff)
     drop-shadow(0 -3px 0 #fff) drop-shadow(4px 5px 0 rgb(59 35 20 / 22%));
 }
+
+/* Kitchen cooking scenes (src/components/kitchen/cooking-scenes.tsx), from the design. */
+@keyframes stir {
+  0%,
+  100% {
+    transform: rotate(-14deg);
+  }
+  50% {
+    transform: rotate(14deg);
+  }
+}
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+@keyframes pourFlow {
+  0%,
+  100% {
+    transform: scaleY(0.15);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+@keyframes spread {
+  0% {
+    transform: scale(0.05);
+  }
+  80%,
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes flipUp {
+  0% {
+    transform: translateY(0) rotate(0);
+  }
+  45% {
+    transform: translateY(-62px) rotate(180deg);
+  }
+  90%,
+  100% {
+    transform: translateY(0) rotate(360deg);
+  }
+}
+@keyframes steam {
+  0% {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-22px);
+    opacity: 0;
+  }
+}
+@keyframes drip {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(22px);
+    opacity: 0;
+  }
+}
+@keyframes belt {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 28px 0;
+  }
+}
+
+.cooking-scene svg {
+  display: block;
+  width: 100%;
+  max-width: 240px;
+  height: auto;
+}
+.cooking-belt {
+  height: 16px;
+  border: 3px solid var(--bc-brown);
+  border-radius: 10px;
+  background: repeating-linear-gradient(90deg, var(--bc-brown) 0 14px, #6b4a36 14px 28px);
+  animation: belt 0.8s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cooking-scene,
+  .cooking-belt {
+    --play: paused;
+    animation-play-state: paused;
+  }
+  .cooking-scene * {
+    animation-play-state: paused !important;
+  }
+}

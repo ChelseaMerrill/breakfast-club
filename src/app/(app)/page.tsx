@@ -4,6 +4,7 @@ import { Card, PageTitle } from "@/components/bc";
 import { MenuCard } from "@/components/home/menu-card";
 import { MySponsorshipsCard } from "@/components/home/my-sponsorships-card";
 import { ThisThursdayCard } from "@/components/home/this-thursday-card";
+import { YourOrderCard } from "@/components/home/your-order-card";
 import { getCurrentMember } from "@/lib/dal";
 
 const PROVIDER_LABEL = { google: "Google", slack: "Slack", "dev-login": "dev sign-in" } as const;
@@ -27,6 +28,9 @@ export default function Home() {
         <ThisThursday />
       </Suspense>
       <MenuCard />
+      <Suspense>
+        <YourOrderCard />
+      </Suspense>
       <MySponsorshipsCard />
     </div>
   );

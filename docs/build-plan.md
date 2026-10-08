@@ -59,6 +59,7 @@ Paste one milestone at a time into Claude Code: *"Implement Milestone N from doc
 - **+ Walk-in**: name box suggests members as you type; anything else becomes a guest
 - Member home shows live order status (5s polling)
 - **Done when:** Chelsea opens ordering, takes member + guest orders, runs them to Picked up, and closes ordering. Ordering-off Thursdays show no ordering UI.
+- As built: rules in `src/lib/ordering.ts`, data in `src/lib/kitchen.ts`; kitchen actions `src/app/(app)/kitchen/actions.ts`, member order actions `src/app/(app)/order/actions.ts`; Home card `src/components/home/your-order-card.tsx`; cooking scenes generated from the design (`src/components/kitchen/cooking-art.ts`), paused for reduced motion. Nav: *Place order* and *Kitchen view* point at this Thursday. The order form is keyed on the order's version because Next keeps recent pages alive (Activity).
 
 ## M7 — Slack Tuesday reminder
 - `/api/cron/weekly-reminder` with CRON_SECRET, two Tuesday crons (14:00 + 15:00 UTC), at-or-after-10am NY check, `reminderSentAt` guard
