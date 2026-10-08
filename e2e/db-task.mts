@@ -167,7 +167,7 @@ async function run(): Promise<unknown> {
       const [id, json] = args;
       const v = JSON.parse(json) as {
         rsvpDeadline?: string | null;
-        status?: "SCHEDULED" | "SKIPPED";
+        status?: "SCHEDULED" | "ORDERING_OPEN" | "ORDERING_CLOSED" | "SKIPPED" | "CANCELLED";
         skipReason?: string | null;
       };
       await db.breakfastEvent.update({
@@ -246,6 +246,23 @@ async function run(): Promise<unknown> {
           data: labels.map((label, sortOrder) => ({ menuItemId, group, label, sortOrder })),
         });
       }
+      return { ok: true };
+    }
+    // ---- M7 Tuesday reminder ----
+    case "reminder-event": {
+      // The Thursday on a given date, with what the reminder tests change and put back.
+      const e = await db.breakfastEvent.findUniqueOrThrow({
+        where: { date: new Date(args[0]) },
+        select: { id: true, status: true, skipReason: true, reminderSentAt: true },
+      });
+      return { ...e, reminderSentAt: e.reminderSentAt?.toISOString() ?? null };
+    }
+    case "set-reminder-sent": {
+      const [id, iso] = args;
+      await db.breakfastEvent.update({
+        where: { id },
+        data: { reminderSentAt: iso && iso !== "null" ? new Date(iso) : null },
+      });
       return { ok: true };
     }
     default:

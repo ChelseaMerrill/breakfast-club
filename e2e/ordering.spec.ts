@@ -68,7 +68,7 @@ test("Chelsea runs a Thursday: opens ordering, member + guest orders to Picked u
   await jordan.goto("/");
   await jordan.getByRole("link", { name: "Place your order" }).click();
   await jordan.getByRole("button", { name: new RegExp(item.name) }).click();
-  await jordan.getByLabel("Notes").fill("Extra syrup");
+  await jordan.getByLabel("Customize").fill("Extra syrup");
   await jordan.getByRole("button", { name: "Submit order" }).click();
   await expect(jordan).toHaveURL(/\/$/);
   await expect(jordan.getByLabel("Your order")).toContainText("Placed");
@@ -125,7 +125,7 @@ test("a member changes and cancels their own order while it's Placed", async ({ 
   await expect(priya.getByLabel("Your order")).toContainText("Placed");
 
   await priya.getByLabel("Your order").getByRole("link", { name: "Change" }).click();
-  await priya.getByLabel("Notes").fill("No butter");
+  await priya.getByLabel("Customize").fill("No butter");
   await priya.getByRole("button", { name: "Update order" }).click();
   await expect(priya.getByLabel("Your order")).toContainText("Placed");
 
@@ -225,4 +225,42 @@ test("ordering-off Thursdays show no ordering UI", async ({ browser }) => {
   await chelsea.goto(`/kitchen/${eventId}`);
   await expect(chelsea.getByText("is RSVP only")).toBeVisible();
   await expect(chelsea.getByRole("button", { name: "Open ordering" })).toHaveCount(0);
+});
+
+test("organizer deletes a picked-up order (after confirming)", async ({ browser }) => {
+  dbTask(
+    "ordering-reset",
+    eventId,
+    JSON.stringify({ status: "ORDERING_OPEN", orderingEnabled: true }),
+  );
+  const chelsea = await as(browser, "Chelsea Merrill");
+  await chelsea.goto(`/kitchen/${eventId}`);
+  await chelsea.getByLabel("Walk-in name").fill("Guest Delete");
+  await chelsea.getByRole("button", { name: "Add", exact: true }).click();
+  for (const [from, label] of [
+    ["Placed", /Start cooking/],
+    ["Cooking", /Mark ready/],
+    ["Ready", /Picked up/],
+  ] as const) {
+    await card(chelsea, from, "Guest Delete").getByRole("button", { name: label }).click();
+  }
+  const done = card(chelsea, "Picked up", "Guest Delete");
+  await expect(done).toBeVisible();
+  // Only Picked-up cards offer Delete.
+  await expect(chelsea.getByRole("button", { name: /^Delete / })).toHaveCount(1);
+
+  // Dismissing the confirmation keeps it.
+  chelsea.once("dialog", (d) => d.dismiss());
+  await done.getByRole("button", { name: "Delete Guest Delete's order" }).click();
+  await expect(done).toBeVisible();
+
+  // Confirming deletes it.
+  chelsea.once("dialog", (d) => d.accept());
+  await done.getByRole("button", { name: "Delete Guest Delete's order" }).click();
+  await expect(chelsea.locator("article", { hasText: "Guest Delete" })).toHaveCount(0);
+
+  // Members never see Delete.
+  const jordan = await as(browser, "Jordan Reyes");
+  await jordan.goto(`/kitchen/${eventId}`);
+  await expect(jordan.getByRole("button", { name: /Delete/ })).toHaveCount(0);
 });

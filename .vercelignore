@@ -1,0 +1,12 @@
+# Never upload local env files: deploys get their settings from Vercel's environment variables.
+.env
+.env.*
+!.env.example
+# Local-only folders
+.claude/
+.agents/
+.neon
+e2e/
+test-results/
+playwright-report/
+src/generated/

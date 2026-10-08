@@ -2,6 +2,10 @@
 
 import { useActionState, useState } from "react";
 import { saveSettings, type SettingsState } from "@/app/(app)/admin/settings/actions";
+import {
+  sendTestReminderAction,
+  type TestReminderState,
+} from "@/app/(app)/admin/settings/test-reminder-action";
 import { PillButton } from "@/components/bc";
 import { cn } from "@/lib/utils";
 
@@ -22,6 +26,10 @@ export type SettingsFormValues = {
 /** Design: Settings (left card). */
 export function SettingsForm({ values }: { values: SettingsFormValues }) {
   const [state, action, pending] = useActionState<SettingsState, FormData>(saveSettings, {});
+  const [test, testAction, testPending] = useActionState<TestReminderState, FormData>(
+    sendTestReminderAction,
+    {},
+  );
   const [reminders, setReminders] = useState(values.remindersEnabled);
 
   return (
@@ -117,16 +125,23 @@ export function SettingsForm({ values }: { values: SettingsFormValues }) {
           {pending ? "Saving…" : "Save settings"}
         </PillButton>
         <button
-          type="button"
-          disabled={!values.slackConnected}
+          type="submit"
+          formAction={testAction}
+          formNoValidate
+          disabled={!values.slackConnected || testPending}
           title={values.slackConnected ? undefined : "Available once Slack is connected"}
           className="cursor-pointer rounded-full border-[3px] border-border px-6 py-2.5 text-[13px] font-bold uppercase disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Send test reminder
+          {testPending ? "Sending…" : "Send test reminder"}
         </button>
       </div>
       <p role="status" className="text-[13px] text-destructive">
         {state.error ?? (state.ok && !pending ? "Settings saved." : "")}
+      </p>
+      <p role="status" className="text-[13px] text-destructive">
+        {testPending
+          ? ""
+          : (test.error ?? (test.sent ? `Test reminder sent to ${values.slackChannel}` : ""))}
       </p>
     </form>
   );

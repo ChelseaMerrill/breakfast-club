@@ -38,7 +38,7 @@ enum OrderStatus {
 
 model Member {
   id                  String              @id @default(cuid())
-  slackUserId         String?             @unique // null for Google sign-ins (interim, decision #41)
+  slackUserId         String?             @unique // set for every Slack member; seed members use SEED_…
   name                String
   email               String?             @unique
   avatarUrl           String?

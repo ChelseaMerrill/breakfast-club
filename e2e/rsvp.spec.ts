@@ -6,7 +6,7 @@ import { dbTask, signInAs } from "./helpers";
 
 type HomeEvent = {
   id: string;
-  status: "SCHEDULED" | "SKIPPED";
+  status: "SCHEDULED" | "ORDERING_OPEN" | "ORDERING_CLOSED" | "SKIPPED" | "CANCELLED";
   skipReason: string | null;
   rsvpDeadline: string | null;
 };
@@ -18,7 +18,10 @@ const inPast = () => new Date(Date.now() - 60 * 1000).toISOString();
 
 test.beforeAll(() => {
   event = dbTask<HomeEvent>("home-event");
-  if (event.status !== "SCHEDULED") throw new Error("This Thursday must be a scheduled week.");
+  // RSVPs work while scheduled or while ordering is open/closed on the day.
+  if (event.status === "SKIPPED" || event.status === "CANCELLED") {
+    throw new Error("This Thursday must not be skipped or cancelled.");
+  }
   dbTask("clear-rsvps", event.id, ...TESTERS);
 });
 
@@ -101,5 +104,5 @@ test("a skipped Thursday shows a banner instead of RSVP buttons", async ({ page 
   await expect(card(page)).toContainText("No breakfast this Thursday: Team offsite");
   await expect(card(page)).toContainText("Next breakfast is");
   await expect(card(page).getByRole("button", { name: "I'm in" })).toHaveCount(0);
-  dbTask("set-event", event.id, JSON.stringify({ status: "SCHEDULED", skipReason: null }));
+  dbTask("set-event", event.id, JSON.stringify({ status: event.status, skipReason: null }));
 });

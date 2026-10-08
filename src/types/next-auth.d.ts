@@ -1,7 +1,7 @@
 import type { DefaultSession } from "next-auth";
 import type { Role } from "@/generated/prisma/enums";
 
-type Provider = "google" | "slack" | "dev-login";
+type Provider = "slack" | "dev-login";
 
 declare module "next-auth" {
   interface User {
