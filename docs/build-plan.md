@@ -9,12 +9,13 @@ Paste one milestone at a time into Claude Code: *"Implement Milestone N from doc
 - **Done when:** `npm run dev` shows a placeholder home page and `db:seed` fills the dev database.
 
 ## M1 — Auth & roles
-- Sign in with **Google** via Auth.js (interim, open-questions #41): verified `jahnelgroup.com` accounts only; create/update the Member by email on login
-- `ORGANIZER_EMAILS` grants ORGANIZER (cmerrill@jahnelgroup.com); no role toggle
-- Slack sign-in + #108state gate (`conversations.members`, re-checked every few hours) built but **off** until the Slack app exists (`AUTH_SLACK_ID`/`AUTH_SLACK_SECRET`; then `ORGANIZER_SLACK_IDS`)
+- **Sign in with Slack** via Auth.js — the only sign-in (open-questions #42); create/update the Member on login
+- Only #108state members may sign in (`conversations.members`), re-checked every few hours
+- `ORGANIZER_SLACK_IDS` grants ORGANIZER (Chelsea); no role toggle
+- Off until the Slack app exists (`AUTH_SLACK_ID`/`AUTH_SLACK_SECRET`); a Google stand-in (#41) was built and later removed
 - Local-dev-only "Sign in as…" picker of seed members
 - Server-side role guard for `/admin/*`
-- **Done when:** a jahnelgroup.com Google account can sign in, any other Google account can't, cmerrill@jahnelgroup.com gets the organizer pages, and non-organizers get 403 on admin routes. (Slack: same checks for #108state once enabled.)
+- **Done when:** a #108state member can sign in with Slack, someone outside the channel can't, Chelsea's Slack account gets the organizer pages, and non-organizers get 403 on admin routes. (Verified with the dev picker and mocked Slack; real Slack check once the app exists.)
 
 ## M2 — Schedule & skip weeks
 - `/schedule` list of Thursdays

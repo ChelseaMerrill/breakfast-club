@@ -167,7 +167,7 @@ async function run(): Promise<unknown> {
       const [id, json] = args;
       const v = JSON.parse(json) as {
         rsvpDeadline?: string | null;
-        status?: "SCHEDULED" | "SKIPPED";
+        status?: "SCHEDULED" | "ORDERING_OPEN" | "ORDERING_CLOSED" | "SKIPPED" | "CANCELLED";
         skipReason?: string | null;
       };
       await db.breakfastEvent.update({

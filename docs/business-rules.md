@@ -52,10 +52,9 @@
 - Members can change their RSVP until **Wednesday 5pm ET**; after that the buttons show **disabled** with "RSVPs closed Wed 5pm". The organizer can edit anytime.
 
 ## Sign-in & access
-- **Now (interim, open-questions #41):** sign in with **Google**. Only verified addresses on `ALLOWED_EMAIL_DOMAINS` (default `jahnelgroup.com`) are allowed.
-- **Later, once the Slack app exists:** **anyone in #108state** can sign in with Slack. Membership is checked at sign-in and re-checked every few hours; someone who has left the channel is signed out (their history stays).
+- **Sign in with Slack only** (open-questions #42): **anyone in #108state** can sign in. Membership is checked at sign-in and re-checked every few hours; someone who has left the channel is signed out (their history stays).
 - People who can't sign in (clients, guests) are entered **by name** by the organizer.
-- **Only Chelsea** (`ORGANIZER_EMAILS` = cmerrill@jahnelgroup.com; later also `ORGANIZER_SLACK_IDS`) is an organizer. There is no role toggle: her nav shows the member pages plus Thursdays, Payments and Settings.
+- **Only Chelsea** (her Slack user ID in `ORGANIZER_SLACK_IDS`) is an organizer. There is no role toggle: her nav shows the member pages plus Thursdays, Payments and Settings.
 - In **local development only**, a "Sign in as…" picker lists seed members. It must be impossible to enable in production.
 - **Everyone can see** who RSVP'd Yes and No, and the headcount (= Yes + walk-ins).
 

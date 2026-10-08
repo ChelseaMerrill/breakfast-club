@@ -51,4 +51,5 @@
 ### Decided 2026-10-07 (later)
 | # | Question | Decision |
 |---|---|---|
-| 41 | Sign-in while the Slack app can't be created | **Google SSO for now.** Only verified Google accounts on `ALLOWED_EMAIL_DOMAINS` (default `jahnelgroup.com`) can sign in; members are matched by email. **cmerrill@jahnelgroup.com** is the organizer (`ORGANIZER_EMAILS`); everyone else is a member. The #108state gate (#28) and Slack sign-in stay in the code, off until `AUTH_SLACK_ID`/`AUTH_SLACK_SECRET` are set. Supersedes #28/#29 until then. |
+| 41 | ~~Sign-in while the Slack app can't be created~~ (superseded by #42) | **Google SSO for now.** Only verified Google accounts on `ALLOWED_EMAIL_DOMAINS` (default `jahnelgroup.com`) can sign in; members are matched by email. **cmerrill@jahnelgroup.com** is the organizer (`ORGANIZER_EMAILS`); everyone else is a member. The #108state gate (#28) and Slack sign-in stay in the code, off until `AUTH_SLACK_ID`/`AUTH_SLACK_SECRET` are set. Supersedes #28/#29 until then. |
+| 42 | Sign-in method | **Slack only** (2026-10-08). One Slack app gives Sign in with Slack and the reminder bot. Google sign-in is removed; no Google key needed. Only **#108state** members can sign in (#28); the organizer is set by **`ORGANIZER_SLACK_IDS`** (Chelsea's Slack user ID). Until the Slack app exists, only the local dev picker signs anyone in. |

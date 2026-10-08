@@ -7,7 +7,7 @@ import { ThisThursdayCard } from "@/components/home/this-thursday-card";
 import { YourOrderCard } from "@/components/home/your-order-card";
 import { getCurrentMember } from "@/lib/dal";
 
-const PROVIDER_LABEL = { google: "Google", slack: "Slack", "dev-login": "dev sign-in" } as const;
+const PROVIDER_LABEL = { slack: "Slack", "dev-login": "dev sign-in" } as const;
 
 // Home (design: "This Thursday"). Each card is its own component: RSVP & headcount (M3),
 // menu + my sponsorships (M4), your order (M6).

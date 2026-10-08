@@ -10,7 +10,7 @@ export type CurrentMember = {
   name: string;
   image: string | null;
   isOrganizer: boolean;
-  provider: "google" | "slack" | "dev-login";
+  provider: "slack" | "dev-login";
 };
 
 export async function getCurrentMember(): Promise<CurrentMember> {

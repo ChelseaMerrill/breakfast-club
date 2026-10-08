@@ -5,8 +5,6 @@ import { PageTitle, PillButton } from "@/components/bc";
 import { db } from "@/lib/db";
 
 const ERRORS: Record<string, string> = {
-  NotAllowedDomain:
-    "Breakfast Club is for Jahnel Group accounts. Sign in with your @jahnelgroup.com Google account.",
   NotInChannel:
     "Breakfast Club is for members of #108state. Ask to be added to the channel, then try again.",
   AccessDenied: "That account can't sign in. Ask Chelsea to add your breakfast order by name.",
@@ -27,7 +25,7 @@ export default function SignInPage({ searchParams }: PageProps<"/signin">) {
           Pancakes. Friends. Thursday.
         </p>
         <p className="text-muted-foreground">
-          Menu, sponsors, RSVPs and orders for every Thursday. Sign in with your Jahnel Group
+          Menu, sponsors, RSVPs and orders for every Thursday. Sign in with your Jahnel Group Slack
           account.
         </p>
         <Suspense>
@@ -42,13 +40,6 @@ async function SignInOptions({ searchParams }: Pick<PageProps<"/signin">, "searc
   const params = await searchParams;
   const redirectTo = safeCallback(params.callbackUrl);
   const error = typeof params.error === "string" ? params.error : undefined;
-  const googleConfigured = Boolean(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET);
-
-  async function googleSignIn() {
-    "use server";
-    await signIn("google", { redirectTo });
-  }
-
   async function slackSignIn() {
     "use server";
     await signIn("slack", { redirectTo });
@@ -64,22 +55,15 @@ async function SignInOptions({ searchParams }: Pick<PageProps<"/signin">, "searc
           {ERRORS[error] ?? "Something went wrong signing in. Please try again."}
         </p>
       )}
-      <form action={googleSignIn}>
-        <PillButton type="submit" disabled={!googleConfigured}>
-          Sign in with Google
+      <form action={slackSignIn}>
+        <PillButton type="submit" disabled={!slackEnabled}>
+          Sign in with Slack
         </PillButton>
       </form>
-      {slackEnabled && (
-        <form action={slackSignIn}>
-          <PillButton type="submit" className="bg-secondary">
-            Sign in with Slack
-          </PillButton>
-        </form>
-      )}
       <p className="text-xs text-[var(--bc-brown-faint)]">
-        {googleConfigured
-          ? "Use your @jahnelgroup.com account. Your name and photo come from it. No password needed."
-          : "Google sign-in isn't set up yet (AUTH_GOOGLE_ID / AUTH_GOOGLE_SECRET)."}
+        {slackEnabled
+          ? "Your name and avatar are pulled from Slack. No password needed."
+          : "Slack sign-in isn't set up yet (AUTH_SLACK_ID / AUTH_SLACK_SECRET)."}
       </p>
       {process.env.NODE_ENV === "development" && <DevPicker redirectTo={redirectTo} />}
     </>
