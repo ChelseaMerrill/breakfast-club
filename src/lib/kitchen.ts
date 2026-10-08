@@ -69,6 +69,7 @@ export async function getKitchen(eventId: string, now = new Date()) {
     include: {
       rsvps: { where: { answer: "YES" }, select: { memberId: true } },
       orders: { orderBy: { placedAt: "asc" }, include: orderInclude },
+      menuItems: { orderBy: { sortOrder: "asc" }, take: 1, select: { name: true } },
     },
   });
   if (!event) return null;
@@ -91,6 +92,9 @@ export async function getKitchen(eventId: string, now = new Date()) {
     orderingEnabled: event.orderingEnabled,
     open: isOrderingOpen(event),
     canOpen: canOpenOrdering(event, nyToday(now)),
+    itemName: event.menuItems[0]?.name ?? null,
+    orderingMessage: event.orderingMessage,
+    everOpened: event.orderingOpenedAt !== null,
     stillOpenLate: stillOpenLate(event, now),
     columns: BOARD.map((status) => ({ status, cards: cards.filter((c) => c.status === status) })),
     activeOrders: live.filter((o) => o.status !== "PICKED_UP").length,

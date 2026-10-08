@@ -43,16 +43,16 @@ for each item and chasing their $30, figuring out who's eating, and keeping trac
 13. **Tuesday Slack reminder** — 10am ET to #108state: Thursday date, the menu item with its sponsors (or how many more it needs), the RSVP deadline, and *RSVP* / *Sponsor an item* buttons. Not sent if that Thursday is skipped.
 
 ### Next
-- Optional Slack post when ordering opens ("Ordering is open!")
+- ~~Slack post when ordering opens~~ — built: Chelsea writes the message each week (open-questions #55)
 - Slack DM reminder to sponsors who haven't paid
-- "My usual" one-tap reorder
+- ~~"My usual" one-tap reorder~~ — not planned (open-questions #54)
 - ~~Cancel a Thursday~~ — not needed; Skip covers it (open-questions #44)
 - Organizer event-detail page (Yes / No / no-response lists) — not in the design
 - ~~More than one menu item per Thursday / an item-options editor~~ — not needed; one item per Thursday, and the order form's **Customize** box covers choices like egg style (open-questions #45)
 - "Copy last week's menu"
 
 ### Later
-- Shopping list from headcount + menu + past orders
+- ~~Shopping list~~ — not planned (open-questions #54)
 - Stats: attendance trends, popular items, sponsor totals
 - Interactive Slack buttons to RSVP without opening the app
 

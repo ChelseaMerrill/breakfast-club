@@ -77,6 +77,15 @@ async function OrderContent({ params }: Pick<PageProps<"/order/[eventId]">, "par
       <p className="text-sm text-muted-foreground">
         {day}. Ordering is open. You can edit your order until it moves to Cooking.
       </p>
+      {event.orderingMessage && (
+        <section
+          aria-label="From Chelsea"
+          className="rounded-[18px] border-[3px] border-border bg-[#FFF0B8] px-5 py-4 shadow-chunky-sm"
+        >
+          <p className="text-xs font-bold text-muted-foreground uppercase">From Chelsea</p>
+          <p className="mt-1 text-[15px] whitespace-pre-line">{event.orderingMessage}</p>
+        </section>
+      )}
       <OrderForm
         // Next keeps recent pages alive (Activity), so tie the form's local state to the
         // order's current version: new server data means a fresh form.

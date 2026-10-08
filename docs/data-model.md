@@ -46,6 +46,7 @@ model BreakfastEvent {
   orderingOpenedAt DateTime?
   orderingClosedAt DateTime?
   orderingAutoClosed Boolean  @default(false) // closed by the midnight rollover (open-questions #34)
+  orderingMessage  String?    // Chelsea's note when opening ordering: posted to #108state, shown on the order form (#55)
   rsvpDeadline     DateTime?               // default: Wednesday 5pm ET before
   skipReason       String?                 // e.g. "Thanksgiving"
   sponsorsNeeded   Int         @default(1) // set with −/+ on the Schedule; hides "Sponsor this" when filled
