@@ -9,7 +9,7 @@
 | 4 | Reminder time | **Tuesday 10:00am ET** |
 | 5 | Slack channel | **#108state** |
 | 6 | Walk-ins | **Yes**, including unscheduled coworkers and guests such as clients. |
-| 7 | Sponsor shape | **A team, or one or two people.** |
+| 7 | Sponsor shape | ~~A team, or one or two people.~~ Superseded by #52: one sponsor per sponsorship. |
 | 8 | Headcount visibility | **Visible to everyone.** |
 | 9 | Menu | ~~A Menu tab~~ → superseded by #20: Chelsea sets each Thursday's menu item on the Schedule; people sponsor it by adding their names. |
 | 10 | Organizers | **Just Chelsea.** |
@@ -19,7 +19,7 @@
 | 14 | RSVP visibility | **Names and numbers visible to everyone.** |
 | 15 | Source of truth when docs and design disagree | **The design** (`design/Breakfast Club.dc.html`). |
 | 16 | Sponsorship is per menu item | **Yes** — no "sponsor the whole week". (design) |
-| 17 | Two people or a team on one sponsorship | **One $30 total.** Modal: "One sponsorship is $30 paid to Chelsea, even when two people share it." (design) |
+| 17 | ~~Two people or a team on one sponsorship~~ | Superseded by #53: **each sponsor gives $30**. |
 | 18 | More than one sponsorship per item | **Yes, up to the Thursday's sponsors-needed count** (default 1). (design) |
 | 19 | Payment status visibility | **Chelsea + the sponsor only; never in Slack.** (design) |
 | 20 | Menu items per Thursday | **One**, edited inline on the Schedule; no Menu page. (design) |
@@ -62,3 +62,5 @@
 | 49 | Headcount in the Tuesday reminder | **Removed** — the Slack message no longer has a "Headcount so far" line (the Settings preview matches). Headcount still shows in the app. |
 | 50 | "Your order is ready" | **Slack DM to the member when their order moves Cooking → Ready** (needs only `chat:write`). Guests and seed members are skipped; sent after the kitchen tap responds, only if the order is still Ready; Picked up / ← Back don't re-send. Turn on **App Home → Messages Tab** in the Slack app so people see it. |
 | 51 | In-app help | **App Guide** page at `/guide`, linked at the bottom of the nav for everyone. Same content as the shared guide artifact; the "For Chelsea" section shows only to the organizer. |
+| 52 | Who a sponsorship is | **Just the person who pressed *Sponsor this*** (no more Just me / Me + someone / A team), or a name Chelsea types in on the Schedule. Old team / two-person rows still display. |
+| 53 | What each sponsor pays, and how | **Each sponsor gives Chelsea $30** — one sponsor gives $30; two sponsors each give $30. Pay by **cash or Venmo @Chelsea-Merrill-1** (shown after sponsoring, on Home → My sponsorships, and in the App Guide). |

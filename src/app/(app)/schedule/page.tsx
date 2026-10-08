@@ -12,7 +12,6 @@ import {
   canSponsor,
   minSponsorsNeeded,
 } from "@/lib/sponsorship-rules";
-import { listCoworkers } from "@/lib/sponsorships";
 import { formatShortThursday, nyToday } from "@/lib/thursdays";
 import { cn } from "@/lib/utils";
 import { changeSponsorsNeeded, removeSponsorship } from "./actions";
@@ -30,15 +29,12 @@ export default function SchedulePage() {
   );
 }
 
-type Viewer = { isOrganizer: boolean; coworkers: { id: string; name: string }[] };
+type Viewer = { isOrganizer: boolean };
 
 async function ScheduleList() {
   const member = await getCurrentMember();
-  const [{ events, sponsorshipAmountCents }, coworkers] = await Promise.all([
-    listUpcomingEvents(),
-    listCoworkers(member.id),
-  ]);
-  const viewer = { isOrganizer: member.isOrganizer, coworkers };
+  const { events, sponsorshipAmountCents } = await listUpcomingEvents();
+  const viewer = { isOrganizer: member.isOrganizer };
   const today = nyToday();
   return events.map((event, i) => (
     <ScheduleCard
@@ -139,7 +135,6 @@ function ScheduleCard({
               eventId={event.id}
               itemName={item.name}
               canSponsor={showSponsor}
-              coworkers={viewer.coworkers}
               amountLabel={formatDollars(amountCents)}
             />
           )}

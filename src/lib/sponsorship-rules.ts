@@ -78,12 +78,8 @@ const id = z.string().min(1).max(64);
 const name = (label: string) =>
   z.string().trim().min(1, `Enter a ${label}.`).max(60, `Keep the ${label} under 60 characters.`);
 
-/** Sponsor this: Just me / Me + someone (a coworker) / A team (team name). */
-export const sponsorInput = z.discriminatedUnion("mode", [
-  z.object({ mode: z.literal("me"), eventId: id }),
-  z.object({ mode: z.literal("two"), eventId: id, partnerId: id }),
-  z.object({ mode: z.literal("team"), eventId: id, teamName: name("team name") }),
-]);
+/** Sponsor this: the member who presses it sponsors the Thursday's item (open-questions #52). */
+export const sponsorInput = z.object({ eventId: id });
 export type SponsorInput = z.infer<typeof sponsorInput>;
 
 /** The organizer's inline menu item; an empty name removes the item (if nothing depends on it). */

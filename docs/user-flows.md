@@ -22,7 +22,7 @@ flowchart LR
 ## Member flows
 1. **First visit** — click Slack link → Sign in with Slack → Home.
 2. **RSVP** — Home shows the next Thursday: date, "RSVP by Wed 5pm ET", headcount ("N coming so far · X RSVP yes, Y walk-in"), **I'm in / Not this week**, and the In / Out names.
-3. **Sponsor a menu item** — Home → *Sponsor an item →* (or Schedule) → *Sponsor this* on a Thursday → choose **Just me**, **Me + someone** (pick a coworker), or **A team** (team name) → Confirm. Screen says: "You're on the menu. Please pay $30 to Chelsea."
+3. **Sponsor a menu item** — Home → *Sponsor an item →* (or Schedule) → *Sponsor this* on a Thursday → confirm (*Sponsor for $30*). Screen says: "You're on the menu. Please give Chelsea $30. Pay with cash or Venmo @Chelsea-Merrill-1."
 4. **Check my sponsorships** — Home → *My sponsorships* shows each with *$30 due* or *Paid ✓*, and *Remove* while unpaid.
 5. **Order** — when ordering is open, Home → *Your order* shows **Place your order** → pick items/options → notes → Submit. Works without a Yes RSVP (walk-in). When ordering is closed it says "Ordering opens when Chelsea starts it on Thursday morning."
 6. **Track order** — status pill on Home updates live; the read-only kitchen queue shows the whole board.

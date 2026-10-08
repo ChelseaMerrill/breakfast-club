@@ -35,7 +35,7 @@ Paste one milestone at a time into Claude Code: *"Implement Milestone N from doc
 
 ## M4 — Menu & sponsorship
 - On `/schedule`, the organizer types each Thursday's **menu item**, sets **sponsors needed** (−/+), and can **add a sponsor by name**
-- Any member: *Sponsor this* (hidden once filled) → Just me / Me + someone / A team → "You're on the menu. Please pay $30 to Chelsea."; remove own unpaid sponsorship from Home
+- Any member: *Sponsor this* (hidden once filled) → confirm → "You're on the menu. Please give Chelsea $30. Pay with cash or Venmo @Chelsea-Merrill-1."; remove own unpaid sponsorship from Home (originally Just me / Me + someone / A team — removed, open-questions #52)
 - Home *Menu* card shows the item and "Sponsored by …" / "Needs N sponsor(s) ($30 each)"
 - **Done when:** Chelsea sets a menu item and a member's name (or team) appears next to it.
 - Built (notes):
@@ -43,7 +43,7 @@ Paste one milestone at a time into Claude Code: *"Implement Milestone N from doc
   - Menu item box saves on Enter/blur; emptying it removes the item only if it has no sponsors or orders. Renaming keeps sponsorships (they point at the item).
   - Sponsors needed: 1–10, and − stops at the number of sponsorships already on the item.
   - The organizer's *Add sponsor by name* respects the cap too ("Already fully sponsored. Press + …"). She removes any sponsor with the × on its chip on the Schedule (Payments, M5, will also list them).
-  - *A team* stores `teamName` **and** links the member who signed it up, so it shows in their *My sponsorships* and they can remove it.
+  - (Retired) *A team* / *Me + someone*: removed in #52. `teamName` and multi-member sponsorships stay readable for old rows; new ones are always one member or one typed name.
   - A member can't be on two sponsorships of the same item ("You're already sponsoring …").
   - Organizer controls are hidden on skipped/cancelled Thursdays (the design shows them on every card; there's nothing to sponsor on a skipped week).
   - Home: `src/components/home/menu-card.tsx` (first Thursday from today) and `my-sponsorships-card.tsx` (upcoming sponsorships plus past unpaid ones, each with its Thursday's date).

@@ -19,10 +19,11 @@
 
 ## Sponsorship & payments
 - **Anyone** signed in can sponsor the menu item on an upcoming (not skipped) Thursday **while it still needs sponsors**. Once sponsorships reach the sponsors-needed count, *Sponsor this* is hidden.
-- A Sponsorship is **one person (Just me), two people (Me + someone), or a team name (A team)**.
+- A Sponsorship is **one sponsor**: the member who pressed *Sponsor this*, or a name the organizer typed in (open-questions #52).
 - A member can be on only one Sponsorship per menu item.
 - The organizer can also add a Sponsorship by typing any name (for someone who isn't a member). This also respects sponsors needed; she presses + first to add more.
-- Each Sponsorship owes the **sponsorship amount ($30)** to Chelsea — one payment per sponsorship, even if two people share it.
+- **Each sponsor gives Chelsea the sponsorship amount ($30).** One sponsor gives $30; if two people sponsor the same Thursday, each gives $30 (open-questions #53).
+- Sponsors pay Chelsea **in cash or on Venmo (@Chelsea-Merrill-1)**; the app only tracks Paid / not paid.
 - An item can have more than one Sponsorship, up to its sponsors-needed count (each owes $30).
 - A member can remove a sponsorship they're on until it's marked **Paid** or the Thursday has passed; after that only the organizer can change it.
 - **Only the organizer** marks a sponsorship Paid / unpaid. `paidAt` is recorded when marked Paid and cleared when unchecked.

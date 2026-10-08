@@ -59,13 +59,18 @@ test("Chelsea sets a menu item and a member's name appears next to it", async ({
   await page.goto("/schedule");
   const dialog = await openSponsorModal(page);
   await expect(dialog).toContainText("Sponsor E2E Waffles");
-  await expect(dialog.getByRole("button", { name: "Just me" })).toHaveAttribute(
-    "aria-pressed",
-    "true",
+  // No Just me / Me + someone / A team any more: the sponsor is whoever confirms (#52).
+  await expect(dialog.getByRole("button", { name: /Just me|Me \+ someone|A team/ })).toHaveCount(0);
+  await expect(dialog).toContainText("Each sponsor gives Chelsea $30.");
+  await expect(dialog).toContainText("each of you gives $30");
+  await expect(dialog.getByRole("link", { name: "@Chelsea-Merrill-1" })).toHaveAttribute(
+    "href",
+    "https://venmo.com/u/Chelsea-Merrill-1",
   );
-  await dialog.getByRole("button", { name: "Confirm" }).click();
+  await dialog.getByRole("button", { name: "Sponsor for $30" }).click();
   await expect(dialog).toContainText("You're on the menu");
-  await expect(dialog).toContainText("Please pay $30 to Chelsea.");
+  await expect(dialog).toContainText("Please give Chelsea $30.");
+  await expect(dialog).toContainText("Pay with cash or Venmo @Chelsea-Merrill-1.");
   await dialog.getByRole("button", { name: "Done" }).click();
   await expect(dialog).toBeHidden();
 
@@ -77,47 +82,44 @@ test("Chelsea sets a menu item and a member's name appears next to it", async ({
   ]);
 });
 
-test("Sponsor this: Me + someone and A team, until the cap hides it", async ({ page }) => {
+test("two sponsors each give $30; signing up twice is refused; the cap hides Sponsor this", async ({
+  page,
+}) => {
   await chelseaSetsMenu(page, "E2E Quiche", 2);
+  await expect(card(page)).toContainText("Needs 2 sponsors ($30 each)");
 
   await signInAs(page, "Jordan Reyes");
   await page.goto("/schedule");
   let dialog = await openSponsorModal(page);
-  await dialog.getByRole("button", { name: "Me + someone" }).click();
-  await dialog.getByLabel("Coworker").selectOption({ label: "Jane Doe" });
-  await dialog.getByRole("button", { name: "Confirm" }).click();
+  await dialog.getByRole("button", { name: "Sponsor for $30" }).click();
   await expect(dialog).toContainText("You're on the menu");
   await dialog.getByRole("button", { name: "Done" }).click();
-  await expect(card(page)).toContainText("Sponsored by Jordan Reyes & Jane Doe · needs 1 more");
+  await expect(card(page)).toContainText("Sponsored by Jordan Reyes · needs 1 more");
 
-  // Signing up again as a team while already on it is refused...
+  // Signing up again is refused.
   dialog = await openSponsorModal(page);
-  await dialog.getByRole("button", { name: "A team" }).click();
-  await expect(dialog.getByRole("button", { name: "Confirm" })).toBeDisabled();
-  await dialog.getByLabel("Team name").fill("Delivery team");
-  await dialog.getByRole("button", { name: "Confirm" }).click();
+  await dialog.getByRole("button", { name: "Sponsor for $30" }).click();
   await expect(dialog.getByRole("alert")).toHaveText("You're already sponsoring E2E Quiche.");
   await dialog.getByRole("button", { name: "Cancel" }).click();
 
-  // ...so Sam signs up the team, which fills the second spot.
+  // A second person fills the second spot; each owes their own $30.
   await signInAs(page, "Sam Lee");
   await page.goto("/schedule");
   dialog = await openSponsorModal(page);
-  await dialog.getByRole("button", { name: "A team" }).click();
-  await dialog.getByLabel("Team name").fill("Delivery team");
-  await dialog.getByRole("button", { name: "Confirm" }).click();
+  await dialog.getByRole("button", { name: "Sponsor for $30" }).click();
   await expect(dialog).toContainText("You're on the menu");
   await dialog.getByRole("button", { name: "Done" }).click();
-  await expect(card(page)).toContainText("Sponsored by Jordan Reyes & Jane Doe, Delivery team");
+  await expect(card(page)).toContainText("Sponsored by Jordan Reyes, Sam Lee");
   await expect(card(page).getByRole("button", { name: "Sponsor this" })).toHaveCount(0);
 
-  // Jane (the "someone") sees it in her sponsorships too.
-  await signInAs(page, "Jane Doe");
   await page.goto("/");
   const mine = page.getByRole("region", { name: "My sponsorships" });
   await expect(mine.getByRole("listitem").filter({ hasText: label })).toContainText(
-    "E2E Quiche · Jordan Reyes & Jane Doe",
+    "E2E Quiche · Sam Lee",
   );
+  await expect(mine.getByRole("listitem").filter({ hasText: label })).toContainText("$30 due");
+  await expect(mine).toContainText("Each sponsor gives Chelsea $30.");
+  await expect(mine.getByRole("link", { name: "@Chelsea-Merrill-1" })).toBeVisible();
 });
 
 test("a member removes their own unpaid sponsorship from Home", async ({ page }) => {
@@ -125,7 +127,7 @@ test("a member removes their own unpaid sponsorship from Home", async ({ page })
   await signInAs(page, "Jordan Reyes");
   await page.goto("/schedule");
   const dialog = await openSponsorModal(page);
-  await dialog.getByRole("button", { name: "Confirm" }).click();
+  await dialog.getByRole("button", { name: "Sponsor for $30" }).click();
   await expect(dialog).toContainText("You're on the menu");
 
   await page.goto("/");

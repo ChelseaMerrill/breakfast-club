@@ -117,12 +117,3 @@ export async function listPayments(now = new Date()) {
   );
   return { payments, thisWeekEventId: thisWeek?.id ?? null };
 }
-
-/** Coworkers to pick from for *Me + someone* (every member but you), by name. */
-export async function listCoworkers(memberId: string) {
-  return db.member.findMany({
-    where: { id: { not: memberId } },
-    orderBy: { name: "asc" },
-    select: { id: true, name: true },
-  });
-}

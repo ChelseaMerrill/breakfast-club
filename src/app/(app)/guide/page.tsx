@@ -2,6 +2,7 @@ import { Suspense, type ReactNode } from "react";
 import Link from "next/link";
 import { Card, PageTitle } from "@/components/bc";
 import { getCurrentMember } from "@/lib/dal";
+import { PAYMENT_METHODS, VENMO_HANDLE, VENMO_URL } from "@/lib/payment-info";
 
 // App Guide: how to use Breakfast Club (linked at the bottom of the nav). Everything is static
 // except the organizer section, which only Chelsea sees.
@@ -35,7 +36,7 @@ const FAQ = [
   },
   {
     q: "How do I pay for a sponsorship?",
-    a: "Pay Chelsea the $30 however you usually would. She marks it paid, and you'll see Paid ✓. Payment status is only visible to you and Chelsea; it's never posted in Slack.",
+    a: `Each sponsor gives Chelsea $30, by ${PAYMENT_METHODS}. She marks it paid, and you'll see Paid ✓. Payment status is only visible to you and Chelsea; it's never posted in Slack.`,
   },
   {
     q: 'I didn\'t get the "ready" message.',
@@ -109,12 +110,24 @@ export default function GuidePage() {
               (or <i>Sponsor an item</i> on Home), press <Pill>Sponsor this</Pill>.
             </li>
             <li>
-              Choose <b>Just me</b>, <b>Me + someone</b> (pick a coworker), or <b>A team</b> (type
-              the team&apos;s name).
+              Confirm, and your name goes next to the item. If someone else wants to chip in, they
+              press <Pill>Sponsor this</Pill> too.
             </li>
             <li>
-              A sponsorship is <b>$30, paid to Chelsea</b>, even when two people share it. Pay her
-              directly; the app only keeps track.
+              <b>Each sponsor gives Chelsea $30.</b> One sponsor gives $30; if two people sponsor
+              the same Thursday, each gives $30.
+            </li>
+            <li>
+              Pay with <b>cash</b> or <b>Venmo</b>{" "}
+              <a
+                href={VENMO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-destructive underline underline-offset-2"
+              >
+                {VENMO_HANDLE}
+              </a>
+              . The app only keeps track.
             </li>
             <li>
               <b>My sponsorships</b> on Home shows <i>$30 due</i> or <i>Paid ✓</i>. You can remove
@@ -213,7 +226,7 @@ async function OrganizerGuide() {
     {
       href: "/schedule",
       title: "Schedule",
-      text: "Type each week's menu item, set how many sponsors it needs with − / +, add a sponsor by name, or remove one with ×.",
+      text: "Type each week's menu item, set how many sponsors it needs with − / + (each sponsor gives $30), add a sponsor by name for someone who can't sign in, or remove one with ×.",
     },
     {
       href: null,
