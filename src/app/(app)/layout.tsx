@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { Mascots } from "@/components/mascots";
 import { NavLinks } from "@/components/nav-links";
 import { getCurrentMember } from "@/lib/dal";
+import { currentThursdayId } from "@/lib/kitchen";
 
 // Shell for every signed-in page: the design's left nav + main column.
 export default function AppLayout({ children }: LayoutProps<"/">) {
@@ -11,7 +12,9 @@ export default function AppLayout({ children }: LayoutProps<"/">) {
         <AppNav />
       </Suspense>
       <main className="relative isolate min-w-0 flex-1 px-4 pt-8 pb-20 md:px-[clamp(16px,calc((100vw-232px)*0.11),160px)]">
-        <Mascots />
+        <Suspense>
+          <Mascots />
+        </Suspense>
         {children}
       </main>
     </div>
@@ -19,6 +22,8 @@ export default function AppLayout({ children }: LayoutProps<"/">) {
 }
 
 async function AppNav() {
+  // Session first: it makes this request-time, so the date lookup isn't prerendered.
   const member = await getCurrentMember();
-  return <NavLinks name={member.name} isOrganizer={member.isOrganizer} />;
+  const thursdayId = await currentThursdayId();
+  return <NavLinks name={member.name} isOrganizer={member.isOrganizer} thursdayId={thursdayId} />;
 }

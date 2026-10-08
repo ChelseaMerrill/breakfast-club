@@ -210,6 +210,44 @@ async function run(): Promise<unknown> {
       await db.appSettings.upsert({ where: { id: 1 }, update: v, create: { id: 1, ...v } });
       return { ok: true };
     }
+    case "ordering-state": {
+      // This Thursday's ordering fields, so the ordering tests can put them back.
+      const [eventId] = args;
+      const e = await db.breakfastEvent.findUniqueOrThrow({
+        where: { id: eventId },
+        select: { status: true, orderingEnabled: true },
+      });
+      const items = await db.menuItem.findMany({
+        where: { eventId },
+        select: { id: true, name: true, orderable: true },
+      });
+      return { ...e, items };
+    }
+    case "ordering-reset": {
+      // Remove every order for the Thursday and set its ordering fields.
+      const [eventId, json] = args;
+      const v = JSON.parse(json) as {
+        status: "SCHEDULED" | "ORDERING_OPEN" | "ORDERING_CLOSED";
+        orderingEnabled: boolean;
+      };
+      const { count } = await db.order.deleteMany({ where: { eventId } });
+      await db.breakfastEvent.update({
+        where: { id: eventId },
+        data: { ...v, orderingOpenedAt: null, orderingClosedAt: null, orderingAutoClosed: false },
+      });
+      return { removedOrders: count };
+    }
+    case "set-options": {
+      // Replace a menu item's options: args = menuItemId, group, ...labels (none = clear).
+      const [menuItemId, group, ...labels] = args;
+      await db.itemOption.deleteMany({ where: { menuItemId } });
+      if (group && labels.length) {
+        await db.itemOption.createMany({
+          data: labels.map((label, sortOrder) => ({ menuItemId, group, label, sortOrder })),
+        });
+      }
+      return { ok: true };
+    }
     default:
       throw new Error(`unknown task ${task}`);
   }

@@ -7,8 +7,8 @@ import { signOutAction } from "@/app/(app)/actions";
 import { cn } from "@/lib/utils";
 
 // Left nav from the design; collapses to a hamburger menu on phones (decision #24).
-// Items appear as their milestones land: Place order (M6), Kitchen view (M6),
-// Payments (M5).
+// Items appear as their milestones land: Payments (M5). Place order and Kitchen view point
+// at this Thursday, so they're built from `thursdayId`.
 const MEMBER_ITEMS = [
   { href: "/", label: "Home" },
   { href: "/schedule", label: "Schedule" },
@@ -28,12 +28,33 @@ function Brand() {
   );
 }
 
-export function NavLinks({ name, isOrganizer }: { name: string; isOrganizer: boolean }) {
+export function NavLinks({
+  name,
+  isOrganizer,
+  thursdayId,
+}: {
+  name: string;
+  isOrganizer: boolean;
+  thursdayId: string | null;
+}) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const items = isOrganizer ? [...MEMBER_ITEMS, ...ORGANIZER_ITEMS] : MEMBER_ITEMS;
-  const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
+  const thursdayItems = thursdayId
+    ? [
+        { href: `/order/${thursdayId}`, label: "Place order", section: "/order" },
+        { href: `/kitchen/${thursdayId}`, label: "Kitchen view", section: "/kitchen" },
+      ]
+    : [];
+  const memberItems = [...MEMBER_ITEMS, ...thursdayItems];
+  const items: { href: string; label: string; section?: string }[] = isOrganizer
+    ? [...memberItems, ...ORGANIZER_ITEMS]
+    : memberItems;
+  const isActive = ({ href, section }: { href: string; section?: string }) =>
+    section
+      ? pathname.startsWith(`${section}/`)
+      : href === "/"
+        ? pathname === "/"
+        : pathname === href || pathname.startsWith(`${href}/`);
 
   return (
     <>
@@ -62,7 +83,7 @@ export function NavLinks({ name, isOrganizer }: { name: string; isOrganizer: boo
           <Brand />
         </div>
         {items.map((item) => {
-          const active = isActive(item.href);
+          const active = isActive(item);
           return (
             <Link
               key={item.href}
