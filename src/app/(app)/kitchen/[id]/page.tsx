@@ -100,7 +100,7 @@ async function KitchenBoard({ params }: Pick<PageProps<"/kitchen/[id]">, "params
           <section
             key={col.status}
             aria-label={STATUS_LABEL[col.status]}
-            className="flex min-h-[260px] flex-col gap-2.5 rounded-[18px] border-[3px] border-border bg-card p-3.5 shadow-chunky"
+            className="flex flex-col gap-2.5 md:min-h-[260px] rounded-[18px] border-[3px] border-border bg-card p-3.5 shadow-chunky"
           >
             <h2 className="flex flex-wrap justify-between gap-2 font-heading text-xl uppercase">
               <span>{STATUS_LABEL[col.status]}</span>

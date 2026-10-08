@@ -83,7 +83,8 @@ function ScheduleCard({
   return (
     <article
       className={cn(
-        "flex items-center justify-between gap-4 rounded-[18px] border-[3px] border-border bg-card px-[22px] py-[18px] shadow-chunky",
+        // Phones: status sits above the content so the organizer controls get the full width.
+        "flex flex-col gap-3 rounded-[18px] border-[3px] border-border bg-card px-[22px] py-[18px] shadow-chunky sm:flex-row sm:items-center sm:justify-between sm:gap-4",
         skipped && "opacity-60",
       )}
     >
@@ -180,7 +181,7 @@ function ScheduleCard({
           )}
         </div>
       </div>
-      <div className="flex-none text-right">
+      <div className="order-first flex flex-none items-baseline gap-2 sm:order-none sm:block sm:text-right">
         <p
           className={cn(
             "text-xs font-bold uppercase",
@@ -190,7 +191,7 @@ function ScheduleCard({
           {STATUS_LABEL[event.status]}
         </p>
         {!skipped && !cancelled && (
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground sm:mt-1">
             {/* Design: this week shows the headcount; later weeks show ordering on/off. */}
             {isCurrent
               ? `${event.headcount} coming`
