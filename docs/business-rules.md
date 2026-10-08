@@ -25,7 +25,8 @@
 - Each Sponsorship owes the **sponsorship amount ($30)** to Chelsea — one payment per sponsorship, even if two people share it.
 - An item can have more than one Sponsorship, up to its sponsors-needed count (each owes $30).
 - A member can remove a sponsorship they're on until it's marked **Paid** or the Thursday has passed; after that only the organizer can change it.
-- **Only the organizer** marks a sponsorship Paid / unpaid. `paidAt` is recorded.
+- **Only the organizer** marks a sponsorship Paid / unpaid. `paidAt` is recorded when marked Paid and cleared when unchecked.
+- On Payments, *Collected* and *Outstanding* total every sponsorship (each its own `amountCents`), whatever filter is selected. *This week* means the Thursday Home shows (the first one from today, New York time).
 - Payment status is visible to the organizer and to the sponsor(s) on it; it is never shown publicly or posted in Slack.
 - If a Thursday is skipped/cancelled after sponsorships exist, they stay listed for the organizer to remove or refund outside the app.
 

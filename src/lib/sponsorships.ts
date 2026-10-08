@@ -1,6 +1,7 @@
 import "server-only";
 import { db } from "@/lib/db";
 import { syncThursdays } from "@/lib/events";
+import { sortPayments } from "@/lib/payments";
 import { nyToday } from "@/lib/thursdays";
 
 const sponsorshipNames = {
@@ -80,6 +81,41 @@ export async function listMySponsorships(memberId: string, now = new Date()) {
       amountCents: s.amountCents,
     }))
     .sort((a, b) => a.eventDate.getTime() - b.eventDate.getTime());
+}
+
+/**
+ * Payments (organizer only): every sponsorship on every Thursday (past, upcoming, skipped or
+ * cancelled), Thursday ascending, plus which Thursday *This week* means (the one Home shows).
+ */
+export async function listPayments(now = new Date()) {
+  const [rows, thisWeek] = await Promise.all([
+    db.sponsorship.findMany({
+      include: {
+        menuItem: { select: { name: true, event: { select: { id: true, date: true } } } },
+        members: { include: { member: { select: { id: true, name: true } } } },
+      },
+    }),
+    db.breakfastEvent.findFirst({
+      where: { date: { gte: nyToday(now) } },
+      orderBy: { date: "asc" },
+      select: { id: true },
+    }),
+  ]);
+  const payments = sortPayments(
+    rows.map((s) => ({
+      id: s.id,
+      eventId: s.menuItem.event.id,
+      eventDate: s.menuItem.event.date,
+      itemName: s.menuItem.name,
+      teamName: s.teamName,
+      sponsorName: s.sponsorName,
+      members: s.members.map((m) => m.member),
+      amountCents: s.amountCents,
+      paid: s.paid,
+      createdAt: s.createdAt,
+    })),
+  );
+  return { payments, thisWeekEventId: thisWeek?.id ?? null };
 }
 
 /** Coworkers to pick from for *Me + someone* (every member but you), by name. */

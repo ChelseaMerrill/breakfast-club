@@ -51,6 +51,13 @@ Paste one milestone at a time into Claude Code: *"Implement Milestone N from doc
 - `/admin/payments`: all sponsorships with Paid checkbox, filters (unpaid / this week / all), totals collected and outstanding
 - Members see *$30 due* / *Paid ✓* on their own sponsorships
 - **Done when:** Chelsea checks off a sponsorship and the sponsor sees *Paid ✓*.
+- Notes (as built):
+  - Lists every Sponsorship on every Thursday (past, upcoming, skipped or cancelled), Thursday ascending, then sign-up order. Columns as in the design: Thursday · Item · Sponsor · Amount · Paid · Remove; "Nothing here." when a filter is empty.
+  - Filters live in the URL so they're linkable: `/admin/payments` (*Unpaid*, the default), `?filter=week` (*This week* = the Thursday Home shows: first from today in New York, paid or not), `?filter=all`.
+  - *Collected* / *Outstanding* are over **all** sponsorships whatever the filter (as in the design), each summing its own `amountCents`.
+  - The *Paid* checkbox flips at once (optimistic) and calls an organizer-only action that sets `paid` and `paidAt` (unchecking clears `paidAt`; a repeat click keeps the original). *Remove* reuses the Schedule's `removeSponsorship` (the organizer can remove any sponsorship, paid or not).
+  - Members: Home → *My sponsorships* shows *Paid ✓* and hides *Remove* once paid. Payment status appears nowhere else (Schedule and Home menu cards show names only).
+  - Code: `src/app/(app)/admin/payments/`, `src/components/payments/paid-checkbox.tsx`, `src/lib/payments.ts` (pure rules), `listPayments()` in `src/lib/sponsorships.ts`.
 
 ## M6 — Ordering & kitchen view
 - Organizer **Open ordering / Close ordering** (no timers); reopen allowed
