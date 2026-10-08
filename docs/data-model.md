@@ -84,9 +84,9 @@ model Sponsorship {
   id           String              @id @default(cuid())
   menuItemId   String
   menuItem     MenuItem            @relation(fields: [menuItemId], references: [id])
-  teamName     String?             // e.g. "Delivery team"
+  teamName     String?             // e.g. "Delivery team" — legacy (A team, retired #52); new sponsorships leave it null
   sponsorName  String?             // free-text name the organizer typed for a non-member
-  members      SponsorshipMember[] // 0–2 people (0 only for an organizer-typed sponsorName; a team links the member who signed it up)
+  members      SponsorshipMember[] // the one member who sponsored (0 for an organizer-typed sponsorName); legacy rows may have 2
   amountCents  Int                 @default(3000)  // $30, copied from settings at creation
   paid         Boolean             @default(false)
   paidAt       DateTime?
@@ -159,7 +159,7 @@ model AppSettings {
 
 ## Notes
 - **Menu is per BreakfastEvent, and the design has exactly one MenuItem per Thursday** (set inline on the Schedule). The MenuItem table and ItemOption stay so more items and options can be added later without a migration; the MVP UI creates and edits one item per event.
-- **Sponsorship** is exactly one of: 1–2 `members` (Just me / Me + someone), a `teamName` (A team; the member who signed the team up is also linked in `members`, so it's "theirs" on Home), or a `sponsorName` (organizer-typed, no members). The display name prefers `teamName`, then `sponsorName`, then the members' names. One sponsorship = one $30 payment, regardless of how many people are on it.
+- **Sponsorship** is one sponsor: either the member who pressed *Sponsor this* (one `members` row) or an organizer-typed `sponsorName`. Each sponsorship is one $30 (#53). `teamName` / two-member rows are legacy from the retired Just me / Me + someone / A team choice (#52) and still display.
 - New sponsorships are refused once an event's sponsorship count reaches `sponsorsNeeded`.
 - `amountCents` is copied from settings when created, so changing the setting later doesn't change old sponsorships.
 - **Guests:** `memberId = null`, `guestName` set. Validate that exactly one of the two is present.

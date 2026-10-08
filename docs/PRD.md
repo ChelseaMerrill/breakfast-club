@@ -31,7 +31,7 @@ for each item and chasing their $30, figuring out who's eating, and keeping trac
 1. **Sign in with Slack** — members of #108state only. Auto-creates a member profile (name, avatar, Slack ID).
 2. **Weekly schedule** — upcoming Thursdays with their menu item, sponsors, status and headcount. On the **Thursdays** admin page the organizer can **skip** a Thursday (holiday) or **restore** it, and toggle *Ordering enabled*.
 3. **Menu item per Thursday** — each Thursday has **one menu item** (e.g. Waffles). Chelsea types it inline on the Schedule page and sets how many **sponsors are needed** (default 1). There is no separate Menu page.
-4. **Sponsor a menu item** — any member clicks *Sponsor this* and signs up as **Just me**, **Me + someone** (pick a coworker), or **A team** (team name). Each sponsorship is **$30 to Chelsea**. *Sponsor this* disappears once the sponsors-needed count is filled. Chelsea can also add a sponsor by typing the name of someone who isn't a member.
+4. **Sponsor a menu item** — any member clicks *Sponsor this* and confirms; their name goes next to the item. The organizer can also type in a name. **Each sponsor gives Chelsea $30** (two sponsors = $30 each), by cash or Venmo @Chelsea-Merrill-1. *Sponsor this* disappears once the sponsors-needed count is filled.
 5. **Payment tracking** — Chelsea sees every sponsorship with a **Paid** checkbox; members see their own "Paid ✓ / $30 due" status. Unpaid list across weeks.
 6. **RSVP** — *Yes / No* per Thursday. **Everyone sees the names** of who's in and out, plus the headcount (Yes + walk-ins).
 7. **Ordering on/off per week** — *ordering on* (people order the morning of) or *ordering off* (e.g. bagels — RSVP only).

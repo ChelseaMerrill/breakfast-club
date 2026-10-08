@@ -76,22 +76,15 @@ const blockReason = (event: LockedEvent) =>
     nyToday(),
   );
 
-/** *Sponsor this*: Just me, Me + someone, or A team. */
+/**
+ * *Sponsor this*: the member who presses it becomes a sponsor (one sponsor = one $30;
+ * open-questions #52/#53). Anyone else is added by name by the organizer.
+ */
 export async function sponsorThis(_prev: ActionState, formData: FormData): Promise<ActionState> {
   const member = await getCurrentMember();
   const parsed = sponsorInput.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: firstIssue(parsed.error) };
   const input = parsed.data;
-
-  let partner: { id: string; name: string } | null = null;
-  if (input.mode === "two") {
-    if (input.partnerId === member.id) return { error: "Pick someone other than yourself." };
-    partner = await db.member.findUnique({
-      where: { id: input.partnerId },
-      select: { id: true, name: true },
-    });
-    if (!partner) return { error: "Pick a coworker from the list." };
-  }
 
   const error = await withLockedEvent(input.eventId, async (tx, event) => {
     const reason = blockReason(event);
@@ -99,17 +92,13 @@ export async function sponsorThis(_prev: ActionState, formData: FormData): Promi
     const item = event.menuItems[0];
     const onIt = new Set(item.sponsorships.flatMap((s) => s.members.map((m) => m.memberId)));
     if (onIt.has(member.id)) return `You're already sponsoring ${item.name}.`;
-    if (partner && onIt.has(partner.id))
-      return `${partner.name} is already sponsoring ${item.name}.`;
 
-    const memberIds = partner ? [member.id, partner.id] : [member.id];
     await tx.sponsorship.create({
       data: {
         menuItemId: item.id,
-        teamName: input.mode === "team" ? input.teamName : null,
         amountCents: await sponsorshipAmountCents(tx),
         createdById: member.id,
-        members: { create: memberIds.map((memberId) => ({ memberId })) },
+        members: { create: { memberId: member.id } },
       },
     });
     return null;

@@ -124,29 +124,14 @@ describe("canRemoveSponsorship", () => {
 });
 
 describe("input validation", () => {
-  it("accepts the three Sponsor this modes", () => {
-    expect(sponsorInput.parse({ mode: "me", eventId: "e1" })).toEqual({
-      mode: "me",
+  it("Sponsor this only needs the Thursday: the sponsor is whoever pressed it", () => {
+    expect(sponsorInput.parse({ eventId: "e1" })).toEqual({ eventId: "e1" });
+    // Old modes and extra fields are ignored, never trusted (no partner or team any more).
+    expect(sponsorInput.parse({ eventId: "e1", mode: "two", partnerId: "m2" })).toEqual({
       eventId: "e1",
     });
-    expect(sponsorInput.parse({ mode: "two", eventId: "e1", partnerId: "m2" })).toMatchObject({
-      partnerId: "m2",
-    });
-    expect(
-      sponsorInput.parse({ mode: "team", eventId: "e1", teamName: "  Delivery team " }),
-    ).toMatchObject({ teamName: "Delivery team" });
-  });
-
-  it("rejects a missing partner, a blank or long team name, and unknown modes", () => {
-    expect(sponsorInput.safeParse({ mode: "two", eventId: "e1" }).success).toBe(false);
-    expect(sponsorInput.safeParse({ mode: "team", eventId: "e1", teamName: "   " }).success).toBe(
-      false,
-    );
-    expect(
-      sponsorInput.safeParse({ mode: "team", eventId: "e1", teamName: "x".repeat(61) }).success,
-    ).toBe(false);
-    expect(sponsorInput.safeParse({ mode: "three", eventId: "e1" }).success).toBe(false);
-    expect(sponsorInput.safeParse({ mode: "me" }).success).toBe(false);
+    expect(sponsorInput.safeParse({}).success).toBe(false);
+    expect(sponsorInput.safeParse({ eventId: "" }).success).toBe(false);
   });
 
   it("trims menu item names and allows empty (remove)", () => {

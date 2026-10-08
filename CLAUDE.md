@@ -26,7 +26,7 @@ to **#108state** every Tuesday at 10am ET, unless that Thursday is skipped (e.g.
 - Breakfast is every **Thursday**. A week can be **skipped** (holiday) — no reminder goes out.
 - **The design wins.** `design/Breakfast Club.dc.html` is the source of truth for screens, routes, copy and behavior. If a doc and the design disagree, follow the design and fix the doc.
 - **One menu item per Thursday** (e.g. Waffles), set by Chelsea inline on the Schedule page. There is no separate Menu page.
-- **Sponsorship is per menu item.** Anyone can add their name (or a team, or two people) next to an item. Each sponsorship = **$30 paid to Chelsea**; she marks it **paid** in the app. The app tracks payment status only — it does not process payments.
+- **Sponsorship is per menu item.** A sponsor is the member who pressed *Sponsor this* or a name Chelsea typed in (#52). **Each sponsor gives Chelsea $30** — two sponsors means $30 each (#53) — by cash or Venmo @Chelsea-Merrill-1 (`src/lib/payment-info.ts`); she marks it **paid** in the app. The app tracks payment status only — it does not process payments.
 - Each Thursday has a **sponsors needed** count (default 1). *Sponsor this* disappears once it's filled. Chelsea can also add a sponsor by typing the name of someone who isn't a member.
 - The **kitchen queue is visible to everyone** (read-only for members); only Chelsea moves orders along.
 - **No automatic ordering window.** The organizer clicks *Open ordering* / *Close ordering*.

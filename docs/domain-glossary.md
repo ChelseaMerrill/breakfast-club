@@ -12,7 +12,7 @@ Use these names in code, UI copy, and conversation. Don't introduce synonyms.
 | **Menu** | The list of MenuItems for one BreakfastEvent | — |
 | **MenuItem** | Something on a Thursday's menu (e.g. Pancakes) | dish, product |
 | **ItemOption** | A choice on a MenuItem (e.g. Eggs → Scrambled) | modifier, variant |
-| **Sponsorship** | A name (one person, two people, or a team) next to a MenuItem, meaning they pay $30 to the organizer | claim, donation |
+| **Sponsorship** | One sponsor's name next to a MenuItem: the member who pressed *Sponsor this*, or a name the organizer typed in. Each sponsor gives the organizer $30 | claim, donation |
 | **Sponsor** | The person/people/team on a Sponsorship | payer |
 | **Sponsorship amount** | What each Sponsorship owes — $30 (setting) | fee, price |
 | **Paid** | Organizer has confirmed the Sponsorship's $30 was received | settled |
