@@ -55,6 +55,7 @@ model BreakfastEvent {
   orders           Order[]
   menuItems        MenuItem[]
   reminderSentAt   DateTime?               // idempotency for the Tuesday post
+  paymentReminderSentAt DateTime?          // idempotency for the Wednesday unpaid-sponsor DMs (#56)
   createdAt        DateTime    @default(now())
 }
 

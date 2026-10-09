@@ -96,4 +96,4 @@ Paste one milestone at a time into Claude Code: *"Implement Milestone N from doc
 - **Done when:** Chelsea runs a real Thursday on it.
 
 ## Backlog (post-MVP)
-"Ordering is open" Slack post · Ready DMs · unpaid-sponsor DM reminder · "my usual" reorder · shopping list · stats · interactive Slack RSVP
+Done: "Ordering is open" Slack post (#55) · Ready DMs (#50) · unpaid-sponsor DM reminder, Wednesdays 11am ET (#56). Not planned: "my usual" reorder · shopping list (#54). Later: stats · interactive Slack RSVP

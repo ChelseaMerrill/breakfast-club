@@ -133,6 +133,10 @@ export default function GuidePage() {
               <b>My sponsorships</b> on Home shows <i>$30 due</i> or <i>Paid ✓</i>. You can remove
               yours until it&apos;s paid.
             </li>
+            <li>
+              Not paid yet? You&apos;ll get a friendly <b>Slack DM on Wednesday at 11am ET</b> until
+              Chelsea marks it paid.
+            </li>
           </Bullets>
         </Step>
 

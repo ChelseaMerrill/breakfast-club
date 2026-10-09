@@ -26,7 +26,9 @@ export default function PaymentsPage({ searchParams }: PageProps<"/admin/payment
         <Payments searchParams={searchParams} />
       </Suspense>
       <p className="text-xs text-(--bc-brown-faint)">
-        Payment status is visible only to you and the sponsors. It is never posted in Slack.
+        Payment status is visible only to you and the sponsors. It is never posted in the channel;
+        unpaid sponsors get a private Slack reminder on Wednesdays at 11am ET until you mark them
+        paid.
       </p>
     </div>
   );
