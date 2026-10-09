@@ -12,7 +12,9 @@ import {
   nextStatus,
   previousStatus,
 } from "@/lib/ordering";
+import { ORDERING_MESSAGE_MAX, orderingOpenMessage } from "@/lib/ordering-post";
 import { notifyOrderReady } from "@/lib/ready-notify";
+import { postToChannel } from "@/lib/slack";
 import { nyToday } from "@/lib/thursdays";
 
 // Organizer-only kitchen actions (docs/business-rules.md → Ordering, Walk-ins & guests).
@@ -33,17 +35,64 @@ function refresh(eventId?: string) {
   }
 }
 
-export async function openOrdering(formData: FormData) {
+const openInput = z.object({
+  eventId: id,
+  message: z
+    .string()
+    .trim()
+    .max(ORDERING_MESSAGE_MAX, `Keep the message under ${ORDERING_MESSAGE_MAX} characters.`)
+    .optional(),
+  post: z.literal("on").optional(),
+});
+
+export type OpenOrderingState = {
+  ok?: boolean;
+  posted?: boolean;
+  error?: string;
+  slackError?: string;
+};
+
+/**
+ * Open ordering (or reopen), saving Chelsea's message for the day (shown on the order form)
+ * and, if she ticked the box, posting it to #108state (open-questions #55). Ordering opens
+ * even if Slack refuses; the result says so.
+ */
+export async function openOrdering(
+  _prev: OpenOrderingState,
+  formData: FormData,
+): Promise<OpenOrderingState> {
   await requireOrganizer();
-  const eventId = id.parse(formData.get("eventId"));
-  const event = await db.breakfastEvent.findUniqueOrThrow({ where: { id: eventId } });
-  if (!canOpenOrdering(event, nyToday()))
-    throw new Error("Ordering can't be opened for that Thursday.");
-  await db.breakfastEvent.updateMany({
+  const parsed = openInput.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Check the message." };
+  const { eventId, message, post } = parsed.data;
+  if (post && !message) return { error: "Write a message to post, or untick Post to #108state." };
+
+  const event = await db.breakfastEvent.findUnique({ where: { id: eventId } });
+  if (!event || !canOpenOrdering(event, nyToday())) {
+    return { error: "Ordering can't be opened for that Thursday." };
+  }
+  const opened = await db.breakfastEvent.updateMany({
     where: { id: eventId, status: event.status },
-    data: { status: "ORDERING_OPEN", orderingOpenedAt: new Date(), orderingAutoClosed: false },
+    data: {
+      status: "ORDERING_OPEN",
+      orderingOpenedAt: new Date(),
+      orderingAutoClosed: false,
+      orderingMessage: message || null,
+    },
   });
   refresh(eventId);
+  if (opened.count !== 1) return { error: "That Thursday changed; refresh and try again." };
+
+  if (!post || !message) return { ok: true, posted: false };
+  const result = await postToChannel(
+    orderingOpenMessage(message, { appUrl: process.env.APP_URL, eventId }),
+  );
+  if (result.ok) return { ok: true, posted: true };
+  return {
+    ok: true,
+    posted: false,
+    slackError: result.reason === "not-configured" ? "Slack isn't connected." : result.error,
+  };
 }
 
 export async function closeOrdering(formData: FormData) {

@@ -64,3 +64,5 @@
 | 51 | In-app help | **App Guide** page at `/guide`, linked at the bottom of the nav for everyone. Same content as the shared guide artifact; the "For Chelsea" section shows only to the organizer. |
 | 52 | Who a sponsorship is | **Just the person who pressed *Sponsor this*** (no more Just me / Me + someone / A team), or a name Chelsea types in on the Schedule. Old team / two-person rows still display. |
 | 53 | What each sponsor pays, and how | **Each sponsor gives Chelsea $30** — one sponsor gives $30; two sponsors each give $30. Pay by **cash or Venmo @Chelsea-Merrill-1** (shown after sponsoring, on Home → My sponsorships, and in the App Guide). |
+| 54 | "My usual" reorder, shopping list | **Not planned.** |
+| 55 | "Ordering is open" Slack post | **Chelsea types the message each week** when she opens ordering (what to put in Customize depends on the breakfast). Optional **Post to #108state** (ticked on the first open, unticked on a reopen); a **Place your order** button. The message also shows on the order form as **From Chelsea**. |

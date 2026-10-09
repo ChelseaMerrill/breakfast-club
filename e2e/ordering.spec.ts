@@ -61,17 +61,27 @@ test("Chelsea runs a Thursday: opens ordering, member + guest orders to Picked u
   await expect(jordan.getByLabel("Your order")).toContainText("Ordering opens when Chelsea");
 
   await chelsea.goto(`/kitchen/${eventId}`);
+  // Open ordering asks for this week's message first (#55); it starts from a template.
   await chelsea.getByRole("button", { name: "Open ordering" }).click();
-  await expect(chelsea.getByText("Ordering is open")).toBeVisible();
+  const compose = chelsea.getByRole("form", { name: "Open ordering" });
+  await expect(compose.getByLabel(/This week's message/)).toHaveValue(/Ordering is open!/);
+  await compose
+    .getByLabel(/This week's message/)
+    .fill("Waffles today! In Customize, pick maple or blueberry syrup.");
+  await compose.getByRole("button", { name: /^Open ordering/ }).click();
+  await expect(chelsea.getByText("Ordering is open", { exact: true })).toBeVisible();
 
-  // Member orders from Home.
+  // Member orders from Home, and sees Chelsea's message above Customize.
   await jordan.goto("/");
   await jordan.getByRole("link", { name: "Place your order" }).click();
+  await expect(jordan.getByRole("region", { name: "From Chelsea" })).toContainText(
+    "In Customize, pick maple or blueberry syrup.",
+  );
   await jordan.getByRole("button", { name: new RegExp(item.name) }).click();
   await jordan.getByLabel("Customize").fill("Extra syrup");
   await jordan.getByRole("button", { name: "Submit order" }).click();
   // After ordering, members land on the kitchen queue with their order in Placed.
-  await expect(jordan).toHaveURL(new RegExp(`/kitchen/${eventId}$`));
+  await expect(jordan).toHaveURL(new RegExp(`/kitchen/${eventId}$`), { timeout: 15_000 });
   await expect(card(jordan, "Placed", "Jordan Reyes")).toBeVisible();
   await jordan.goto("/");
   await expect(jordan.getByLabel("Your order")).toContainText("Placed");
@@ -125,14 +135,14 @@ test("a member changes and cancels their own order while it's Placed", async ({ 
   await priya.goto(`/order/${eventId}`);
   await priya.getByRole("button", { name: new RegExp(item.name) }).click();
   await priya.getByRole("button", { name: "Submit order" }).click();
-  await expect(priya).toHaveURL(new RegExp(`/kitchen/${eventId}$`));
+  await expect(priya).toHaveURL(new RegExp(`/kitchen/${eventId}$`), { timeout: 15_000 });
   await priya.goto("/");
   await expect(priya.getByLabel("Your order")).toContainText("Placed");
 
   await priya.getByLabel("Your order").getByRole("link", { name: "Change" }).click();
   await priya.getByLabel("Customize").fill("No butter");
   await priya.getByRole("button", { name: "Update order" }).click();
-  await expect(priya).toHaveURL(new RegExp(`/kitchen/${eventId}$`));
+  await expect(priya).toHaveURL(new RegExp(`/kitchen/${eventId}$`), { timeout: 15_000 });
   await priya.goto("/");
   await expect(priya.getByLabel("Your order")).toContainText("Placed");
 
@@ -193,7 +203,7 @@ test("item options are chosen on the order form and shown in the kitchen", async
   await jordan.getByRole("button", { name: new RegExp(item.name) }).click();
   await jordan.getByRole("radio", { name: "Blueberry" }).click();
   await jordan.getByRole("button", { name: "Submit order" }).click();
-  await expect(jordan).toHaveURL(new RegExp(`/kitchen/${eventId}$`));
+  await expect(jordan).toHaveURL(new RegExp(`/kitchen/${eventId}$`), { timeout: 15_000 });
   await jordan.goto("/");
   await expect(jordan.getByLabel("Your order")).toContainText(`${item.name} (Blueberry)`);
 

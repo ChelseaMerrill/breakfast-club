@@ -233,7 +233,13 @@ async function run(): Promise<unknown> {
       const { count } = await db.order.deleteMany({ where: { eventId } });
       await db.breakfastEvent.update({
         where: { id: eventId },
-        data: { ...v, orderingOpenedAt: null, orderingClosedAt: null, orderingAutoClosed: false },
+        data: {
+          ...v,
+          orderingOpenedAt: null,
+          orderingClosedAt: null,
+          orderingAutoClosed: false,
+          orderingMessage: null,
+        },
       });
       return { removedOrders: count };
     }

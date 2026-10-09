@@ -56,10 +56,17 @@ Sponsor text per item (matches the Settings preview in the design):
 - In the Slack app, enable **App Home → Messages Tab** (read-only is fine) so the DM shows up.
 - Code: `src/lib/ready-dm.ts` (pure), `src/lib/ready-notify.ts`, `postDirectMessage` in `src/lib/slack.ts`.
 
+## "Ordering is open" post (built — open-questions #55)
+- **When:** Chelsea presses **Open ordering** on the kitchen queue. A box asks for **this week's message** (pre-filled with a template she rewrites — what to put in Customize changes with each breakfast) and a **Post to #108state** checkbox.
+- The checkbox is ticked the first time ordering opens each Thursday and unticked on a reopen, so a reopen can't double-post by accident.
+- **Message:** `:pancakes:` + her text (escaped, so `<!channel>`-style markup can't ping anyone) + a **Place your order** button (`APP_URL/order/<id>`).
+- Ordering opens even if Slack refuses; the kitchen shows "Ordering is open, but the Slack post didn't go out: <reason>".
+- The message is saved on the Thursday (`BreakfastEvent.orderingMessage`) and shown on the order form as **From Chelsea**, right above Customize.
+- Code: `src/lib/ordering-post.ts` (pure), `openOrdering` in `src/app/(app)/kitchen/actions.ts`, `src/components/kitchen/ordering-controls.tsx`.
+
 ## Next-phase messages
 | When | Where | Message |
 |---|---|---|
-| Chelsea taps Open ordering (checkbox "Post to #108state") | Channel | "Ordering is open! Place your order →" |
 | Sponsorship unpaid 3+ days after the Thursday | DM to sponsor(s) | "Friendly reminder: $30 for Pancakes (Oct 15) to Chelsea" |
 
 ## Later: interactive RSVP

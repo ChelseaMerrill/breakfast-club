@@ -4,14 +4,16 @@ import { notFound } from "next/navigation";
 import { Card, PageTitle } from "@/components/bc";
 import { ConfirmSubmit } from "@/components/kitchen/confirm-submit";
 import { CookingScenes } from "@/components/kitchen/cooking-scenes";
+import { OrderingControls } from "@/components/kitchen/ordering-controls";
 import { WalkInForm } from "@/components/kitchen/walk-in-form";
 import { LiveRefresh } from "@/components/live-refresh";
 import { getCurrentMember } from "@/lib/dal";
 import { getKitchen, memberNames, orderableMenu, type Kitchen } from "@/lib/kitchen";
 import { STATUS_LABEL } from "@/lib/ordering";
+import { isSlackConfigured } from "@/lib/slack";
 import { formatThursday } from "@/lib/thursdays";
 import { cn } from "@/lib/utils";
-import { closeOrdering, deleteOrder, moveOrder, openOrdering } from "../actions";
+import { deleteOrder, moveOrder } from "../actions";
 
 // Kitchen queue (the design's "Kitchen view", renamed — open-questions #47; route /kitchen/[id]).
 // Everyone can watch; only the
@@ -59,7 +61,17 @@ async function KitchenBoard({ params }: Pick<PageProps<"/kitchen/[id]">, "params
     <>
       <LiveRefresh />
       <div className="flex flex-wrap items-center gap-3.5">
-        {org && <OrderingButton kitchen={kitchen} />}
+        {org && (
+          <OrderingControls
+            eventId={kitchen.id}
+            open={kitchen.open}
+            canOpen={kitchen.canOpen}
+            itemName={kitchen.itemName}
+            savedMessage={kitchen.orderingMessage}
+            everOpened={kitchen.everOpened}
+            slackConnected={isSlackConfigured()}
+          />
+        )}
         <p
           className={cn(
             "text-sm font-bold uppercase",
@@ -121,24 +133,6 @@ async function KitchenBoard({ params }: Pick<PageProps<"/kitchen/[id]">, "params
           : "Only Chelsea moves orders along. This board updates as she goes."}
       </p>
     </>
-  );
-}
-
-function OrderingButton({ kitchen }: { kitchen: Kitchen }) {
-  if (!kitchen.open && !kitchen.canOpen) return null;
-  return (
-    <form action={kitchen.open ? closeOrdering : openOrdering}>
-      <input type="hidden" name="eventId" value={kitchen.id} />
-      <button
-        type="submit"
-        className={cn(
-          "cursor-pointer rounded-full border-[3px] border-border px-7 py-3.5 font-bold uppercase shadow-chunky-sm",
-          kitchen.open ? "bg-[#FFB4A2]" : "bg-primary",
-        )}
-      >
-        {kitchen.open ? "Close ordering" : "Open ordering"}
-      </button>
-    </form>
   );
 }
 
