@@ -64,10 +64,11 @@ Sponsor text per item (matches the Settings preview in the design):
 - The message is saved on the Thursday (`BreakfastEvent.orderingMessage`) and shown on the order form as **From Chelsea**, right above Customize.
 - Code: `src/lib/ordering-post.ts` (pure), `openOrdering` in `src/app/(app)/kitchen/actions.ts`, `src/components/kitchen/ordering-controls.tsx`.
 
-## Next-phase messages
-| When | Where | Message |
-|---|---|---|
-| Sponsorship unpaid 3+ days after the Thursday | DM to sponsor(s) | "Friendly reminder: $30 for Pancakes (Oct 15) to Chelsea" |
+## Unpaid-sponsor reminder (open-questions #56)
+- **When:** Wednesdays at 11:00 New York time. Vercel Crons `0 15 * * 3` and `0 16 * * 3` (UTC) call `/api/cron/payment-reminder` with `Authorization: Bearer $CRON_SECRET`; the first run at/after 11:00 NY sends, and `BreakfastEvent.paymentReminderSentAt` on that week's Thursday stops the second. If every DM fails, the claim is released so the second cron retries.
+- **Who:** each member on a sponsorship not yet marked Paid, for that week's Thursday or any earlier one (skipped/cancelled Thursdays excluded). One DM per person listing everything they owe. Typed-in names and seed members are skipped.
+- **Message:** ":wave: Friendly reminder: you're a Breakfast Club sponsor! Please give Chelsea $30." + "• Waffles (Thu, Oct 8) — $30" lines + "Pay with cash or Venmo @Chelsea-Merrill-1. Already paid? Chelsea will mark it soon."
+- Never posted in #108state. Code: `src/lib/payment-reminder.ts` (pure), `src/lib/payment-reminder-run.ts`, `src/app/api/cron/payment-reminder/route.ts`.
 
 ## Later: interactive RSVP
 Add Interactivity (`/api/slack/interactions`) so the reminder's buttons write the Rsvp directly. Verify the Slack signing secret.

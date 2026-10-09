@@ -271,6 +271,41 @@ async function run(): Promise<unknown> {
       });
       return { ok: true };
     }
+    case "payment-reminder-event": {
+      // The Thursday on a given date, with what the payment reminder tests change and put back.
+      const e = await db.breakfastEvent.findUniqueOrThrow({
+        where: { date: new Date(args[0]) },
+        select: { id: true, status: true, skipReason: true, paymentReminderSentAt: true },
+      });
+      return { ...e, paymentReminderSentAt: e.paymentReminderSentAt?.toISOString() ?? null };
+    }
+    case "set-payment-reminder-sent": {
+      const [id, iso] = args;
+      await db.breakfastEvent.update({
+        where: { id },
+        data: { paymentReminderSentAt: iso && iso !== "null" ? new Date(iso) : null },
+      });
+      return { ok: true };
+    }
+    case "set-paid": {
+      const [id, paid] = args;
+      await db.sponsorship.update({
+        where: { id },
+        data: { paid: paid === "true", paidAt: paid === "true" ? new Date() : null },
+      });
+      return { ok: true };
+    }
+    case "remove-sponsorship-item": {
+      // Undo payments-setup without touching the Thursday's other menu items.
+      const s = await db.sponsorship.findUnique({
+        where: { id: args[0] },
+        select: { menuItemId: true },
+      });
+      if (!s) return { ok: true };
+      await db.sponsorship.deleteMany({ where: { menuItemId: s.menuItemId } });
+      await db.menuItem.delete({ where: { id: s.menuItemId } });
+      return { ok: true };
+    }
     case "set-slack-id": {
       // Give a seed member a Slack-looking ID (or put the SEED_ one back) for DM tests.
       const [name, slackUserId] = args;

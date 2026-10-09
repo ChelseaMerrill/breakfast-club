@@ -23,6 +23,7 @@ export async function startFakeSlack() {
   const base = new URL(process.env.SLACK_API_BASE!);
   const calls: SlackCall[] = [];
   let nextError: string | null = null;
+  let allError: string | null = null;
 
   const server: Server = createServer((req, res) => {
     let raw = "";
@@ -35,8 +36,8 @@ export async function startFakeSlack() {
         body: raw ? JSON.parse(raw) : {},
       });
       res.setHeader("Content-Type", "application/json");
-      if (nextError) {
-        res.end(JSON.stringify({ ok: false, error: nextError }));
+      if (nextError || allError) {
+        res.end(JSON.stringify({ ok: false, error: nextError ?? allError }));
         nextError = null;
       } else {
         res.end(JSON.stringify({ ok: true, channel: process.env.SLACK_CHANNEL_ID, ts: "1.000" }));
@@ -54,9 +55,14 @@ export async function startFakeSlack() {
     failNext(error: string) {
       nextError = error;
     },
+    /** Make every call fail until reset(). */
+    failAll(error: string) {
+      allError = error;
+    },
     reset() {
       calls.length = 0;
       nextError = null;
+      allError = null;
     },
     close: () => new Promise<void>((resolve) => server.close(() => resolve())),
   };

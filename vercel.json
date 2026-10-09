@@ -1,7 +1,21 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "crons": [
-    { "path": "/api/cron/weekly-reminder", "schedule": "0 14 * * 2" },
-    { "path": "/api/cron/weekly-reminder", "schedule": "0 15 * * 2" }
+    {
+      "path": "/api/cron/weekly-reminder",
+      "schedule": "0 14 * * 2"
+    },
+    {
+      "path": "/api/cron/weekly-reminder",
+      "schedule": "0 15 * * 2"
+    },
+    {
+      "path": "/api/cron/payment-reminder",
+      "schedule": "0 15 * * 3"
+    },
+    {
+      "path": "/api/cron/payment-reminder",
+      "schedule": "0 16 * * 3"
+    }
   ]
 }
