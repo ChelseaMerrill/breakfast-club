@@ -18,9 +18,10 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "vercel-build": "prisma generate && node scripts/migrate-if-production.mjs && next build",
+    "vercel-build": "prisma generate && node scripts/migrate-on-deploy.mjs && next build",
     "db:migrate": "prisma migrate dev",
-    "db:migrate:deploy": "prisma migrate deploy"
+    "db:migrate:deploy": "prisma migrate deploy",
+    "staging:cron": "node scripts/trigger-staging-cron.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

@@ -66,15 +66,19 @@ describe("nyWeekday", () => {
 
 describe("clockOverride", () => {
   const at = "2026-10-06T14:30:00Z";
-  it("works only under next dev", () => {
-    expect(clockOverride(at, "development")).toEqual(new Date(at));
-    expect(clockOverride(at, "production")).toBeNull();
-    expect(clockOverride(at, "test")).toBeNull();
-    expect(clockOverride(at, undefined)).toBeNull();
+  it("works only under next dev and on preview deploys (staging)", () => {
+    expect(clockOverride(at, { NODE_ENV: "development" })).toEqual(new Date(at));
+    expect(clockOverride(at, { NODE_ENV: "production", VERCEL_ENV: "preview" })).toEqual(
+      new Date(at),
+    );
+    expect(clockOverride(at, { NODE_ENV: "production", VERCEL_ENV: "production" })).toBeNull();
+    expect(clockOverride(at, { NODE_ENV: "production" })).toBeNull();
+    expect(clockOverride(at, { NODE_ENV: "test" })).toBeNull();
+    expect(clockOverride(at, {})).toBeNull();
   });
 
   it("ignores missing or invalid values", () => {
-    expect(clockOverride(null, "development")).toBeNull();
-    expect(clockOverride("next tuesday", "development")).toBeNull();
+    expect(clockOverride(null, { NODE_ENV: "development" })).toBeNull();
+    expect(clockOverride("next tuesday", { NODE_ENV: "development" })).toBeNull();
   });
 });

@@ -7,6 +7,7 @@
 4. **Manage Distribution → Activate Public Distribution** (unlisted, not in the Slack Marketplace) so Slack Connect members of #108state from other orgs can sign in, if their org allows it. Workspace guests are likely blocked by Slack regardless — they get entered by name.
 5. Install to workspace → copy the **Bot Token** (`SLACK_BOT_TOKEN`) and the **channel ID of #108state** (`SLACK_CHANNEL_ID`; open channel details → bottom of the About tab).
 6. Invite the bot: `/invite @Breakfast Club` in #108state.
+7. **Staging** uses the same app with a second redirect URL and the public test channel **#breakfast-club-test** (`docs/environments.md`). Outside production the app looks up the channel's name and refuses to post to #108state.
 
 ## Channel-membership gate
 - On sign-in, page through `conversations.members` for `SLACK_CHANNEL_ID` (cursor, `limit` 200; Tier 4) and allow the user only if their Slack user ID is in it. Cache the member set for a few minutes.
