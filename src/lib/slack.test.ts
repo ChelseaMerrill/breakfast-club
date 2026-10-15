@@ -113,3 +113,54 @@ describe("postDirectMessage", () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 });
+
+describe("live channel guard (outside production)", () => {
+  const guarded = (channelId: string) => ({ ...config, channelId, guardLiveChannel: true });
+  const info = (name: string) => reply({ ok: true, channel: { name } });
+
+  it("is on everywhere but production, and off for the fake Slack", () => {
+    const env = { SLACK_BOT_TOKEN: TOKEN, SLACK_CHANNEL_ID: "C108" };
+    expect(slackConfig({ ...env, VERCEL_ENV: "production" })?.guardLiveChannel).toBe(false);
+    expect(slackConfig({ ...env, VERCEL_ENV: "preview" })?.guardLiveChannel).toBe(true);
+    expect(slackConfig(env)?.guardLiveChannel).toBe(true);
+    expect(
+      slackConfig({ ...env, SLACK_API_BASE: "http://127.0.0.1:3901/api" })?.guardLiveChannel,
+    ).toBe(false);
+  });
+
+  it("refuses to post to #108state", async () => {
+    const fetch = vi.fn().mockResolvedValue(info("108state"));
+    const result = await postToChannel({ text: "hi" }, { config: guarded("CLIVE"), fetch });
+    expect(result).toMatchObject({ ok: false, reason: "slack-error" });
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch.mock.calls[0][0]).toBe("http://fake.test/api/conversations.info?channel=CLIVE");
+  });
+
+  it("refuses when the channel can't be checked", async () => {
+    const fetch = vi.fn().mockResolvedValue(reply({ ok: false, error: "missing_scope" }));
+    const result = await postToChannel({ text: "hi" }, { config: guarded("CUNKNOWN"), fetch });
+    expect(result).toMatchObject({ ok: false, error: expect.stringContaining("missing_scope") });
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it("posts to the test channel, checking its name only once", async () => {
+    const fetch = vi
+      .fn()
+      .mockResolvedValueOnce(info("breakfast-club-test"))
+      .mockImplementation(async () => reply({ ok: true, ts: "1.1" }));
+    const options = { config: guarded("CTEST"), fetch };
+    expect(await postToChannel({ text: "a" }, options)).toEqual({ ok: true, ts: "1.1" });
+    expect(await postToChannel({ text: "b" }, options)).toEqual({ ok: true, ts: "1.1" });
+    expect(fetch.mock.calls.map(([url]) => url)).toEqual([
+      "http://fake.test/api/conversations.info?channel=CTEST",
+      "http://fake.test/api/chat.postMessage",
+      "http://fake.test/api/chat.postMessage",
+    ]);
+  });
+
+  it("doesn't apply to direct messages", async () => {
+    const fetch = vi.fn().mockResolvedValue(reply({ ok: true }));
+    await postDirectMessage("U03ABC", { text: "ready" }, { config: guarded("CLIVE"), fetch });
+    expect(fetch.mock.calls[0][0]).toBe("http://fake.test/api/chat.postMessage");
+  });
+});

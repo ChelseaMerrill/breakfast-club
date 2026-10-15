@@ -21,6 +21,7 @@ to **#108state** every Tuesday at 10am ET, unless that Thursday is skipped (e.g.
 | `docs/business-rules.md` | Ordering, sponsorship & payments, walk-ins, permissions, edge cases |
 | `docs/build-plan.md` | Ordered milestones with acceptance criteria — build in this order |
 | `docs/open-questions.md` | Decisions made + anything still open — ask before assuming |
+| `docs/environments.md` | Local dev, staging, production; the staging → production workflow and setup |
 
 ## Key decisions (don't override without asking)
 - Breakfast is every **Thursday**. A week can be **skipped** (holiday) — no reminder goes out.
@@ -48,7 +49,7 @@ to **#108state** every Tuesday at 10am ET, unless that Thursday is skipped (e.g.
 
 ## Tech stack
 - **Next.js (App Router) + TypeScript**, Tailwind CSS, shadcn/ui
-- **PostgreSQL on Neon** (via the Vercel Marketplace; branch `main` = live, `dev` = local + previews) via **Prisma 7** (`prisma.config.ts`, Neon driver adapter, client generated to `src/generated/prisma`)
+- **PostgreSQL on Neon** (via the Vercel Marketplace; branch `main` = live, `dev` = local + staging + previews) via **Prisma 7** (`prisma.config.ts`, Neon driver adapter, client generated to `src/generated/prisma`)
 - **Tests:** Vitest (unit, `src/**/*.test.ts`); Playwright (end-to-end, `e2e/`) — reuses `npm run dev` on :3000 (or starts it) against the Neon `dev` branch, signs in via the dev picker, and cleans up after itself. DB setup goes through `e2e/db-task.mts` (run with tsx; Playwright can't load the ESM Prisma client)
 - **Auth:** Auth.js v5, JWT sessions, Sign in with Slack (OIDC) only
   - `src/auth.ts` — providers + callbacks (#108state gate, member upsert, 3-hour re-check, dev picker)
@@ -59,7 +60,7 @@ to **#108state** every Tuesday at 10am ET, unless that Thursday is skipped (e.g.
 - **Scheduling:** Vercel Cron hitting a protected API route (`/api/cron/weekly-reminder`)
 - **Realtime kitchen queue:** polling every 5s for MVP
 - **Hosting:** Vercel (Chelsea's personal Hobby account)
-- **Workflow:** one branch + PR per milestone; Chelsea reviews and merges
+- **Workflow:** feature branch → PR into **`staging`** (Vercel preview on the `dev` database, posts to #breakfast-club-test) → test there → PR `staging` → `main` (production). Chelsea reviews and merges. See `docs/environments.md`
 
 Next.js 16 has breaking changes from older versions — see `AGENTS.md` and read `node_modules/next/dist/docs/` before writing Next.js code.
 
@@ -80,13 +81,13 @@ AUTH_SECRET=
 AUTH_SLACK_ID=           # Slack sign-in turns on once these two are set
 AUTH_SLACK_SECRET=
 SLACK_BOT_TOKEN=
-SLACK_CHANNEL_ID=        # channel ID for #108state
+SLACK_CHANNEL_ID=        # channel ID for #108state (staging: #breakfast-club-test; only production may post to #108state)
 ORGANIZER_SLACK_IDS=     # Chelsea's Slack user ID
 CRON_SECRET=             # Vercel Cron bearer secret; the reminder route refuses everything without it
 SLACK_API_BASE=          # optional; default https://slack.com/api (local dev/e2e: the fake Slack, e.g. http://127.0.0.1:3901/api)
 APP_URL=
 ```
-**Schema changes:** edit `prisma/schema.prisma`, run `npm run db:migrate -- --name <change>`, commit the migration. Production applies it on deploy; previews never migrate.
+**Schema changes:** edit `prisma/schema.prisma`, run `npm run db:migrate -- --name <change>`, commit the migration. Production and staging apply it on deploy (`scripts/migrate-on-deploy.mjs`); other previews never migrate.
 
 **Local env files:** `.env` holds local dev settings (Neon `dev` branch). Next.js loads `.env.local` *over* `.env`, and `vercel env pull` writes `.env.local` with the **live** database — so never pull into `.env.local`. Use `vercel env pull .env.vercel` (git-ignored, not loaded by Next).
 
@@ -104,4 +105,5 @@ npm run db:migrate:deploy  # apply pending migrations (production builds do this
 npm run db:push      # prototyping only — prefer migrations now that main is live
 npm run db:seed      # dev-only sample data (needs ALLOW_SEED=true)
 npm run db:studio    # browse the database
+npm run staging:cron -- weekly-reminder [--now <ISO>]  # run a cron on staging by hand (.env.staging)
 ```

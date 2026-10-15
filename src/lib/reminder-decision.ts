@@ -55,12 +55,17 @@ export function decideReminder({
 }
 
 /**
- * Local-dev-only clock override for the cron route (`?now=<ISO>`), so e2e tests can run "a
- * Tuesday at 10:30 ET" on any day. Ignored unless NODE_ENV is exactly "development" (only
- * `next dev`; `next build`/`next start` and every Vercel deployment run as "production").
+ * Clock override for the cron routes (`?now=<ISO>`), so e2e tests and staging can run "a
+ * Tuesday at 10:30 ET" on any day. Honored only under `next dev` (NODE_ENV "development")
+ * and on Vercel preview deploys such as staging (VERCEL_ENV "preview", dev database).
+ * Production always uses the real clock.
  */
-export function clockOverride(value: string | null, nodeEnv: string | undefined): Date | null {
-  if (nodeEnv !== "development" || !value) return null;
+export function clockOverride(
+  value: string | null,
+  env: { NODE_ENV?: string; VERCEL_ENV?: string },
+): Date | null {
+  const allowed = env.NODE_ENV === "development" || env.VERCEL_ENV === "preview";
+  if (!allowed || !value) return null;
   const at = new Date(value);
   return Number.isNaN(at.getTime()) ? null : at;
 }

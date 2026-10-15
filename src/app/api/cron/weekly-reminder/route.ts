@@ -14,11 +14,9 @@ export async function GET(request: Request) {
     return Response.json({ status: "error", error: "unauthorized" }, { status: 401 });
   }
 
-  // `?now=` only works under `next dev` (see clockOverride); production always uses the clock.
-  const override = clockOverride(
-    new URL(request.url).searchParams.get("now"),
-    process.env.NODE_ENV,
-  );
+  // `?now=` works only under `next dev` and on staging (see clockOverride); production
+  // always uses the clock.
+  const override = clockOverride(new URL(request.url).searchParams.get("now"), process.env);
   try {
     const result = await runWeeklyReminder(override ?? new Date());
     return Response.json(result, { status: result.status === "error" ? 502 : 200 });

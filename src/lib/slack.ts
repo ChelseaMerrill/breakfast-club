@@ -7,7 +7,16 @@ type FetchLike = typeof fetch;
 
 export const DEFAULT_SLACK_API_BASE = "https://slack.com/api";
 
-export type SlackConfig = { token: string; channelId: string; apiBase: string };
+/** The live channel. Only production may post to it (docs/environments.md). */
+export const LIVE_CHANNEL_NAME = "108state";
+
+export type SlackConfig = {
+  token: string;
+  channelId: string;
+  apiBase: string;
+  /** Outside production, look up the channel's name and refuse to post to #108state. */
+  guardLiveChannel?: boolean;
+};
 
 export type SlackPostResult =
   | { ok: true; ts?: string }
@@ -27,7 +36,9 @@ export function slackConfig(
   const channelId = env.SLACK_CHANNEL_ID?.trim();
   if (!token || !channelId) return null;
   const apiBase = (env.SLACK_API_BASE?.trim() || DEFAULT_SLACK_API_BASE).replace(/\/+$/, "");
-  return { token, channelId, apiBase };
+  // Staging and local dev share the live bot token; the fake Slack needs no guard.
+  const guardLiveChannel = env.VERCEL_ENV !== "production" && apiBase === DEFAULT_SLACK_API_BASE;
+  return { token, channelId, apiBase, guardLiveChannel };
 }
 
 export function isSlackConfigured(env: Record<string, string | undefined> = process.env) {
@@ -66,6 +77,10 @@ async function postMessage(
     error: error.split(config.token).join("[redacted]"),
   });
   try {
+    if (target === "channel" && config.guardLiveChannel) {
+      const blocked = await liveChannelBlock(config, fetchImpl);
+      if (blocked) return fail(blocked);
+    }
     const res = await fetchImpl(`${config.apiBase}/chat.postMessage`, {
       method: "POST",
       headers: {
@@ -91,4 +106,33 @@ async function postMessage(
         : "request failed",
     );
   }
+}
+
+// Channel IDs already confirmed not to be #108state (names don't change mid-process).
+const safeChannels = new Set<string>();
+
+/**
+ * Why a non-production post must not go out, or null if it may. Fails closed: if Slack
+ * can't tell us the channel's name, nothing is posted.
+ */
+async function liveChannelBlock(config: SlackConfig, fetchImpl: FetchLike): Promise<string | null> {
+  if (safeChannels.has(config.channelId)) return null;
+  const params = new URLSearchParams({ channel: config.channelId });
+  const res = await fetchImpl(`${config.apiBase}/conversations.info?${params}`, {
+    headers: { Authorization: `Bearer ${config.token}` },
+    signal: AbortSignal.timeout(10_000),
+  });
+  const body = (await res.json().catch(() => null)) as {
+    ok?: boolean;
+    error?: string;
+    channel?: { name?: string };
+  } | null;
+  if (!body?.ok || !body.channel?.name) {
+    return `couldn't check the channel outside production (${body?.error ?? `HTTP ${res.status}`})`;
+  }
+  if (body.channel.name === LIVE_CHANNEL_NAME) {
+    return `only production posts to #${LIVE_CHANNEL_NAME}; set SLACK_CHANNEL_ID to the test channel`;
+  }
+  safeChannels.add(config.channelId);
+  return null;
 }
