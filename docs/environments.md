@@ -42,13 +42,15 @@ For each variable: choose **Preview** only, then **Select a custom Preview branc
 |---|---|
 | `DATABASE_URL` | Neon **`dev`** pooled URL (same as local `.env`) |
 | `DATABASE_URL_UNPOOLED` | Neon **`dev`** direct URL (migrations use it) |
-| `AUTH_SECRET` | a new secret (`npx auth secret`) |
+| `AUTH_SECRET` | a new secret (see below), not production's |
 | `AUTH_SLACK_ID`, `AUTH_SLACK_SECRET` | same as production (same Slack app) |
 | `SLACK_BOT_TOKEN` | same as production |
 | `SLACK_CHANNEL_ID` | **#breakfast-club-test**'s ID, never #108state's |
 | `ORGANIZER_SLACK_IDS` | Chelsea's Slack ID (same as production) |
-| `CRON_SECRET` | a new secret (`openssl rand -hex 24`), not production's |
+| `CRON_SECRET` | a new secret (see below), not production's |
 | `APP_URL` | the staging URL |
+
+Make each new secret with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`. Don't use `npx auth secret`: it writes `.env.local`, which Next.js loads over `.env`.
 
 > **Double-check both database URLs point at `dev`.** Staging runs migrations on deploy, so a live `DATABASE_URL_UNPOOLED` would migrate the live database.
 
